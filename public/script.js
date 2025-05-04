@@ -120,10 +120,7 @@ function openWindow(id) {
   // Add to taskbar if not already there
   updateTaskbar();
   
-  // Special handling for game window
-  if (id === 'game') {
-    initGame();
-  }
+
   
   // Special handling for glitchlab
   if (id === 'app_glitchlab') {
@@ -579,9 +576,3 @@ window.addEventListener('DOMContentLoaded', function() {
     btn.addEventListener('mouseenter', playHover);
   });
 });
-
-// Declare the variables
-let initGame;
-let initGlitchLab;
-let initStarfield;
-let initTypewriter;
