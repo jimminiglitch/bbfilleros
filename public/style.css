@@ -764,3 +764,45 @@ canvas#background-canvas {
 #icon-resume  { top: 100px; left:   0px; }
 #icon-contact { top: 100px; left: 100px; }
 
+/* Reorder header buttons: span, minimize, maximize, close */
+.window-header {
+  display: flex;        /* you already have this, but just in case */
+  align-items: center;
+  gap: 5px;
+}
+
+.window-header span {
+  order: 0;             /* keep the title first */
+  flex: 1;              /* push buttons to the right */
+}
+
+.window-header .minimize {
+  order: 1;             /* now comes second */
+}
+
+.window-header .maximize {
+  order: 2;             /* then this */
+}
+
+.window-header .close {
+  order: 3;             /* and the exit last */
+}
+
+/* ─── RAINBOW SELECTION RECTANGLE ─── */
+#selection-rect {
+  position: absolute;
+  pointer-events: none;
+  z-index: 4;               /* above icons, below windows */
+  box-sizing: border-box;    /* include border in width/height math */
+  border: 3px solid;         /* solid border so border-image shows up */
+  border-image:              /* a static rainbow */
+    conic-gradient(
+      red, orange, yellow, green, blue, indigo, violet, red
+    )
+    1;
+}
+
+/* visually mark selected icons */
+.desktop-icon.selected {
+  box-shadow: 0 0 10px #ffffff inset, 0 0 5px #ffffff;
+}

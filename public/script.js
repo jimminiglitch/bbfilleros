@@ -326,3 +326,64 @@ function initStarfield() {
 // Kick it off after everything else initializes
 window.addEventListener('load', initStarfield);
 
+// ─── CLICK-AND-DRAG MULTI-SELECT ───
+
+let selStartX, selStartY, selDiv;
+
+function onSelectStart(e) {
+  // don’t start if clicking on an icon, window, or taskbar
+  if (e.target.closest('.desktop-icon, .popup-window, #start-bar, #start-menu')) return;
+
+  selStartX = e.clientX;
+  selStartY = e.clientY;
+
+  // make the selection DIV
+  selDiv = document.createElement('div');
+  selDiv.id = 'selection-rect';
+  selDiv.style.left   = `${selStartX}px`;
+  selDiv.style.top    = `${selStartY}px`;
+  selDiv.style.width  = '0px';
+  selDiv.style.height = '0px';
+  document.body.appendChild(selDiv);
+
+  document.addEventListener('mousemove', onSelectMove);
+  document.addEventListener('mouseup', onSelectEnd, { once: true });
+  e.preventDefault();
+}
+
+function onSelectMove(e) {
+  const currentX = e.clientX;
+  const currentY = e.clientY;
+
+  // calculate box coords & size
+  const x = Math.min(currentX, selStartX);
+  const y = Math.min(currentY, selStartY);
+  const w = Math.abs(currentX - selStartX);
+  const h = Math.abs(currentY - selStartY);
+
+  selDiv.style.left   = `${x}px`;
+  selDiv.style.top    = `${y}px`;
+  selDiv.style.width  = `${w}px`;
+  selDiv.style.height = `${h}px`;
+
+  // highlight icons completely inside the box
+  const box = selDiv.getBoundingClientRect();
+  document.querySelectorAll('.desktop-icon').forEach(icon => {
+    const r = icon.getBoundingClientRect();
+    const inside =
+      r.left   >= box.left &&
+      r.right  <= box.right &&
+      r.top    >= box.top &&
+      r.bottom <= box.bottom;
+    icon.classList.toggle('selected', inside);
+  });
+}
+
+function onSelectEnd() {
+  if (selDiv) selDiv.remove();
+  selDiv = null;
+  document.removeEventListener('mousemove', onSelectMove);
+}
+
+// hook it up
+window.addEventListener('mousedown', onSelectStart);
