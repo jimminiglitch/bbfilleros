@@ -238,3 +238,174 @@ document.querySelectorAll('.typewriter').forEach(el => {
   };
   type();
 });
+let focusedWindowId = null;
+
+document.querySelectorAll('.popup-window').forEach(win => {
+  win.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+    focusedWindowId = win.id;
+
+    const menu = document.getElementById('context-menu');
+    menu.style.top = `${e.clientY}px`;
+    menu.style.left = `${e.clientX}px`;
+    menu.classList.remove('hidden');
+  });
+});
+
+// Hide menu on click elsewhere
+document.addEventListener('click', () => {
+  document.getElementById('context-menu').classList.add('hidden');
+});
+
+// Menu actions
+function closeFocusedWindow() {
+  if (focusedWindowId) closeWindow(focusedWindowId);
+}
+
+function toggleFocusedMaximize() {
+  if (focusedWindowId) toggleMaximizeWindow(focusedWindowId);
+}
+
+function minimizeFocusedWindow() {
+  if (focusedWindowId) minimizeWindow(focusedWindowId);
+}
+document.querySelectorAll('.popup-window').forEach(win => {
+  const resizeHandle = document.createElement('div');
+  resizeHandle.classList.add('resize-handle');
+  resizeHandle.style.position = 'absolute';
+  resizeHandle.style.right = '0';
+  resizeHandle.style.bottom = '0';
+  resizeHandle.style.width = '15px';
+  resizeHandle.style.height = '15px';
+  resizeHandle.style.cursor = 'nwse-resize';
+  resizeHandle.style.zIndex = '10';
+  win.appendChild(resizeHandle);
+
+  let isResizing = false;
+
+  resizeHandle.addEventListener('mousedown', (e) => {
+    e.stopPropagation();
+    isResizing = true;
+    document.body.style.userSelect = 'none';
+  });
+
+  document.addEventListener('mousemove', (e) => {
+    if (isResizing) {
+      const rect = win.getBoundingClientRect();
+      win.style.width = `${e.clientX - rect.left}px`;
+      win.style.height = `${e.clientY - rect.top}px`;
+    }
+  });
+
+  document.addEventListener('mouseup', () => {
+    isResizing = false;
+    document.body.style.userSelect = 'auto';
+  });
+});
+// --- Right-Click Context Menu ---
+let focusedWindowId = null;
+
+document.querySelectorAll('.popup-window').forEach(win => {
+  win.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+    focusedWindowId = win.id;
+    const menu = document.getElementById('context-menu');
+    menu.style.top = `${e.clientY}px`;
+    menu.style.left = `${e.clientX}px`;
+    menu.classList.remove('hidden');
+  });
+
+  // Add drag-to-resize handles
+  const resizeHandle = document.createElement('div');
+  resizeHandle.style.position = 'absolute';
+  resizeHandle.style.right = '0';
+  resizeHandle.style.bottom = '0';
+  resizeHandle.style.width = '15px';
+  resizeHandle.style.height = '15px';
+  resizeHandle.style.cursor = 'nwse-resize';
+  resizeHandle.style.zIndex = '10';
+  win.appendChild(resizeHandle);
+
+  let isResizing = false;
+
+  resizeHandle.addEventListener('mousedown', (e) => {
+    e.stopPropagation();
+    isResizing = true;
+    document.body.style.userSelect = 'none';
+  });
+
+  document.addEventListener('mousemove', (e) => {
+    if (isResizing) {
+      const rect = win.getBoundingClientRect();
+      win.style.width = `${e.clientX - rect.left}px`;
+      win.style.height = `${e.clientY - rect.top}px`;
+    }
+  });
+
+  document.addEventListener('mouseup', () => {
+    isResizing = false;
+    document.body.style.userSelect = 'auto';
+  });
+});
+
+document.addEventListener('click', () => {
+  document.getElementById('context-menu').classList.add('hidden');
+});
+
+function closeFocusedWindow() {
+  if (focusedWindowId) closeWindow(focusedWindowId);
+}
+function toggleFocusedMaximize() {
+  if (focusedWindowId) toggleMaximizeWindow(focusedWindowId);
+}
+function minimizeFocusedWindow() {
+  if (focusedWindowId) minimizeWindow(focusedWindowId);
+}
+
+// --- Taskbar Buttons ---
+function addToTaskbar(id) {
+  const taskbar = document.getElementById("taskbar");
+  if (!document.querySelector(`.taskbar-btn[data-id="${id}"]`)) {
+    const btn = document.createElement("button");
+    btn.className = "taskbar-btn";
+    btn.dataset.id = id;
+    btn.textContent = id.toUpperCase();
+    btn.addEventListener("click", () => toggleWindow(id));
+    taskbar.appendChild(btn);
+  }
+}
+
+function toggleWindow(id) {
+  const win = document.getElementById(id);
+  const btn = document.querySelector(`.taskbar-btn[data-id="${id}"]`);
+  if (win.classList.contains("hidden")) {
+    win.classList.remove("hidden");
+    win.style.display = "block";
+    win.style.zIndex = getNextZIndex();
+    btn.classList.add("active");
+  } else {
+    win.classList.add("hidden");
+    win.style.display = "none";
+    btn.classList.remove("active");
+  }
+}
+
+// Update your existing openWindow to include:
+function openWindow(id) {
+  const win = document.getElementById(id);
+  if (win) {
+    win.classList.remove("hidden");
+    win.style.zIndex = getNextZIndex();
+    win.style.display = "block";
+
+    const stored = windowStates[id];
+    if (stored) {
+      win.style.top = stored.top;
+      win.style.left = stored.left;
+      win.style.width = stored.width;
+      win.style.height = stored.height;
+    }
+
+    addToTaskbar(id);
+  }
+}

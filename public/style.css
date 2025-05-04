@@ -598,3 +598,144 @@ canvas#background-canvas {
   color: black;
   box-shadow: 0 0 12px #ff99ff;
 }
+.context-menu {
+  position: absolute;
+  background: #1a001a;
+  border: 1px solid #ff00ff;
+  box-shadow: 0 0 10px #ff00ff;
+  z-index: 1000;
+  font-family: monospace;
+  font-size: 0.75rem;
+  color: #c1bfff;
+  display: flex;
+  flex-direction: column;
+  min-width: 120px;
+}
+
+.menu-item {
+  padding: 6px 10px;
+  border-bottom: 1px solid #440044;
+  cursor: pointer;
+}
+
+.menu-item:hover {
+  background: #220022;
+  color: #ff00ff;
+}
+
+.context-menu.hidden {
+  display: none;
+}
+.popup-window::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 15px;
+  height: 15px;
+  cursor: nwse-resize;
+  background: linear-gradient(45deg, transparent 40%, #ff00ff 60%);
+  z-index: 10;
+}
+/* TASKBAR BUTTONS */
+.taskbar-btn {
+  background: #320032;
+  border: 1px solid #ff00ff;
+  color: #c1bfff;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.5rem;
+  padding: 4px 6px;
+  margin-left: 4px;
+  cursor: pointer;
+  box-shadow: 0 0 6px #ff00ff;
+  transition: transform 0.1s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.taskbar-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 12px #ff00ff;
+}
+
+.taskbar-btn.active {
+  background: #ff00ff;
+  color: black;
+  box-shadow: 0 0 12px #ff99ff;
+}
+
+/* CONTEXT MENU */
+.context-menu {
+  position: absolute;
+  background: #1a001a;
+  border: 1px solid #ff00ff;
+  box-shadow: 0 0 10px #ff00ff;
+  z-index: 1000;
+  font-family: monospace;
+  font-size: 0.75rem;
+  color: #c1bfff;
+  display: flex;
+  flex-direction: column;
+  min-width: 120px;
+}
+
+.context-menu.hidden {
+  display: none;
+}
+
+.menu-item {
+  padding: 6px 10px;
+  border-bottom: 1px solid #440044;
+  cursor: pointer;
+}
+
+.menu-item:hover {
+  background: #220022;
+  color: #ff00ff;
+}
+
+/* FILE EXPLORER GRID */
+.file-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+  font-family: 'VT323', monospace;
+  padding: 1rem;
+  color: var(--neon-cyan);
+}
+
+.file {
+  background: rgba(255, 0, 255, 0.05);
+  border: 1px dashed #ff00ff;
+  padding: 10px;
+  cursor: pointer;
+  box-shadow: 0 0 6px #ff00ff;
+  transition: background 0.3s ease, transform 0.2s;
+}
+
+.file:hover {
+  background: rgba(255, 0, 255, 0.2);
+  transform: scale(1.05);
+}
+
+/* SHUTDOWN OVERLAY */
+#shutdown-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: black;
+  color: #ff00ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'VT323', monospace;
+  font-size: 1.5rem;
+  z-index: 9999;
+}
+
+#shutdown-overlay p {
+  text-align: center;
+  margin: 0.5rem;
+  text-shadow: 0 0 8px #ff00ff;
+}
+#shutdown-overlay.hidden {
+  display: none !important;
+}
