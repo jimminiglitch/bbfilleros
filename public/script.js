@@ -228,27 +228,50 @@ function initDesktopIcons() {
       playBlip();
     });
 
-    // smooth drag: lock in current position, then follow cursor
     icon.addEventListener('mousedown', e => {
   e.preventDefault();
 
-  // 1) Get icon and its parent container rects (viewport coords)
-  const rect       = icon.getBoundingClientRect();
   const parentRect = icon.parentElement.getBoundingClientRect();
+  const clickRect  = icon.getBoundingClientRect();
 
-  // 2) Lock in inline styles **relative to the parent**
-  icon.style.left = (rect.left - parentRect.left) + 'px';
-  icon.style.top  = (rect.top  - parentRect.top)  + 'px';
+  // Determine which icons to drag as a group
+  let group;
+  if (icon.classList.contains('selected')) {
+    group = Array.from(document.querySelectorAll('.desktop-icon.selected'));
+  } else {
+    // clear old selection, select just this one
+    document.querySelectorAll('.desktop-icon.selected')
+      .forEach(ic => ic.classList.remove('selected'));
+    icon.classList.add('selected');
+    group = [icon];
+  }
 
-  // 3) Compute cursor offset within the icon
-  const shiftX = e.clientX - rect.left;
-  const shiftY = e.clientY - rect.top;
-  icon.style.zIndex = getNextZIndex();
+  // Compute cursor‐to‐icon offset
+  const shiftX = e.clientX - clickRect.left;
+  const shiftY = e.clientY - clickRect.top;
 
-  // 4) On mousemove, position relative to parent
+  // Lock each icon’s starting position (relative to parent)
+  const groupData = group.map(ic => {
+    const r = ic.getBoundingClientRect();
+    const startLeft = r.left - parentRect.left;
+    const startTop  = r.top  - parentRect.top;
+    ic.style.left = startLeft + 'px';
+    ic.style.top  = startTop  + 'px';
+    ic.style.zIndex = getNextZIndex();  // bring them all forward
+    return { icon: ic, startLeft, startTop };
+  });
+
+  // Move them all together
   function onMouseMove(e) {
-    icon.style.left = (e.clientX - shiftX - parentRect.left) + 'px';
-    icon.style.top  = (e.clientY - shiftY - parentRect.top)  + 'px';
+    const newLeft = e.clientX - shiftX - parentRect.left;
+    const newTop  = e.clientY - shiftY - parentRect.top;
+    const dx = newLeft - groupData[0].startLeft;
+    const dy = newTop - groupData[0].startTop;
+
+    groupData.forEach(({ icon, startLeft, startTop }) => {
+      icon.style.left = startLeft + dx + 'px';
+      icon.style.top  = startTop  + dy + 'px';
+    });
   }
 
   document.addEventListener('mousemove', onMouseMove);
@@ -257,6 +280,7 @@ function initDesktopIcons() {
     document.removeEventListener('mouseup', onUp);
   }, { once: true });
 });
+
 
 
     // prevent default image-drag ghost

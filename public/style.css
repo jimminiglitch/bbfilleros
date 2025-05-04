@@ -793,16 +793,15 @@ canvas#background-canvas {
   position: absolute;
   pointer-events: none;
   z-index: 4;               /* above icons, below windows */
-  box-sizing: border-box;    /* include border in width/height math */
-  border: 3px solid;         /* solid border so border-image shows up */
-  border-image:              /* a static rainbow */
+  box-sizing: border-box;   /* border is drawn inside the box */
+  border: 3px solid transparent;
+  border-image: 
     conic-gradient(
       red, orange, yellow, green, blue, indigo, violet, red
-    )
-    1;
+    ) 1;
 }
 
-/* visually mark selected icons */
+/* highlight selected icons */
 .desktop-icon.selected {
-  box-shadow: 0 0 10px #ffffff inset, 0 0 5px #ffffff;
+  box-shadow: inset 0 0 5px #ffffff, 0 0 10px #ffffff;
 }
