@@ -221,29 +221,73 @@ function initDesktopIcons() {
 
     // drag logic
     icon.addEventListener('mousedown', e => {
-      let shiftX = e.clientX - icon.getBoundingClientRect().left;
-      let shiftY = e.clientY - icon.getBoundingClientRect().top;
+  // 1) Grab its current screen position
+  const rect = icon.getBoundingClientRect();
+
+  // 2) Lock that into inline styles so we have a numeric left/top to work from
+  icon.style.left = rect.left + 'px';
+  icon.style.top  = rect.top  + 'px';
+
+  // 3) Compute shift relative to cursor
+  const shiftX = e.clientX - rect.left;
+  const shiftY = e.clientY - rect.top;
+
+  // 4) Bring it to front
+  icon.style.zIndex = getNextZIndex();
+
+  // 5) Now track mousemove
+  function onMouseMove(e) {
+    icon.style.left = e.pageX - shiftX + 'px';
+    icon.style.top  = e.pageY - shiftY + 'px';
+  }
+
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', function onUp() {
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onUp);
+  }, { once: true });
+
+  e.preventDefault();
+});
+
+// call it once on load
+window.addEventListener('load', initDesktopIcons);
+// ─── DESKTOP ICON INIT ───
+function initDesktopIcons() {
+  document.querySelectorAll('.desktop-icon').forEach(icon => {
+    // 1) double-click → open window + blip
+    icon.addEventListener('dblclick', () => {
+      const winId = icon.dataset.window;
+      openWindow(winId);
+      playBlip();
+    });
+
+    // 2) make draggable
+    icon.addEventListener('mousedown', e => {
+      const rect = icon.getBoundingClientRect();
+      const shiftX = e.clientX - rect.left;
+      const shiftY = e.clientY - rect.top;
       icon.style.zIndex = getNextZIndex();
 
       function onMouseMove(e) {
         icon.style.left = e.pageX - shiftX + 'px';
-        icon.style.top = e.pageY - shiftY + 'px';
+        icon.style.top  = e.pageY - shiftY + 'px';
       }
 
       document.addEventListener('mousemove', onMouseMove);
-      document.addEventListener('mouseup', function onMouseUp() {
+      document.addEventListener('mouseup', function onUp() {
         document.removeEventListener('mousemove', onMouseMove);
-        document.removeEventListener('mouseup', onMouseUp);
+        document.removeEventListener('mouseup', onUp);
       }, { once: true });
 
       e.preventDefault();
     });
 
-    // prevent default image drag ghost
+    // disable default drag ghost
     icon.ondragstart = () => false;
   });
 }
 
-// call it once on load
+// call on load (after boot screen hides, or immediately if you prefer)
 window.addEventListener('load', initDesktopIcons);
 

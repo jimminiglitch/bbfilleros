@@ -676,11 +676,11 @@ canvas#background-canvas {
   padding: 1.5rem;
   overflow-y: auto;
 }
-/* DESKTOP ICONS */
+/* ─── DESKTOP ICONS ─── */
 #desktop-icons {
   position: absolute;
-  top: 60px;
-  left: 20px;
+  top: 80px;       /* adjust as needed */
+  left: 20px;      /* adjust as needed */
   z-index: 3;
 }
 
@@ -690,8 +690,8 @@ canvas#background-canvas {
   text-align: center;
   cursor: pointer;
   user-select: none;
-  font-size: 0.7rem;
   color: #c1bfff;
+  font-size: 0.7rem;
 }
 
 .desktop-icon img {
@@ -701,3 +701,7 @@ canvas#background-canvas {
   margin: 0 auto 4px;
   image-rendering: pixelated;
 }
+#icon-about   { top:   0px; left:   0px; }
+#icon-projects{ top:   0px; left: 100px; }
+#icon-resume  { top: 100px; left:   0px; }
+#icon-contact { top: 100px; left: 100px; }
