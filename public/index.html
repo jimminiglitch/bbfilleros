@@ -107,9 +107,14 @@
 
       // Open/Close window logic
       function openWindow(id) {
-        document.getElementById(id).classList.remove("hidden");
-        document.getElementById(id).style.zIndex = 10;
-      }
+  const win = document.getElementById(id);
+  win.classList.remove('hidden');
+  win.style.left = Math.floor(Math.random() * (window.innerWidth - 500)) + 'px';
+  win.style.top = Math.floor(Math.random() * (window.innerHeight - 300)) + 'px';
+  win.style.transform = 'none';
+  win.style.zIndex = 10;
+}
+
       function closeWindow(id) {
         document.getElementById(id).classList.add("hidden");
       }
@@ -224,6 +229,32 @@
       isDragging = false;
     });
   });
+      // Start menu toggle
+const startBtn = document.getElementById('start-button');
+const startMenu = document.getElementById('start-menu');
+
+startBtn.addEventListener('click', () => {
+  startMenu.style.display = (startMenu.style.display === 'flex') ? 'none' : 'flex';
+});
+
+window.addEventListener('click', (e) => {
+  if (!startBtn.contains(e.target) && !startMenu.contains(e.target)) {
+    startMenu.style.display = 'none';
+  }
+});
+
 </script>
+    <div id="start-bar">
+  <button id="start-button">START</button>
+      <span id="clock"></span>
+</div>
+
+<div id="start-menu">
+  <a href="#" onclick="openWindow('about')">About</a>
+  <a href="#" onclick="openWindow('projects')">Projects</a>
+  <a href="#" onclick="openWindow('resume')">Resume</a>
+  <a href="#" onclick="openWindow('contact')">Contact</a>
+</div>
+
   </body>
 </html>
