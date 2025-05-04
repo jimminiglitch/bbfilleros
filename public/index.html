@@ -83,64 +83,55 @@
       <div class="window-content">This is the about section!</div>
     </div>
 
-    <div id="projects" class="popup-window hidden">
-      <div class="window-header">
-        <span>PROJECTS.EXE</span>
-        <button class="maximize">▭</button>
-        <button class="minimize">_</button>
-        <button class="close" onclick="closeWindow('projects')">X</button>
+<div id="projects" class="popup-window hidden">
+  <div class="window-header">
+    <span>PROJECTS.EXE</span>
+    <button class="window-btn close" data-target="projects">X</button>
+  </div>
+  <div class="window-content projects-inner">
+
+    <div class="projects-title">~ showcase loaded ~</div>
+
+    <div class="project-card" onclick="openProjectPreview('fedora')">
+      <div class="project-name">The Fedora Diaries</div>
+      <div class="project-desc">
+        Designed the set, software, and ambient audio for a retro-futurist escape room with detective game elements.
       </div>
-      <div class="window-content">
-        <div class="projects-inner">
-          <h2 class="projects-title">🎮 PROJECTS.EXE</h2>
+      <div class="terminal-line typewriter" data-text="> status: DECRYPTED"></div>
+      <div class="terminal-line fake-btn">[ open project ]</div>
+    </div>
 
-          <div
-            class="project-card"
-            onclick="launchProject(this, 'Fedora Diaries.exe')"
-          >
-            <h3 class="project-name">The Fedora Diaries</h3>
-            <p class="project-desc">
-              Immersive escape room with soundscape, set design, and software
-              integration.
-            </p>
-            <div class="terminal-line">&gt; Ready...</div>
-          </div>
+    <div class="project-card" onclick="openProjectPreview('r3d3ch0')">
+      <div class="project-name">R3D3CH0</div>
+      <div class="project-desc">
+        Authored and coded an interactive horror story into a live ArcGIS web map; later ported to mobile.
+      </div>
+      <div class="terminal-line typewriter" data-text="> status: ONLINE"></div>
+      <div class="terminal-line fake-btn">[ open project ]</div>
+    </div>
 
-          <div
-            class="project-card"
-            onclick="launchProject(this, 'R3D3CH0.sys')"
-          >
-            <h3 class="project-name">R3D3CH0</h3>
-            <p class="project-desc">
-              Cyberpunk short story reimagined as ArcGIS map and mobile
-              experience.
-            </p>
-            <div class="terminal-line">&gt; Ready...</div>
-          </div>
+    <div class="project-card" onclick="openProjectPreview('clydecup')">
+      <div class="project-name">The Illustrious Clyde Cup</div>
+      <div class="project-desc">
+        Directed &amp; edited this mini-doc about a Detroit golf rivalry; screened at Greater Farmington Film Festival (2024).
+      </div>
+      <div class="terminal-line typewriter" data-text="> status: ARCHIVED"></div>
+      <div class="terminal-line fake-btn">[ open project ]</div>
+    </div>
 
-          <div
-            class="project-card"
-            onclick="launchProject(this, 'ClydeCup2024.mov')"
-          >
-            <h3 class="project-name">The Illustrious Clyde Cup</h3>
-            <p class="project-desc">
-              Mini-golf doc. Screened at Greater Farmington Film Festival
-              (2024).
-            </p>
-            <div class="terminal-line">&gt; Ready...</div>
-          </div>
+    <div class="project-card" onclick="openProjectPreview('brian')">
+      <div class="project-name">Birding With Brian</div>
+      <div class="project-desc">
+        Produced an award-winning film about a spiritual birder; featured in multiple film fests (2024–2025).
+      </div>
+      <div class="terminal-line typewriter" data-text="> status: AWARD_WINNER"></div>
+      <div class="terminal-line fake-btn">[ open project ]</div>
+    </div>
 
-          <div
-            class="project-card"
-            onclick="launchProject(this, 'BirdingWithBrian.avi')"
-          >
-            <h3 class="project-name">Birding With Brian</h3>
-            <p class="project-desc">
-              Experimental documentary — festival circuit 2024-25.
-            </p>
-            <div class="terminal-line">&gt; Ready...</div>
-          </div>
-        </div>
+  </div>
+</div>
+
+
 
         <!-- Splash overlay -->
         <div id="project-splash" class="hidden">
@@ -155,8 +146,6 @@
             <button onclick="closeSplash()">↩ Return to Library</button>
           </div>
         </div>
-      </div>
-    </div>
 
     <div id="resume" class="popup-window hidden">
       <div class="window-header">

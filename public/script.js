@@ -169,3 +169,30 @@ document.querySelectorAll(".popup-window").forEach((win) => {
     isDragging = false;
   });
 });
+
+const hoverSound = new Audio('/blip.mp3');
+document.querySelectorAll('.project-card').forEach(card => {
+  card.addEventListener('mouseenter', () => {
+    hoverSound.currentTime = 0;
+    hoverSound.play();
+  });
+});
+
+function openProjectPreview(projectId) {
+  const id = `preview-${projectId}`;
+  openWindow(id);
+}
+
+document.querySelectorAll('.typewriter').forEach(el => {
+  const text = el.getAttribute('data-text');
+  el.textContent = '';
+  let i = 0;
+  const type = () => {
+    if (i < text.length) {
+      el.textContent += text.charAt(i);
+      i++;
+      setTimeout(type, 30);
+    }
+  };
+  type();
+});
