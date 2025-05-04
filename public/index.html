@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Benjamin Filler | Digital Portfolio</title>
+    <title>Benjamin Filler</title>
     <link rel="stylesheet" href="/style.css" />
     <link
       href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap"
@@ -12,97 +12,229 @@
   </head>
   <body>
     <div class="scanlines"></div>
-
-    <!-- Audio -->
-    <audio id="blip" src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/blip.mp3?v=1746368158788"></audio>
-    <audio id="bootSound" src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/boot.mp3?v=1746385389503"></audio>
-    <audio id="hoverSound" src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/hover.mp3?v=1746385487927" preload="auto"></audio>
+    <audio id="blip" src="/blip.mp3"></audio>
+    <audio id="bootSound" src="/blip.mp3"></audio>
 
     <!-- Boot Screen -->
     <div id="bootScreen" class="boot-screen">
       <div class="boot-content">
-        <img src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/whodat.gif?v=1746365769069" alt="Tiger" class="boot-tiger" />
+        <img
+          src="/whodat.gif"
+          alt="Tiger"
+          class="boot-tiger"
+        />
         <div class="boot-text">
           <div class="line">[SYSTEM INITIALIZING...]</div>
-          <div class="line">LOADING CORE MODULES: <span class="dots"></span></div>
-          <div class="boot-progress"><div class="boot-bar"></div></div>
+          <div class="line">LOADING: <span class="dots"></span></div>
         </div>
       </div>
     </div>
 
-    <!-- Header -->
+    <!-- Header Section -->
     <div class="container">
       <h1 class="glitch" data-text="Benjamin Filler">Benjamin Filler</h1>
       <div class="card">
         <div class="tiger-wrapper">
-          <img src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/whodat.gif?v=1746365769069" alt="Tiger" class="tiger" />
+          <img
+            src="/whodat.gif"
+            alt="Tiger"
+            class="tiger"
+          />
           <div class="glow-overlay"></div>
         </div>
         <div class="buttons">
-          <a href="#" class="nav-button" onclick="openWindow('about'); playBlip()">About</a>
-          <a href="#" class="nav-button" onclick="openWindow('projects'); playBlip()">Projects</a>
-          <a href="#" class="nav-button" onclick="openWindow('resume'); playBlip()">Resume</a>
-          <a href="#" class="nav-button" onclick="openWindow('contact'); playBlip()">Contact</a>
+          <a
+            href="#"
+            class="nav-button"
+            onclick="openWindow('about'); playBlip()"
+            >About</a
+          >
+          <a
+            href="#"
+            class="nav-button"
+            onclick="openWindow('projects'); playBlip()"
+            >Projects</a
+          >
+          <a
+            href="#"
+            class="nav-button"
+            onclick="openWindow('resume'); playBlip()"
+            >Resume</a
+          >
+          <a
+            href="#"
+            class="nav-button"
+            onclick="openWindow('contact'); playBlip()"
+            >Contact</a
+          >
         </div>
       </div>
     </div>
 
-    <!-- Windows (About, Projects, Resume, Contact) -->
-    <!-- Leave this section unchanged, you already have it working perfectly! -->
+    <!-- ABOUT Window -->
+    <div id="about" class="popup-window hidden">
+      <div class="window-header">
+        <span>ABOUT.EXE</span>
+        <button class="maximize">▭</button>
+        <button class="minimize">_</button>
+        <button class="close" onclick="closeWindow('about')">X</button>
+      </div>
+      <div class="window-content">
+        <div class="about-inner">
+          <h2>👾 WHO IS BENJAMIN FILLER?</h2>
+          <p>
+            I'm a media creator, director, and narrative systems designer from Michigan. I tell stories
+            across film, games, and interactive spaces.
+          </p>
+          <p>
+            My work blends cinematic technique, code-based immersion, and analog grit. I like strange 
+            archives, gripping installations, damaged footage, modular synths, and custom hardware.
+          </p>
 
-    <!-- Desktop Icons (Fixed and Cleaned) -->
-    <div id="desktop-icons">
-      <div class="desktop-icon" style="top: 100px; left: 50px" ondblclick="openWindow('about'); playBlip()">
-        <img src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/about-icon.png" alt="About" />
-        <div class="icon-label">About</div>
-      </div>
-      <div class="desktop-icon" style="top: 180px; left: 50px" ondblclick="openWindow('projects'); playBlip()">
-        <img src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/projects-icon.png" alt="Projects" />
-        <div class="icon-label">Projects</div>
-      </div>
-      <div class="desktop-icon" style="top: 260px; left: 50px" ondblclick="openWindow('resume'); playBlip()">
-        <img src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/resume-icon.png" alt="Resume" />
-        <div class="icon-label">Resume</div>
-      </div>
-      <div class="desktop-icon" style="top: 340px; left: 50px" ondblclick="openWindow('contact'); playBlip()">
-        <img src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/contact-icon.png" alt="Contact" />
-        <div class="icon-label">Contact</div>
+          <h3>💾 KEYWORDS</h3>
+          <ul>
+            <li>⛓ Experimental Documentary</li>
+            <li>🧠 Narrative Design</li>
+            <li>🛸 Cyberpunk Escapism</li>
+            <li>🎮 Game Worlds &amp; Story Maps</li>
+            <li>📼 Lo-fi / New Media Aesthetics</li>
+          </ul>
+        </div>
       </div>
     </div>
 
-    <!-- Start Bar -->
+    <!-- PROJECTS Window -->
+    <div id="projects" class="popup-window hidden">
+      <div class="window-header">
+        <span>PROJECTS.EXE</span>
+        <button class="window-btn close" data-target="projects">X</button>
+      </div>
+      <div class="window-content projects-inner">
+        <div class="projects-title">~ showcase loaded ~</div>
+
+        <div class="project-card" onclick="openProjectPreview('fedora')">
+          <div class="project-name">The Fedora Diaries</div>
+          <div class="project-desc">
+            Designed the set, software, and ambient audio for a neo-noir themed escape room with detective game elements.
+          </div>
+          <div class="terminal-line typewriter" data-text="> status: DECRYPTED"></div>
+          <div class="terminal-line fake-btn">[ open project ]</div>
+        </div>
+
+        <div class="project-card" onclick="openProjectPreview('r3d3ch0')">
+          <div class="project-name">R3D3CH0</div>
+          <div class="project-desc">
+            Authored and coded an interactive story into a live ArcGIS; later ported to mobile.
+          </div>
+          <div class="terminal-line typewriter" data-text="> status: ONLINE"></div>
+          <div class="terminal-line fake-btn">[ open project ]</div>
+        </div>
+
+        <div class="project-card" onclick="openProjectPreview('clydecup')">
+          <div class="project-name">The Illustrious Clyde Cup</div>
+          <div class="project-desc">
+            Directed &amp; edited this mini-doc about a Detroit golf rivalry; screened at Greater Farmington Film Festival (2024).
+          </div>
+          <div class="terminal-line typewriter" data-text="> status: BANGER"></div>
+          <div class="terminal-line fake-btn">[ open project ]</div>
+        </div>
+
+        <div class="project-card" onclick="openProjectPreview('brian')">
+          <div class="project-name">Birding With Brian</div>
+          <div class="project-desc">
+            Produced an award-winning film about a spiritual birder; featured in Planet 9 and Wolf Tree film fests (2025).
+          </div>
+          <div class="terminal-line typewriter" data-text="> status: AWARD_WINNER"></div>
+          <div class="terminal-line fake-btn">[ open project ]</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROJECT Splash -->
+    <div id="project-splash" class="hidden">
+      <div class="splash-inner">
+        <h2 class="splash-title">🔷 Launching...</h2>
+        <p class="splash-text">
+          Executing program: <span id="splash-name">PROJECT.EXE</span>
+        </p>
+        <p class="splash-sub">
+          Loading resources... establishing uplink...
+        </p>
+        <button onclick="closeSplash()">↩ Return to Library</button>
+      </div>
+    </div>
+
+    <!-- RESUME Window -->
+    <div id="resume" class="popup-window hidden">
+      <div class="window-header">
+        <span>RESUME.EXE</span>
+        <button class="maximize">▭</button>
+        <button class="minimize">_</button>
+        <button class="close" onclick="closeWindow('resume')">X</button>
+      </div>
+      <div class="window-content">
+        <div class="resume-inner">
+          <div class="top-bar">
+            <a href="https://kungfufilla.wixsite.com/my-site-4/" target="_blank" class="btn">&#x2190; Back</a>
+            <a href="https://cdn.glitch.global/0ade3230-a4bb-4d2d-98fc-5cab2591127c/Benjamin%20Filler%20Resume%202025.pdf?v=1744722722267" target="_blank" class="btn">&#x2B07; Download PDF</a>
+          </div>
+
+          <h1 style="color: var(--neon-cyan); text-align: center;">Benjamin Filler</h1>
+          <p style="text-align: center; color: var(--neon-purple); font-size: 1rem;">
+            bbfiller@umich.edu | (248) 212-4644 | Birmingham, MI
+          </p>
+
+          <!-- Education, Experience, Projects, Skills → as you already have → -->
+          <!-- … -->
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTACT Window -->
+    <div id="contact" class="popup-window hidden">
+      <div class="window-header">
+        <span>CONTACT.EXE</span>
+        <button class="maximize">▭</button>
+        <button class="minimize">_</button>
+        <button class="close" onclick="closeWindow('contact')">X</button>
+      </div>
+      <div class="window-content">
+        <div class="contact-window">
+          <h2 class="contact-title">Contact Me</h2>
+          <div class="contact-grid">
+            <div class="contact-left">
+              <h3 class="neon-pink">Get In Touch</h3>
+              <p><span class="icon">📧</span> <strong>Email</strong><br>bbfiller@umich.edu</p>
+              <p><span class="icon">📞</span> <strong>Phone</strong><br>(248) 212-4644</p>
+              <p><span class="icon">📍</span> <strong>Location</strong><br>Birmingham, MI</p>
+            </div>
+            <form class="contact-form" onsubmit="event.preventDefault(); alert('Message submitted!')">
+              <label>Name</label>
+              <input type="text" placeholder="Your name" required />
+              <label>Email</label>
+              <input type="email" placeholder="you@email.com" required />
+              <label>Message</label>
+              <textarea rows="4" placeholder="Say hi..."></textarea>
+              <button type="submit">Submit</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Starfield & Start Bar -->
+    <canvas id="background-canvas"></canvas>
     <div id="start-bar">
       <button id="start-button">START</button>
-      <div id="taskbar" class="taskbar-window-buttons"></div>
       <span id="clock"></span>
     </div>
-
     <div id="start-menu">
-      <a href="#" onclick="openWindow('about'); playBlip()">About</a>
-      <a href="#" onclick="openWindow('projects'); playBlip()">Projects</a>
-      <a href="#" onclick="openWindow('resume'); playBlip()">Resume</a>
-      <a href="#" onclick="openWindow('contact'); playBlip()">Contact</a>
-      <div class="menu-divider"></div>
-      <a href="#" onclick="toggleShutdown(); playBlip()">Shutdown</a>
+      <a href="#" onclick="openWindow('about')">About</a>
+      <a href="#" onclick="openWindow('projects')">Projects</a>
+      <a href="#" onclick="openWindow('resume')">Resume</a>
+      <a href="#" onclick="openWindow('contact')">Contact</a>
     </div>
 
-    <div id="context-menu" class="context-menu hidden">
-      <div class="menu-item" onclick="closeFocusedWindow()">Close</div>
-      <div class="menu-item" onclick="toggleFocusedMaximize()">Maximize/Restore</div>
-      <div class="menu-item" onclick="minimizeFocusedWindow()">Minimize</div>
-    </div>
-
-    <div id="shutdown-overlay" class="hidden">
-      <div class="shutdown-content">
-        <p>[ SYSTEM TERMINATION IN PROGRESS ]</p>
-        <p>Goodnight, cowboy.</p>
-      </div>
-    </div>
-
-    <!-- Canvas Starfield Background -->
-    <canvas id="background-canvas"></canvas>
-
-    <!-- Main Script -->
     <script src="/script.js"></script>
   </body>
 </html>
