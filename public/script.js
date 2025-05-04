@@ -27,53 +27,80 @@ function openWindow(id) {
   }
 }
 
-// Close window
+// script.js
+
+// 1) helper: add an icon/button to the taskbar when you minimize
+function createTaskbarIcon(id) {
+  // avoid duplicating
+  if (document.getElementById(`taskbar-icon-${id}`)) return;
+
+  const btn = document.createElement('button');
+  btn.id = `taskbar-icon-${id}`;
+  btn.className = 'taskbar-icon';
+  btn.textContent = id.toUpperCase();  // or any label you prefer
+  btn.addEventListener('click', () => {
+    // restore the window
+    const win = document.getElementById(id);
+    win.classList.remove('hidden');
+    win.style.display = 'block';
+    win.style.zIndex = getNextZIndex();
+
+    // remove this icon
+    btn.remove();
+  });
+
+  document.getElementById('taskbar-icons').appendChild(btn);
+}
+
+// 2) minimize: hide window _and_ add a taskbar icon
+function minimizeWindow(id) {
+  const win = document.getElementById(id);
+  if (!win) return;
+  win.classList.add('hidden');
+  win.style.display = 'none';
+
+  createTaskbarIcon(id);
+}
+
+// 3) close: hide window _and_ remove its taskbar icon (if any)
 function closeWindow(id) {
   const win = document.getElementById(id);
   if (win) {
-    win.classList.add("hidden");
-    win.style.display = "none";
+    win.classList.add('hidden');
+    win.style.display = 'none';
   }
+  const icon = document.getElementById(`taskbar-icon-${id}`);
+  if (icon) icon.remove();
 }
 
-// Minimize window
-function minimizeWindow(id) {
-  const win = document.getElementById(id);
-  if (win) {
-    win.classList.add("hidden");
-  }
-}
-
-// Maximize/Restore window
+// 4) maximize/restore: ensure any taskbar icon is removed if window is maximized back
 function toggleMaximizeWindow(id) {
   const win = document.getElementById(id);
-  if (win) {
-    if (!win.classList.contains("maximized")) {
-      // Store current position and size
-      windowStates[id] = {
-        top: win.style.top,
-        left: win.style.left,
-        width: win.style.width,
-        height: win.style.height,
-      };
-      win.classList.add("maximized");
-      win.style.top = "0";
-      win.style.left = "0";
-      win.style.width = "100%";
-      win.style.height = "100%";
-    } else {
-      // Restore previous position and size
-      const stored = windowStates[id];
-      if (stored) {
-        win.style.top = stored.top;
-        win.style.left = stored.left;
-        win.style.width = stored.width;
-        win.style.height = stored.height;
-      }
-      win.classList.remove("maximized");
+  if (!win) return;
+  if (!win.classList.contains('maximized')) {
+    // store state...
+    windowStates[id] = { top: win.style.top, left: win.style.left, width: win.style.width, height: win.style.height };
+    win.classList.add('maximized');
+    win.style.top = '0';
+    win.style.left = '0';
+    win.style.width = '100%';
+    win.style.height = '100%';
+    // if it was minimized & had an icon, remove it
+    const icon = document.getElementById(`taskbar-icon-${id}`);
+    if (icon) icon.remove();
+  } else {
+    // restore position/size
+    const stored = windowStates[id];
+    if (stored) {
+      win.style.top = stored.top;
+      win.style.left = stored.left;
+      win.style.width = stored.width;
+      win.style.height = stored.height;
     }
+    win.classList.remove('maximized');
   }
 }
+
 
 // Get next z-index
 let currentZIndex = 10;
@@ -182,3 +209,41 @@ document.querySelectorAll('.typewriter').forEach(el => {
   };
   type();
 });
+// initialize desktop icons
+function initDesktopIcons() {
+  document.querySelectorAll('.desktop-icon').forEach(icon => {
+    // double-click to open
+    icon.addEventListener('dblclick', () => {
+      const winId = icon.dataset.window;
+      openWindow(winId);
+      playBlip();
+    });
+
+    // drag logic
+    icon.addEventListener('mousedown', e => {
+      let shiftX = e.clientX - icon.getBoundingClientRect().left;
+      let shiftY = e.clientY - icon.getBoundingClientRect().top;
+      icon.style.zIndex = getNextZIndex();
+
+      function onMouseMove(e) {
+        icon.style.left = e.pageX - shiftX + 'px';
+        icon.style.top = e.pageY - shiftY + 'px';
+      }
+
+      document.addEventListener('mousemove', onMouseMove);
+      document.addEventListener('mouseup', function onMouseUp() {
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onMouseUp);
+      }, { once: true });
+
+      e.preventDefault();
+    });
+
+    // prevent default image drag ghost
+    icon.ondragstart = () => false;
+  });
+}
+
+// call it once on load
+window.addEventListener('load', initDesktopIcons);
+

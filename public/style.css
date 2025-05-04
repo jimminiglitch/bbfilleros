@@ -676,4 +676,28 @@ canvas#background-canvas {
   padding: 1.5rem;
   overflow-y: auto;
 }
+/* DESKTOP ICONS */
+#desktop-icons {
+  position: absolute;
+  top: 60px;
+  left: 20px;
+  z-index: 3;
+}
 
+.desktop-icon {
+  position: absolute;
+  width: 80px;
+  text-align: center;
+  cursor: pointer;
+  user-select: none;
+  font-size: 0.7rem;
+  color: #c1bfff;
+}
+
+.desktop-icon img {
+  width: 64px;
+  height: 64px;
+  display: block;
+  margin: 0 auto 4px;
+  image-rendering: pixelated;
+}
