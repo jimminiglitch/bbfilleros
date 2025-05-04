@@ -277,20 +277,24 @@ canvas#background-canvas {
   flex-direction: column;
   min-width: 150px;
   z-index: 31;
+  padding: 5px 0;
 }
 
 #start-menu a {
+  display: block;
   padding: 8px 12px;
   text-decoration: none;
   color: #c1bfff;
   border-bottom: 1px solid #440044;
   font-size: 0.7rem;
+  white-space: nowrap;
 }
 
 #start-menu a:hover {
   background: #220022;
   color: #ff00ff;
 }
+
 
 #clock {
   font-size: 0.6rem;
@@ -322,4 +326,56 @@ canvas#background-canvas {
   background: #ff00ff;
   color: black;
   box-shadow: 0 0 12px #ff99ff;
+}
+.resume-inner {
+  font-family: 'VT323', monospace;
+  padding: 1rem;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.resume-inner .btn {
+  background-color: var(--neon-cyan);
+  border: none;
+  padding: 4px 10px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.5rem;
+  margin: 0 5px;
+  box-shadow: 0 0 6px var(--neon-cyan);
+  cursor: pointer;
+  text-decoration: none;
+  color: black;
+}
+
+.resume-inner .btn:hover {
+  background-color: var(--neon-pink);
+  box-shadow: 0 0 10px var(--neon-pink);
+}
+
+.resume-inner h2 {
+  font-size: 0.85rem;
+  color: var(--neon-pink);
+  margin: 1.5rem 0 0.5rem;
+  text-shadow: 0 0 5px var(--neon-pink);
+}
+
+.resume-inner .section p {
+  font-size: 0.9rem;
+  margin: 0.5rem 0 1rem;
+}
+
+.resume-inner .skills-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.resume-inner ul {
+  padding-left: 1rem;
+  margin: 0;
+}
+
+.resume-inner li {
+  font-size: 0.85rem;
+  margin-bottom: 0.3rem;
 }
