@@ -1,45 +1,49 @@
-const path = require("path")
-const fastify = require("fastify")({ logger: true })
+const path = require("path");
+const fastify = require("fastify")({ logger: true });
 
-// Register plugins
+// Register @fastify/static for serving static files
 fastify.register(require("@fastify/static"), {
   root: path.join(__dirname, "public"),
-  prefix: "/",
-})
+  prefix: "/", // Serve files from root
+});
 
+// Register @fastify/view for template rendering (optional)
 fastify.register(require("@fastify/view"), {
   engine: {
     handlebars: require("handlebars"),
   },
-})
+});
 
 // Routes
 fastify.get("/", async (request, reply) => {
-  return reply.sendFile("index.html")
-})
+  return reply.sendFile("index.html"); // Serve the homepage
+});
 
-// Serve assets
 fastify.get("/style.css", async (request, reply) => {
-  return reply.sendFile("style.css")
-})
+  return reply.sendFile("style.css");
+});
 
 fastify.get("/script.js", async (request, reply) => {
-  return reply.sendFile("script.js")
-})
+  return reply.sendFile("script.js");
+});
 
 fastify.get("/main.js", async (request, reply) => {
-  return reply.sendFile("main.js")
-})
+  return reply.sendFile("main.js");
+});
 
 // Start server
 const start = async () => {
   try {
-    await fastify.listen({ port: process.env.PORT || 3000, host: "0.0.0.0" })
-    console.log(`Server running on port ${fastify.server.address().port}`)
+    await fastify.listen({ port: process.env.PORT || 3000, host: "0.0.0.0" });
+    console.log(
+      `🚀 Server is running at http://localhost:${
+        fastify.server.address().port
+      }`
+    );
   } catch (err) {
-    fastify.log.error(err)
-    process.exit(1)
+    fastify.log.error(err);
+    process.exit(1);
   }
-}
+};
 
-start()
+start();

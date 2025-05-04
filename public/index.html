@@ -13,9 +13,19 @@
   </head>
   <body>
     <div class="scanlines"></div>
-    <audio id="blip" src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/blip.mp3?v=1746368158788"></audio>
-    <audio id="bootSound" src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/boot.mp3?v=1746385389503"></audio>
-    <audio id="hoverSound" src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/hover.mp3?v=1746385487927" preload="auto"></audio>
+    <audio
+      id="blip"
+      src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/blip.mp3?v=1746368158788"
+    ></audio>
+    <audio
+      id="bootSound"
+      src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/boot.mp3?v=1746385389503"
+    ></audio>
+    <audio
+      id="hoverSound"
+      src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/hover.mp3?v=1746385487927"
+      preload="auto"
+    ></audio>
 
     <!-- Boot Screen -->
     <div id="bootScreen" class="boot-screen">
@@ -27,7 +37,9 @@
         />
         <div class="boot-text">
           <div class="line">[SYSTEM INITIALIZING...]</div>
-          <div class="line">LOADING CORE MODULES: <span class="dots"></span></div>
+          <div class="line">
+            LOADING CORE MODULES: <span class="dots"></span>
+          </div>
           <div class="boot-progress">
             <div class="boot-bar"></div>
           </div>
@@ -111,11 +123,14 @@
               <div class="terminal-line">$ whoami</div>
               <div class="terminal-line">benjamin_filler</div>
               <div class="terminal-line">$ cat skills.txt</div>
-              <div class="terminal-line typewriter" data-text="⛓ Experimental Documentary
+              <div
+                class="terminal-line typewriter"
+                data-text="⛓ Experimental Documentary
 🧠 Narrative Design
 🛸 Cyberpunk Escapism
 🎮 Game Worlds & Story Maps
-📼 Lo-fi / New Media Aesthetics"></div>
+📼 Lo-fi / New Media Aesthetics"
+              ></div>
               <div class="terminal-line blink">_</div>
             </div>
           </div>
@@ -260,7 +275,7 @@
               Mentor students in cinematic arts and digital video production.
             </p>
             <p>
-              <span class="neon-label">Amigo & Amigo</span><br />
+              <span class="neon-label">Amigo &amp; Amigo</span><br />
               Creative Consultant — Oct. 2019 – Sept. 2023<br />
               Collaborated with international teams on large-scale transmedia
               installations.
@@ -276,7 +291,7 @@
             <p>
               <span class="neon-label">R3D3CH0</span><br />
               Wrote, designed, and implemented interactive story into ArcGIS map
-              & mobile app.
+              &amp; mobile app.
             </p>
             <p>
               <span class="neon-label">The Illustrious Clyde Cup</span><br />
@@ -298,9 +313,9 @@
                 <ul>
                   <li>Camera operation</li>
                   <li>Video editing</li>
-                  <li>Visual & sound design</li>
+                  <li>Visual &amp; sound design</li>
                   <li>Digital illustration</li>
-                  <li>Web & software dev</li>
+                  <li>Web &amp; software dev</li>
                 </ul>
               </div>
               <div>
@@ -496,7 +511,10 @@
           <div class="text-content">
             <p>They say the signal began humming in the ruins...</p>
             <p>The old networks never truly died, they just went dormant.</p>
-            <p>Some believe the Alt Flesh protocol was designed to bridge the gap between digital consciousness and analog reality.</p>
+            <p>
+              Some believe the Alt Flesh protocol was designed to bridge the gap
+              between digital consciousness and analog reality.
+            </p>
             <p>But who would want to live in both worlds at once?</p>
             <p class="blink">_</p>
           </div>
@@ -516,7 +534,13 @@
           <canvas id="glitchlab-canvas" width="400" height="300"></canvas>
           <div class="glitchlab-controls">
             <button onclick="toggleGlitchEffect()">Toggle Effect</button>
-            <input type="range" min="1" max="100" value="50" id="glitch-intensity">
+            <input
+              type="range"
+              min="1"
+              max="100"
+              value="50"
+              id="glitch-intensity"
+            />
             <label for="glitch-intensity">Intensity</label>
           </div>
         </div>
@@ -529,7 +553,10 @@
         style="top: 100px; left: 50px"
         ondblclick="openWindow('about'); playBlip()"
       >
-        <img src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/about-icon.png" alt="About" />
+        <img
+          src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/about-icon.png"
+          alt="About"
+        />
         <div class="icon-label">About</div>
       </div>
       <div
@@ -537,7 +564,10 @@
         style="top: 180px; left: 50px"
         ondblclick="openWindow('projects'); playBlip()"
       >
-        <img src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/projects-icon.png" alt="Projects" />
+        <img
+          src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/projects-icon.png"
+          alt="Projects"
+        />
         <div class="icon-label">Projects</div>
       </div>
       <div
@@ -545,7 +575,10 @@
         style="top: 260px; left: 50px"
         ondblclick="openWindow('explorer'); playBlip()"
       >
-        <img src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/folder-icon.png" alt="Explorer" />
+        <img
+          src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/folder-icon.png"
+          alt="Explorer"
+        />
         <div class="icon-label">Files</div>
       </div>
       <div
@@ -553,7 +586,10 @@
         style="top: 340px; left: 50px"
         ondblclick="openWindow('game'); playBlip()"
       >
-        <img src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/game-icon.png" alt="Game" />
+        <img
+          src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/game-icon.png"
+          alt="Game"
+        />
         <div class="icon-label">Time Ship</div>
       </div>
     </div>
