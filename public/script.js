@@ -15,28 +15,90 @@ function loadWindowState(id) {
   return data ? JSON.parse(data) : null;
 }
 
+function getWindowState(win) {
+  return {
+    width: win.style.width || "400px",
+    height: win.style.height || "auto",
+    top: win.style.top || "100px",
+    left: win.style.left || "50%",
+    maximized: win.classList.contains("maximized"),
+    minimized: win.classList.contains("minimized")
+  };
+}
+
+// Restore state or default placement
 function openWindow(id) {
   const win = document.getElementById(id);
-  win.classList.remove("hidden");
-  win.style.zIndex = 10;
-
   const saved = loadWindowState(id);
+
   if (saved) {
     win.style.width = saved.width;
     win.style.height = saved.height;
     win.style.top = saved.top;
     win.style.left = saved.left;
-    if (saved.maximized) win.classList.add("maximized");
-  } else {
-    win.style.left = Math.floor(Math.random() * (window.innerWidth - 500)) + "px";
-    win.style.top = Math.floor(Math.random() * (window.innerHeight - 300)) + "px";
+    win.classList.toggle("maximized", saved.maximized);
+    win.classList.toggle("minimized", saved.minimized);
+  }
+
+  if (win.classList.contains("minimized")) {
+    win.classList.remove("minimized");
+    updateTaskbarIcon(id, false);
+  }
+
+  win.classList.remove("hidden");
+  win.style.zIndex = 10;
+}
+
+// Minimize to taskbar
+function minimizeWindow(id) {
+  const win = document.getElementById(id);
+  win.classList.add("minimized");
+  saveWindowState(id, getWindowState(win));
+  updateTaskbarIcon(id, true);
+  win.classList.add("hidden");
+}
+
+// Close (fully hide) window
+function closeWindow(id) {
+  const win = document.getElementById(id);
+  win.classList.add("hidden");
+  win.classList.remove("minimized", "maximized");
+  updateTaskbarIcon(id, false);
+  saveWindowState(id, getWindowState(win));
+}
+
+// Taskbar icon logic
+function updateTaskbarIcon(id, show) {
+  let icon = document.querySelector(`[data-task="${id}"]`);
+  const taskbar = document.getElementById("taskbar-icons");
+
+  if (show && !icon) {
+    icon = document.createElement("button");
+    icon.textContent = id.toUpperCase();
+    icon.dataset.task = id;
+    icon.className = "taskbar-icon active";
+    icon.title = `Restore ${id}`;
+
+    icon.onclick = () => {
+      const win = document.getElementById(id);
+      if (win.classList.contains("hidden")) {
+        win.classList.remove("hidden");
+        icon.classList.add("active");
+      } else {
+        win.classList.add("hidden");
+        icon.classList.remove("active");
+      }
+    };
+
+    taskbar.appendChild(icon);
+  }
+
+  if (!show && icon) {
+    icon.remove();
   }
 }
 
-function closeWindow(id) {
-  document.getElementById(id).classList.add("hidden");
-}
-
+// Initialize windows
 document.querySelectorAll(".popup-window").forEach((win) => {
   const id = win.id;
   const header = win.querySelector(".window-header");
@@ -46,34 +108,37 @@ document.querySelectorAll(".popup-window").forEach((win) => {
     offsetX = 0,
     offsetY = 0;
 
-  // Create buttons
+  // Create control buttons
   const minBtn = document.createElement("button");
+  const maxBtn = document.createElement("button");
+  const closeBtn = document.createElement("button");
+
   minBtn.textContent = "_";
   minBtn.title = "Minimize";
 
-  const maxBtn = document.createElement("button");
   maxBtn.textContent = "▭";
   maxBtn.title = "Maximize";
 
-  const closeBtn = header.querySelector("button");
+  closeBtn.textContent = "X";
+  closeBtn.title = "Close";
 
-  // Clear and rebuild header layout
+  // Rebuild header
   const title = document.createElement("span");
   title.textContent = `${id.toUpperCase()}.EXE`;
+
   header.innerHTML = "";
-  header.append(minBtn, maxBtn, title, closeBtn);
+  header.appendChild(title);
+  header.appendChild(minBtn);
+  header.appendChild(maxBtn);
+  header.appendChild(closeBtn);
 
-  // Minimize toggle
-  minBtn.onclick = () => {
-    content.style.display = content.style.display === "none" ? "block" : "none";
-    saveWindowState(id, getWindowState(win));
-  };
-
-  // Maximize toggle
+  // Button actions
+  minBtn.onclick = () => minimizeWindow(id);
   maxBtn.onclick = () => {
     win.classList.toggle("maximized");
     saveWindowState(id, getWindowState(win));
   };
+  closeBtn.onclick = () => closeWindow(id);
 
   // Dragging
   header.addEventListener("mousedown", (e) => {
@@ -98,7 +163,7 @@ document.querySelectorAll(".popup-window").forEach((win) => {
     }
   });
 
-  // Restore saved state
+  // Load saved state
   const saved = loadWindowState(id);
   if (saved) {
     win.style.width = saved.width;
@@ -106,20 +171,14 @@ document.querySelectorAll(".popup-window").forEach((win) => {
     win.style.top = saved.top;
     win.style.left = saved.left;
     if (saved.maximized) win.classList.add("maximized");
+    if (saved.minimized) {
+      win.classList.add("hidden");
+      updateTaskbarIcon(id, true);
+    }
   }
 });
 
-function getWindowState(win) {
-  return {
-    width: win.style.width || "400px",
-    height: win.style.height || "auto",
-    top: win.style.top || "100px",
-    left: win.style.left || "50%",
-    maximized: win.classList.contains("maximized")
-  };
-}
-
-// Boot screen logic
+// Boot animation
 let dots = document.querySelector(".dots");
 let count = 0;
 let interval = setInterval(() => {

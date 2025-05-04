@@ -300,3 +300,26 @@ canvas#background-canvas {
   min-width: 60px;
   text-align: right;
 }
+.taskbar-icon {
+  background: #320032;
+  border: 1px solid #ff00ff;
+  color: #c1bfff;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.5rem;
+  padding: 4px 6px;
+  margin-right: 5px;
+  cursor: pointer;
+  box-shadow: 0 0 6px #ff00ff;
+  transition: transform 0.1s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.taskbar-icon:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 12px #ff00ff;
+}
+
+.taskbar-icon.active {
+  background: #ff00ff;
+  color: black;
+  box-shadow: 0 0 12px #ff99ff;
+}
