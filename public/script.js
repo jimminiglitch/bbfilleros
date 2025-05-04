@@ -150,9 +150,18 @@ window.addEventListener("load", () => {
   if (bootScreen) {
     setTimeout(() => {
       bootScreen.style.display = "none";
-    }, 3000);
+      bootScreen.classList.add("hidden"); // Ensures it doesn't block interaction
+    }, 3000); // You can adjust the duration here
+  }
+
+  // Also ensure the shutdown overlay is hidden just in case
+  const shutdownOverlay = document.getElementById("shutdown-overlay");
+  if (shutdownOverlay) {
+    shutdownOverlay.classList.add("hidden");
+    shutdownOverlay.style.display = "none";
   }
 });
+
 
 // Project splash
 function launchProject(element, name) {
@@ -302,8 +311,7 @@ document.querySelectorAll('.popup-window').forEach(win => {
     document.body.style.userSelect = 'auto';
   });
 });
-// --- Right-Click Context Menu ---
-let focusedWindowId = null;
+
 
 document.querySelectorAll('.popup-window').forEach(win => {
   win.addEventListener('contextmenu', (e) => {
@@ -352,60 +360,20 @@ document.addEventListener('click', () => {
   document.getElementById('context-menu').classList.add('hidden');
 });
 
-function closeFocusedWindow() {
-  if (focusedWindowId) closeWindow(focusedWindowId);
-}
-function toggleFocusedMaximize() {
-  if (focusedWindowId) toggleMaximizeWindow(focusedWindowId);
-}
-function minimizeFocusedWindow() {
-  if (focusedWindowId) minimizeWindow(focusedWindowId);
-}
+window.addEventListener("load", () => {
+  const bootScreen = document.getElementById("bootScreen");
+  const shutdownOverlay = document.getElementById("shutdown-overlay");
 
-// --- Taskbar Buttons ---
-function addToTaskbar(id) {
-  const taskbar = document.getElementById("taskbar");
-  if (!document.querySelector(`.taskbar-btn[data-id="${id}"]`)) {
-    const btn = document.createElement("button");
-    btn.className = "taskbar-btn";
-    btn.dataset.id = id;
-    btn.textContent = id.toUpperCase();
-    btn.addEventListener("click", () => toggleWindow(id));
-    taskbar.appendChild(btn);
+  // Ensure both overlays are hidden after load
+  if (shutdownOverlay) {
+    shutdownOverlay.classList.add("hidden");
+    shutdownOverlay.style.display = "none";
   }
-}
 
-function toggleWindow(id) {
-  const win = document.getElementById(id);
-  const btn = document.querySelector(`.taskbar-btn[data-id="${id}"]`);
-  if (win.classList.contains("hidden")) {
-    win.classList.remove("hidden");
-    win.style.display = "block";
-    win.style.zIndex = getNextZIndex();
-    btn.classList.add("active");
-  } else {
-    win.classList.add("hidden");
-    win.style.display = "none";
-    btn.classList.remove("active");
+  if (bootScreen) {
+    setTimeout(() => {
+      bootScreen.classList.add("hidden");
+      bootScreen.style.display = "none";
+    }, 3000); // Delay in milliseconds
   }
-}
-
-// Update your existing openWindow to include:
-function openWindow(id) {
-  const win = document.getElementById(id);
-  if (win) {
-    win.classList.remove("hidden");
-    win.style.zIndex = getNextZIndex();
-    win.style.display = "block";
-
-    const stored = windowStates[id];
-    if (stored) {
-      win.style.top = stored.top;
-      win.style.left = stored.left;
-      win.style.width = stored.width;
-      win.style.height = stored.height;
-    }
-
-    addToTaskbar(id);
-  }
-}
+});

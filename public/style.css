@@ -739,3 +739,6 @@ canvas#background-canvas {
 #shutdown-overlay.hidden {
   display: none !important;
 }
+#bootScreen.hidden {
+  display: none !important;
+}
