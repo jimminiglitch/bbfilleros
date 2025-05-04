@@ -10,24 +10,54 @@ function playBlip() {
 }
 
 // Open window
-function openWindow(id) 
-
-{  
+function openWindow(id) {
   const win = document.getElementById(id);
-  if (win) {
-    win.classList.remove("hidden");
-    win.style.zIndex = getNextZIndex();
-    win.style.display = "block";
-    // Restore previous position and size if stored
-    const stored = windowStates[id];
-    if (stored) {
-      win.style.top = stored.top;
-      win.style.left = stored.left;
-      win.style.width = stored.width;
-      win.style.height = stored.height;
-    }
+  if (!win) return;
+
+  // Hide start menu & deactivate others
+  document.getElementById('start-menu').style.display = 'none';
+  document.querySelectorAll('.popup-window').forEach(w => w.classList.remove('active'));
+
+  // Show & focus this window
+  win.classList.remove('hidden');
+  win.classList.add('active');
+  win.style.display = 'block';
+  win.style.zIndex = getNextZIndex();
+
+  // Restore stored position/size
+  const stored = windowStates[id];
+  if (stored) {
+    Object.assign(win.style, stored);
   }
+
+  // ── CLAMP TO VIEWPORT ──
+  const rect = win.getBoundingClientRect();
+  const margin = 20;                             // px from edge
+  const vw     = window.innerWidth;
+  const vh     = window.innerHeight;
+
+  let newLeft = rect.left;
+  let newTop  = rect.top;
+  let newW    = rect.width;
+  let newH    = rect.height;
+
+  // width/height overflows: shrink
+  if (rect.width  > vw - margin*2) newW = vw - margin*2;
+  if (rect.height > vh - margin*2) newH = vh - margin*2;
+
+  // reposition if off-screen
+  if (rect.left   < margin)           newLeft = margin;
+  if (rect.top    < margin)           newTop  = margin;
+  if (rect.right  > vw - margin)      newLeft = vw - margin - newW;
+  if (rect.bottom > vh - margin)      newTop  = vh - margin - newH;
+
+  // apply clamped values
+  win.style.left   = `${newLeft}px`;
+  win.style.top    = `${newTop}px`;
+  win.style.width  = `${newW}px`;
+  win.style.height = `${newH}px`;
 }
+
 
 
 // ─── TASKBAR ICONS ───

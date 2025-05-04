@@ -808,3 +808,33 @@ canvas#background-canvas {
 .desktop-icon.selected {
   box-shadow: inset 0 0 5px #ffffff, 0 0 10px #ffffff;
 }
+
+/* ─── WINDOWS: CONSTRAIN TO VIEWPORT & MAKE CONTENT SCROLL ─── */
+.popup-window {
+  box-sizing: border-box;                /* include border in size math */
+  max-width: calc(100vw - 40px) !important;
+  max-height: calc(100vh - 60px) !important;
+  overflow: hidden;                      /* prevent outer scrollbars */
+}
+
+/* Header is ~40px tall; let content fill & scroll */
+.popup-window .window-content {
+  box-sizing: border-box;
+  height: calc(100% - 40px) !important;  /* exact header height */
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+/* ─── CENTERED RESUME CONTENT WHEN MAXIMIZED ─── */
+#resume.popup-window.maximized .resume-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;   /* center children horizontally */
+  text-align: center;     /* center text inside them */
+  padding: 2rem;         /* give it some breathing room */
+}
+
+/* Optional: constrain line-length for readability */
+#resume.popup-window.maximized .resume-inner > .section {
+  max-width: 800px;
+  width: 100%;
+}
