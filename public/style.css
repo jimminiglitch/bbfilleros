@@ -197,14 +197,23 @@ canvas#background-canvas {
   overflow: auto;
 }
 
+.popup-window.maximized {
+  width: 100vw !important;
+  height: calc(100vh - 40px) !important;
+  top: 0 !important;
+  left: 0 !important;
+  transform: none !important;
+}
+
 .window-header {
   background: #200020;
   padding: 5px 10px;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   border-bottom: 1px solid #ff00ff;
   cursor: move;
+  gap: 5px;
 }
 
 .window-header span {
@@ -217,7 +226,7 @@ canvas#background-canvas {
   color: #ff00ff;
   font-weight: bold;
   cursor: pointer;
-  margin-left: 5px;
+  font-size: 0.75rem;
 }
 
 .window-content {
@@ -287,4 +296,7 @@ canvas#background-canvas {
   font-size: 0.6rem;
   color: #c1bfff;
   font-family: monospace;
+  padding-right: 5px;
+  min-width: 60px;
+  text-align: right;
 }
