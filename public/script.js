@@ -254,3 +254,29 @@ window.addEventListener("click", (e) => {
 startMenu.addEventListener("click", (e) => {
   e.stopPropagation();
 });
+
+function launchProject(card, fileName) {
+  if (card.classList.contains("active")) return;
+  card.classList.add("active");
+
+  let steps = [
+  `&gt; Loading ${fileName}...`,
+  `&gt; Decompressing Assets...`,
+  `&gt; Initializing Memory Blocks...`,
+  `&gt; Launch Success ✔`
+];
+
+  let i = 0;
+
+  const interval = setInterval(() => {
+    terminal.textContent = steps[i];
+    i++;
+    if (i >= steps.length) {
+      clearInterval(interval);
+      setTimeout(() => {
+        terminal.textContent = "> Ready...";
+        card.classList.remove("active");
+      }, 2000);
+    }
+  }, 700);
+}

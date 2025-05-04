@@ -303,6 +303,7 @@ canvas#background-canvas {
   padding-right: 5px;
   min-width: 60px;
   text-align: right;
+  margin-right: 8px;
 }
 .taskbar-icon {
   background: #320032;
@@ -540,4 +541,26 @@ canvas#background-canvas {
   color: var(--neon-green);
   line-height: 1.4;
 }
+.project-card {
+  cursor: pointer;
+  position: relative;
+}
+
+.project-card.active {
+  animation: pulse 0.6s infinite alternate;
+}
+
+.terminal-line {
+  font-size: 0.75rem;
+  color: var(--neon-cyan);
+  margin-top: 0.5rem;
+  font-family: monospace;
+  text-shadow: 0 0 5px var(--neon-cyan);
+}
+
+@keyframes pulse {
+  from { box-shadow: 0 0 10px var(--neon-purple); }
+  to { box-shadow: 0 0 25px var(--neon-pink); }
+}
+
 
