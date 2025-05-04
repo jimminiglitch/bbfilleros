@@ -414,3 +414,130 @@ canvas#background-canvas {
 .about-inner li {
   margin-bottom: 0.4rem;
 }
+.contact-window {
+  padding: 1rem;
+  font-family: 'VT323', monospace;
+  color: #c1bfff;
+}
+
+.contact-title {
+  text-align: center;
+  font-size: 1.3rem;
+  color: var(--neon-cyan);
+  margin-bottom: 1.5rem;
+  text-shadow: 0 0 6px var(--neon-cyan);
+}
+
+.contact-grid {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.contact-left {
+  flex: 1;
+  min-width: 180px;
+}
+
+.contact-left h3 {
+  color: var(--neon-pink);
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+.contact-left p {
+  margin: 0 0 1.2rem;
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.contact-left .icon {
+  font-size: 1.2rem;
+  color: var(--neon-cyan);
+  margin-right: 0.5rem;
+}
+
+.contact-form {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  min-width: 220px;
+}
+
+.contact-form label {
+  font-size: 0.7rem;
+  color: var(--neon-yellow);
+}
+
+.contact-form input,
+.contact-form textarea {
+  font-family: 'VT323', monospace;
+  background: black;
+  color: #c1bfff;
+  border: 1px solid var(--neon-purple);
+  padding: 0.4rem;
+  font-size: 0.85rem;
+  box-shadow: 0 0 5px var(--neon-purple);
+}
+
+.contact-form button {
+  background: linear-gradient(to right, #4b007a, #ff00ff);
+  border: none;
+  color: white;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.6rem;
+  padding: 0.5rem;
+  cursor: pointer;
+  box-shadow: 0 0 8px #ff00ff;
+  margin-top: 0.5rem;
+  transition: 0.3s ease;
+}
+
+.contact-form button:hover {
+  background: linear-gradient(to right, #ff00ff, #4b007a);
+  box-shadow: 0 0 15px #ff00ff;
+}
+.projects-inner {
+  padding: 1rem;
+  font-family: 'VT323', monospace;
+  overflow-y: auto;
+  max-height: 70vh;
+}
+
+.projects-title {
+  font-size: 1.2rem;
+  color: var(--neon-cyan);
+  text-align: center;
+  margin-bottom: 1.5rem;
+  text-shadow: 0 0 6px var(--neon-cyan);
+}
+
+.project-card {
+  border: 1px solid var(--neon-purple);
+  padding: 1rem;
+  margin-bottom: 1.2rem;
+  background: rgba(0, 0, 0, 0.6);
+  box-shadow: 0 0 10px var(--neon-purple);
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.project-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 0 18px var(--neon-pink);
+}
+
+.project-name {
+  font-size: 1rem;
+  color: var(--neon-yellow);
+  margin-bottom: 0.5rem;
+  text-shadow: 0 0 5px var(--neon-yellow);
+}
+
+.project-desc {
+  font-size: 0.85rem;
+  color: var(--neon-green);
+  line-height: 1.4;
+}
+

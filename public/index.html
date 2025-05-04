@@ -75,7 +75,30 @@
       <div class="window-header">
         <span>PROJECTS.EXE</span><button onclick="closeWindow('projects')">X</button>
       </div>
-      <div class="window-content">Project showcase loading...</div>
+      <div class="window-content"><div class="projects-inner">
+  <h2 class="projects-title">🎮 Projects & Features</h2>
+
+  <div class="project-card">
+    <h3 class="project-name">The Fedora Diaries</h3>
+    <p class="project-desc">Immersive escape room with original soundscape, tactile set, and interactive software design.</p>
+  </div>
+
+  <div class="project-card">
+    <h3 class="project-name">R3D3CH0</h3>
+    <p class="project-desc">A cyber-surreal short story deployed as an ArcGIS narrative map and converted into a mobile app.</p>
+  </div>
+
+  <div class="project-card">
+    <h3 class="project-name">The Illustrious Clyde Cup</h3>
+    <p class="project-desc">Documentary on a legendary Detroit mini-golf tournament — screened at Farmington Film Festival 2024.</p>
+  </div>
+
+  <div class="project-card">
+    <h3 class="project-name">Birding With Brian</h3>
+    <p class="project-desc">Experimental documentary selected for Planet 9 and Wolf Tree Film Fests. Winner: Best Editing (OCC Fest).</p>
+  </div>
+</div>
+</div>
     </div>
 
     <div id="resume" class="popup-window hidden">
@@ -185,7 +208,27 @@
       <div class="window-header">
         <span>CONTACT.EXE</span><button onclick="closeWindow('contact')">X</button>
       </div>
-      <div class="window-content">You can reach me at xyz@email.com</div>
+      <div class="window-content"><div class="contact-window">
+  <h2 class="contact-title">Contact Me</h2>
+  <div class="contact-grid">
+    <div class="contact-left">
+      <h3 class="neon-pink">Get In Touch</h3>
+      <p><span class="icon">📧</span> <strong>Email</strong><br>bbfiller@umich.edu</p>
+      <p><span class="icon">📞</span> <strong>Phone</strong><br>(two48) 2one2-4six44</p>
+      <p><span class="icon">📍</span> <strong>Location</strong><br>Birmingham, MI</p>
+    </div>
+    <form class="contact-form" onsubmit="event.preventDefault(); alert('Message submitted! (This is just a mockup for now.)')">
+      <label>Name</label>
+      <input type="text" placeholder="Your name" required />
+      <label>Email</label>
+      <input type="email" placeholder="you@email.com" required />
+      <label>Message</label>
+      <textarea rows="4" placeholder="Say hi..."></textarea>
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+</div>
+</div>
     </div>
 
     <canvas id="background-canvas"></canvas>
