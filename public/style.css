@@ -742,3 +742,37 @@ canvas#background-canvas {
 #bootScreen.hidden {
   display: none !important;
 }
+#desktop-icons {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 5;
+}
+
+.desktop-icon {
+  position: absolute;
+  width: 72px;
+  text-align: center;
+  color: #c1bfff;
+  font-family: 'VT323', monospace;
+  font-size: 0.75rem;
+  cursor: move;
+  user-select: none;
+}
+
+.desktop-icon img {
+  width: 48px;
+  height: 48px;
+  display: block;
+  margin: 0 auto 4px;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 0 2px #ff00ff);
+}
+
+.icon-label {
+  background: rgba(0, 0, 0, 0.5);
+  padding: 2px 4px;
+  border: 1px solid #4b007a;
+  box-shadow: 0 0 4px #ff00ff;
+  border-radius: 3px;
+}

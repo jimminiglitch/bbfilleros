@@ -377,3 +377,27 @@ window.addEventListener("load", () => {
     }, 3000); // Delay in milliseconds
   }
 });
+
+// --- Desktop Icon Dragging ---
+document.querySelectorAll('.desktop-icon').forEach(icon => {
+  let isDragging = false;
+  let offsetX, offsetY;
+
+  icon.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    offsetX = e.clientX - icon.offsetLeft;
+    offsetY = e.clientY - icon.offsetTop;
+    icon.style.zIndex = getNextZIndex();
+  });
+
+  document.addEventListener('mousemove', (e) => {
+    if (isDragging) {
+      icon.style.left = `${e.clientX - offsetX}px`;
+      icon.style.top = `${e.clientY - offsetY}px`;
+    }
+  });
+
+  document.addEventListener('mouseup', () => {
+    isDragging = false;
+  });
+});
