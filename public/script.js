@@ -10,7 +10,9 @@ function playBlip() {
 }
 
 // Open window
-function openWindow(id) {
+function openWindow(id) 
+
+{  
   const win = document.getElementById(id);
   if (win) {
     win.classList.remove("hidden");
@@ -26,6 +28,7 @@ function openWindow(id) {
     }
   }
 }
+
 
 // ─── TASKBAR ICONS ───
 // Helper: add a button to the taskbar when minimizing

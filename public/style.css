@@ -193,9 +193,12 @@ canvas#background-canvas {
   z-index: 9;
   font-family: monospace;
   color: #c1bfff;
-  resize: both;
-  overflow: auto;
+   resize: both;
+  overflow: hidden; 
+  max-width: calc(100vw - 40px);
+  max-height: calc(100vh - 60px);
 }
+
 
 .popup-window.maximized {
   width: 100vw !important;
