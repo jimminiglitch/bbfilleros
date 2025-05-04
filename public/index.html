@@ -17,18 +17,19 @@
 
     <!-- Boot Screen -->
     <div id="bootScreen" class="boot-screen">
-      <div class="boot-content">
-        <img
-          src="/whodat.gif"
-          alt="Tiger"
-          class="boot-tiger"
-        />
-        <div class="boot-text">
-          <div class="line">[SYSTEM INITIALIZING...]</div>
-          <div class="line">LOADING: <span class="dots"></span></div>
-        </div>
-      </div>
+  <div class="boot-content">
+    <img
+      src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/whodat.gif?v=1746365769069"
+      alt="Tiger"
+      class="boot-tiger"
+    />
+    <div class="boot-text">
+      <div class="line">[SYSTEM INITIALIZING...]</div>
+      <div class="line">LOADING: <span class="dots"></span></div>
     </div>
+  </div>
+</div>
+
 
     <!-- Header Section -->
     <div class="container">
@@ -36,42 +37,22 @@
       <div class="card">
         <div class="tiger-wrapper">
           <img
-            src="/whodat.gif"
+            src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/whodat.gif?v=1746365769069"
             alt="Tiger"
             class="tiger"
           />
           <div class="glow-overlay"></div>
         </div>
         <div class="buttons">
-          <a
-            href="#"
-            class="nav-button"
-            onclick="openWindow('about'); playBlip()"
-            >About</a
-          >
-          <a
-            href="#"
-            class="nav-button"
-            onclick="openWindow('projects'); playBlip()"
-            >Projects</a
-          >
-          <a
-            href="#"
-            class="nav-button"
-            onclick="openWindow('resume'); playBlip()"
-            >Resume</a
-          >
-          <a
-            href="#"
-            class="nav-button"
-            onclick="openWindow('contact'); playBlip()"
-            >Contact</a
-          >
+          <a href="#" class="nav-button" onclick="openWindow('about'); playBlip()">About</a>
+          <a href="#" class="nav-button" onclick="openWindow('projects'); playBlip()">Projects</a>
+          <a href="#" class="nav-button" onclick="openWindow('resume'); playBlip()">Resume</a>
+          <a href="#" class="nav-button" onclick="openWindow('contact'); playBlip()">Contact</a>
         </div>
       </div>
     </div>
 
-    <!-- ABOUT Window -->
+    <!-- WINDOWS -->
     <div id="about" class="popup-window hidden">
       <div class="window-header">
         <span>ABOUT.EXE</span>
@@ -79,92 +60,77 @@
         <button class="minimize">_</button>
         <button class="close" onclick="closeWindow('about')">X</button>
       </div>
-      <div class="window-content">
-        <div class="about-inner">
-          <h2>👾 WHO IS BENJAMIN FILLER?</h2>
-          <p>
-            I'm a media creator, director, and narrative systems designer from Michigan. I tell stories
-            across film, games, and interactive spaces.
-          </p>
-          <p>
-            My work blends cinematic technique, code-based immersion, and analog grit. I like strange 
-            archives, gripping installations, damaged footage, modular synths, and custom hardware.
-          </p>
+      <div class="window-content"><div class="about-inner">
+  <h2>👾 WHO IS BENJAMIN FILLER?</h2>
+  <p>
+    I'm a media creator, director, and narrative systems designer from Michigan. I tell stories
+    across film, games, and interactive worlds — often weird, usually glowing.
+  </p>
+  <p>
+    My work blends cinematic technique, code-based immersion, and analog grit. I like strange 
+    archives, damaged footage, modular synths, and custom hardware.
+  </p>
 
-          <h3>💾 KEYWORDS</h3>
-          <ul>
-            <li>⛓ Experimental Documentary</li>
-            <li>🧠 Narrative Design</li>
-            <li>🛸 Cyberpunk Escapism</li>
-            <li>🎮 Game Worlds &amp; Story Maps</li>
-            <li>📼 Lo-fi / New Media Aesthetics</li>
-          </ul>
-        </div>
-      </div>
+  <h3>💾 KEYWORDS</h3>
+  <ul>
+    <li>⛓ Experimental Documentary</li>
+    <li>🧠 Narrative Design</li>
+    <li>🛸 Cyberpunk Escapism</li>
+    <li>🎮 Game Worlds & Story Maps</li>
+    <li>📼 Lo-fi / New Media Aesthetics</li>
+  </ul>
+</div>
+</div>
     </div>
 
-    <!-- PROJECTS Window -->
     <div id="projects" class="popup-window hidden">
       <div class="window-header">
         <span>PROJECTS.EXE</span>
-        <button class="window-btn close" data-target="projects">X</button>
+        <button class="maximize">▭</button>
+        <button class="minimize">_</button>
+        <button class="close" onclick="closeWindow('projects')">X</button>
       </div>
-      <div class="window-content projects-inner">
-        <div class="projects-title">~ showcase loaded ~</div>
+      <div class="window-content">
+        <div class="projects-inner">
+          <h2 class="projects-title">🎮 PROJECTS.EXE</h2>
 
-        <div class="project-card" onclick="openProjectPreview('fedora')">
-          <div class="project-name">The Fedora Diaries</div>
-          <div class="project-desc">
-            Designed the set, software, and ambient audio for a neo-noir themed escape room with detective game elements.
+          <div class="project-card" onclick="launchProject(this, 'Fedora Diaries.exe')">
+            <h3 class="project-name">The Fedora Diaries</h3>
+            <p class="project-desc">Immersive escape room with soundscape, set design, and software integration.</p>
+            <div class="terminal-line">&gt; Ready...</div>
           </div>
-          <div class="terminal-line typewriter" data-text="> status: DECRYPTED"></div>
-          <div class="terminal-line fake-btn">[ open project ]</div>
+
+          <div class="project-card" onclick="launchProject(this, 'R3D3CH0.sys')">
+            <h3 class="project-name">R3D3CH0</h3>
+            <p class="project-desc">Cyberpunk short story reimagined as ArcGIS map and mobile experience.</p>
+            <div class="terminal-line">&gt; Ready...</div>
+          </div>
+
+          <div class="project-card" onclick="launchProject(this, 'ClydeCup2024.mov')">
+            <h3 class="project-name">The Illustrious Clyde Cup</h3>
+            <p class="project-desc">Mini-golf doc. Screened at Greater Farmington Film Festival (2024).</p>
+            <div class="terminal-line">&gt; Ready...</div>
+          </div>
+
+          <div class="project-card" onclick="launchProject(this, 'BirdingWithBrian.avi')">
+            <h3 class="project-name">Birding With Brian</h3>
+            <p class="project-desc">Experimental documentary — festival circuit 2024-25.</p>
+            <div class="terminal-line">&gt; Ready...</div>
+          </div>
         </div>
 
-        <div class="project-card" onclick="openProjectPreview('r3d3ch0')">
-          <div class="project-name">R3D3CH0</div>
-          <div class="project-desc">
-            Authored and coded an interactive story into a live ArcGIS; later ported to mobile.
+        <!-- Splash overlay -->
+        <div id="project-splash" class="hidden">
+          <div class="splash-inner">
+            <h2 class="splash-title">🔷 Launching...</h2>
+            <p class="splash-text">Executing program: <span id="splash-name">PROJECT.EXE</span></p>
+            <p class="splash-sub">Loading resources... establishing uplink...</p>
+            <button onclick="closeSplash()">↩ Return to Library</button>
           </div>
-          <div class="terminal-line typewriter" data-text="> status: ONLINE"></div>
-          <div class="terminal-line fake-btn">[ open project ]</div>
         </div>
-
-        <div class="project-card" onclick="openProjectPreview('clydecup')">
-          <div class="project-name">The Illustrious Clyde Cup</div>
-          <div class="project-desc">
-            Directed &amp; edited this mini-doc about a Detroit golf rivalry; screened at Greater Farmington Film Festival (2024).
-          </div>
-          <div class="terminal-line typewriter" data-text="> status: BANGER"></div>
-          <div class="terminal-line fake-btn">[ open project ]</div>
-        </div>
-
-        <div class="project-card" onclick="openProjectPreview('brian')">
-          <div class="project-name">Birding With Brian</div>
-          <div class="project-desc">
-            Produced an award-winning film about a spiritual birder; featured in Planet 9 and Wolf Tree film fests (2025).
-          </div>
-          <div class="terminal-line typewriter" data-text="> status: AWARD_WINNER"></div>
-          <div class="terminal-line fake-btn">[ open project ]</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- PROJECT Splash -->
-    <div id="project-splash" class="hidden">
-      <div class="splash-inner">
-        <h2 class="splash-title">🔷 Launching...</h2>
-        <p class="splash-text">
-          Executing program: <span id="splash-name">PROJECT.EXE</span>
-        </p>
-        <p class="splash-sub">
-          Loading resources... establishing uplink...
-        </p>
-        <button onclick="closeSplash()">↩ Return to Library</button>
       </div>
     </div>
 
-    <!-- RESUME Window -->
     <div id="resume" class="popup-window hidden">
       <div class="window-header">
         <span>RESUME.EXE</span>
@@ -173,24 +139,10 @@
         <button class="close" onclick="closeWindow('resume')">X</button>
       </div>
       <div class="window-content">
-        <div class="resume-inner">
-          <div class="top-bar">
-            <a href="https://kungfufilla.wixsite.com/my-site-4/" target="_blank" class="btn">&#x2190; Back</a>
-            <a href="https://cdn.glitch.global/0ade3230-a4bb-4d2d-98fc-5cab2591127c/Benjamin%20Filler%20Resume%202025.pdf?v=1744722722267" target="_blank" class="btn">&#x2B07; Download PDF</a>
-          </div>
-
-          <h1 style="color: var(--neon-cyan); text-align: center;">Benjamin Filler</h1>
-          <p style="text-align: center; color: var(--neon-purple); font-size: 1rem;">
-            bbfiller@umich.edu | (248) 212-4644 | Birmingham, MI
-          </p>
-
-          <!-- Education, Experience, Projects, Skills → as you already have → -->
-          <!-- … -->
-        </div>
+        <!-- resume content will go here -->
       </div>
     </div>
 
-    <!-- CONTACT Window -->
     <div id="contact" class="popup-window hidden">
       <div class="window-header">
         <span>CONTACT.EXE</span>
@@ -199,35 +151,19 @@
         <button class="close" onclick="closeWindow('contact')">X</button>
       </div>
       <div class="window-content">
-        <div class="contact-window">
-          <h2 class="contact-title">Contact Me</h2>
-          <div class="contact-grid">
-            <div class="contact-left">
-              <h3 class="neon-pink">Get In Touch</h3>
-              <p><span class="icon">📧</span> <strong>Email</strong><br>bbfiller@umich.edu</p>
-              <p><span class="icon">📞</span> <strong>Phone</strong><br>(248) 212-4644</p>
-              <p><span class="icon">📍</span> <strong>Location</strong><br>Birmingham, MI</p>
-            </div>
-            <form class="contact-form" onsubmit="event.preventDefault(); alert('Message submitted!')">
-              <label>Name</label>
-              <input type="text" placeholder="Your name" required />
-              <label>Email</label>
-              <input type="email" placeholder="you@email.com" required />
-              <label>Message</label>
-              <textarea rows="4" placeholder="Say hi..."></textarea>
-              <button type="submit">Submit</button>
-            </form>
-          </div>
-        </div>
+        <!-- contact content will go here -->
       </div>
     </div>
 
-    <!-- Starfield & Start Bar -->
+    <!-- Canvas Starfield -->
     <canvas id="background-canvas"></canvas>
+
+    <!-- Start Menu -->
     <div id="start-bar">
       <button id="start-button">START</button>
       <span id="clock"></span>
     </div>
+
     <div id="start-menu">
       <a href="#" onclick="openWindow('about')">About</a>
       <a href="#" onclick="openWindow('projects')">Projects</a>
@@ -235,6 +171,7 @@
       <a href="#" onclick="openWindow('contact')">Contact</a>
     </div>
 
+    <!-- Main Script -->
     <script src="/script.js"></script>
   </body>
 </html>
