@@ -574,3 +574,106 @@ canvas#background-canvas {
   image-rendering: pixelated;
   filter: drop-shadow(0 0 10px #ff00ff);
 }
+
+#resume {
+  --font-press-start: "Press Start 2P", monospace;
+  --font-vt323: "VT323", monospace;
+  --neon-purple: #a9a1ff;
+  --neon-pink: #f3a1ff;
+  --neon-cyan: #00f0ff;
+  --neon-yellow: #fffc00;
+  --neon-green: #00ff66;
+  font-family: var(--font-vt323);
+}
+
+#resume * {
+  box-sizing: border-box;
+}
+
+#resume .resume-inner {
+  background: rgba(0, 0, 0, 0.9);
+  border: 2px solid var(--neon-purple);
+  border-radius: 1.5rem;
+  padding: 2rem;
+  box-shadow: 0 0 0px var(--neon-pink);
+  max-width: 960px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+#resume h1,
+#resume h2 {
+  font-family: var(--font-press-start);
+}
+
+#resume h1 {
+  font-size: 1.8rem;
+  color: var(--neon-cyan);
+  text-align: center;
+  margin-top: 0;
+  text-shadow: 0 0 0px var(--neon-cyan), 0 0 0px var(--neon-cyan);
+}
+
+#resume .top-bar {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+}
+
+#resume .btn {
+  font-family: var(--font-press-start);
+  font-size: 0.7rem;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  background-color: var(--neon-cyan);
+  color: black;
+  box-shadow: 0 0 3px var(--neon-pink);
+  transition: background 0.3s;
+}
+#resume .btn:hover {
+  background-color: var(--neon-pink);
+}
+
+#resume .section {
+  margin-bottom: 2.5rem;
+}
+#resume .section h2 {
+  font-size: 1rem;
+  color: var(--neon-pink);
+  margin-bottom: 1rem;
+  text-shadow: 0 0 10px var(--neon-pink);
+}
+
+#resume .section p,
+#resume .section li {
+  font-size: 1.2rem;
+  line-height: 1.8;
+  max-width: 125ch;
+}
+#resume .section p {
+  margin-bottom: 1.5rem;
+}
+
+#resume .skills-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+#resume .neon-label {
+  color: var(--neon-green);
+  font-weight: bold;
+}
+
+#resume ul {
+  padding-left: 1.2rem;
+}
+#resume.popup-window.maximized .resume-inner {
+  height: calc(100vh - 60px); /* Subtract for taskbar & padding */
+  max-width: none;
+  border-radius: 0;
+  padding: 1.5rem;
+  overflow-y: auto;
+}
+
