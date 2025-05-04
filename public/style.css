@@ -562,17 +562,75 @@ canvas#background-canvas {
   from { box-shadow: 0 0 10px var(--neon-purple); }
   to { box-shadow: 0 0 25px var(--neon-pink); }
 }
-.boot-content {
+/* ─── BOOT SCREEN IMPROVEMENTS ─── */
+.boot-screen {
+  position: fixed;
+  inset: 0;
+  background: #000;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 1rem;
+  justify-content: center;
+  z-index: 100;
 }
 
+/* Glitch animation on the tiger */
 .boot-tiger {
   width: 120px;
   image-rendering: pixelated;
   filter: drop-shadow(0 0 10px #ff00ff);
+  animation: boot-glitch 1s infinite;
+}
+@keyframes boot-glitch {
+  0%   { transform: translate(0, 0); }
+  20%  { transform: translate(-2px, 2px); }
+  40%  { transform: translate(2px, -2px); }
+  60%  { transform: translate(-2px, -2px); }
+  80%  { transform: translate(2px, 2px); }
+  100% { transform: translate(0, 0); }
+}
+
+/* Console-style log window */
+.boot-log {
+  width: 400px;
+  height: 160px;
+  margin: 1rem 0;
+  padding: 0.5rem;
+  background: #000;
+  border: 2px solid #00ff99;
+  color: #00ff99;
+  font-family: monospace;
+  font-size: 0.85rem;
+  overflow-y: hidden;
+  box-shadow: 0 0 10px #00ff99;
+}
+
+/* Neon progress bar container */
+.progress-container {
+  width: 400px;
+  height: 8px;
+  background: #002200;
+  border: 2px solid #00ff99;
+  overflow: hidden;
+  box-shadow: 0 0 8px #00ff99;
+}
+
+/* Animated fill */
+.progress-bar {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, #00ff99, #00ffff);
+  box-shadow: 0 0 10px #00ffff;
+  animation: fill-bar 3s forwards;
+}
+@keyframes fill-bar {
+  to { width: 100%; }
+}
+
+/* Center boot content */
+.boot-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 #resume {
@@ -705,3 +763,4 @@ canvas#background-canvas {
 #icon-projects{ top:   0px; left: 100px; }
 #icon-resume  { top: 100px; left:   0px; }
 #icon-contact { top: 100px; left: 100px; }
+

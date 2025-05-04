@@ -15,20 +15,25 @@
     <audio id="blip" src="/blip.mp3"></audio>
     <audio id="bootSound" src="/blip.mp3"></audio>
 
-    <!-- Boot Screen -->
-    <div id="bootScreen" class="boot-screen">
-      <div class="boot-content">
-        <img
-          src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/whodat.gif?v=1746365769069"
-          alt="Tiger"
-          class="boot-tiger"
-        />
-        <div class="boot-text">
-          <div class="line">[SYSTEM INITIALIZING...]</div>
-          <div class="line">LOADING: <span class="dots"></span></div>
-        </div>
-      </div>
+   <!-- Boot Screen -->
+<div id="bootScreen" class="boot-screen">
+  <div class="boot-content">
+    <img
+      src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/whodat.gif?v=1746365769069"
+      alt="Tiger"
+      class="boot-tiger"
+    />
+
+    <!-- Console log -->
+    <pre id="boot-log" class="boot-log"></pre>
+
+    <!-- Neon progress bar -->
+    <div class="progress-container">
+      <div id="progress-bar" class="progress-bar"></div>
     </div>
+  </div>
+</div>
+
 
     <!-- Header Section -->
     <div class="container">

@@ -27,42 +27,34 @@ function openWindow(id) {
   }
 }
 
-// script.js
-
-// 1) helper: add an icon/button to the taskbar when you minimize
+// ─── TASKBAR ICONS ───
+// Helper: add a button to the taskbar when minimizing
 function createTaskbarIcon(id) {
-  // avoid duplicating
   if (document.getElementById(`taskbar-icon-${id}`)) return;
-
   const btn = document.createElement('button');
   btn.id = `taskbar-icon-${id}`;
   btn.className = 'taskbar-icon';
-  btn.textContent = id.toUpperCase();  // or any label you prefer
+  btn.textContent = id.toUpperCase();
   btn.addEventListener('click', () => {
-    // restore the window
     const win = document.getElementById(id);
     win.classList.remove('hidden');
     win.style.display = 'block';
     win.style.zIndex = getNextZIndex();
-
-    // remove this icon
     btn.remove();
   });
-
   document.getElementById('taskbar-icons').appendChild(btn);
 }
 
-// 2) minimize: hide window _and_ add a taskbar icon
+// Minimize window & add taskbar icon
 function minimizeWindow(id) {
   const win = document.getElementById(id);
   if (!win) return;
   win.classList.add('hidden');
   win.style.display = 'none';
-
   createTaskbarIcon(id);
 }
 
-// 3) close: hide window _and_ remove its taskbar icon (if any)
+// Close window & remove any taskbar icon
 function closeWindow(id) {
   const win = document.getElementById(id);
   if (win) {
@@ -73,23 +65,25 @@ function closeWindow(id) {
   if (icon) icon.remove();
 }
 
-// 4) maximize/restore: ensure any taskbar icon is removed if window is maximized back
+// Maximize / restore & clean up icon if needed
 function toggleMaximizeWindow(id) {
   const win = document.getElementById(id);
   if (!win) return;
   if (!win.classList.contains('maximized')) {
-    // store state...
-    windowStates[id] = { top: win.style.top, left: win.style.left, width: win.style.width, height: win.style.height };
+    windowStates[id] = {
+      top: win.style.top,
+      left: win.style.left,
+      width: win.style.width,
+      height: win.style.height
+    };
     win.classList.add('maximized');
     win.style.top = '0';
     win.style.left = '0';
     win.style.width = '100%';
     win.style.height = '100%';
-    // if it was minimized & had an icon, remove it
     const icon = document.getElementById(`taskbar-icon-${id}`);
     if (icon) icon.remove();
   } else {
-    // restore position/size
     const stored = windowStates[id];
     if (stored) {
       win.style.top = stored.top;
@@ -101,144 +95,160 @@ function toggleMaximizeWindow(id) {
   }
 }
 
-
-// Get next z-index
+// Z-index helper
 let currentZIndex = 10;
 function getNextZIndex() {
   return ++currentZIndex;
 }
 
-// Store window states
+// Store window positions/sizes
 const windowStates = {};
 
-// Update clock
+// Update clock every second
 function updateClock() {
   const clock = document.getElementById("clock");
-  if (clock) {
-    const now = new Date();
-    clock.textContent = now.toLocaleTimeString();
-  }
+  if (clock) clock.textContent = new Date().toLocaleTimeString();
 }
 setInterval(updateClock, 1000);
 updateClock();
 
 // Start menu toggle
 const startButton = document.getElementById("start-button");
-const startMenu = document.getElementById("start-menu");
+const startMenu   = document.getElementById("start-menu");
 startButton.addEventListener("click", () => {
   startMenu.style.display = startMenu.style.display === "flex" ? "none" : "flex";
 });
 
-// Boot screen
-window.addEventListener("load", () => {
-  const bootScreen = document.getElementById("bootScreen");
-  if (bootScreen) {
-    setTimeout(() => {
-      bootScreen.style.display = "none";
-    }, 3000);
-  }
+window.addEventListener('load', () => {
+  const bootScreen = document.getElementById('bootScreen');
+  const logEl      = document.getElementById('boot-log');
+  const progress   = document.getElementById('progress-bar');
+
+  // Lines to “type” in the console
+  const messages = [
+    '[ OK ] Initializing hardware...',
+    '[ OK ] Loading kernel modules...',
+    '[ OK ] Mounting filesystems...',
+    '[ OK ] Starting system services...',
+    '[ OK ] CyberDeck ready.',
+    '[ DONE ] Boot complete.'
+  ];
+
+  let idx = 0;
+  const total = messages.length;
+  const interval = 400; // ms between lines
+
+  const typer = setInterval(() => {
+    // append next line
+    logEl.textContent += messages[idx] + '\n';
+
+    // scroll if overflow
+    logEl.scrollTop = logEl.scrollHeight;
+
+    // advance progress proportionally
+    const pct = ((idx + 1) / total) * 100;
+    progress.style.width = pct + '%';
+
+    idx++;
+    if (idx === total) {
+      clearInterval(typer);
+      // small pause, then fade out
+      setTimeout(() => {
+        bootScreen.style.transition = 'opacity 0.8s';
+        bootScreen.style.opacity = '0';
+        setTimeout(() => { bootScreen.style.display = 'none'; }, 800);
+      }, 500);
+    }
+  }, interval);
 });
 
-// Project splash
+
+// Project splash functions
 function launchProject(element, name) {
-  const splash = document.getElementById("project-splash");
+  const splash     = document.getElementById("project-splash");
   const splashName = document.getElementById("splash-name");
   if (splash && splashName) {
     splashName.textContent = name;
     splash.classList.remove("hidden");
   }
 }
-
 function closeSplash() {
   const splash = document.getElementById("project-splash");
-  if (splash) {
-    splash.classList.add("hidden");
-  }
+  if (splash) splash.classList.add("hidden");
 }
 
-// Window header buttons
-document.querySelectorAll(".popup-window").forEach((win) => {
-  const id = win.id;
-  const header = win.querySelector(".window-header");
-  const minimizeBtn = header.querySelector(".minimize");
-  const maximizeBtn = header.querySelector(".maximize");
-  const closeBtn = header.querySelector(".close");
+// WINDOW HEADER DRAG & BUTTONS
+document.querySelectorAll(".popup-window").forEach(win => {
+  const id          = win.id;
+  const header      = win.querySelector(".window-header");
+  const btnMinimize = header.querySelector(".minimize");
+  const btnMaximize = header.querySelector(".maximize");
+  const btnClose    = header.querySelector(".close");
 
-  if (minimizeBtn) {
-    minimizeBtn.addEventListener("click", () => minimizeWindow(id));
-  }
-  if (maximizeBtn) {
-    maximizeBtn.addEventListener("click", () => toggleMaximizeWindow(id));
-  }
-  if (closeBtn) {
-    closeBtn.addEventListener("click", () => closeWindow(id));
-  }
+  if (btnMinimize) btnMinimize.addEventListener("click", () => minimizeWindow(id));
+  if (btnMaximize) btnMaximize.addEventListener("click", () => toggleMaximizeWindow(id));
+  if (btnClose)    btnClose.addEventListener   ("click", () => closeWindow(id));
 
-  // Drag functionality
-  let isDragging = false;
-  let offsetX, offsetY;
-
-  header.addEventListener("mousedown", (e) => {
+  // dragging logic
+  let isDragging = false, offsetX = 0, offsetY = 0;
+  header.addEventListener("mousedown", e => {
     isDragging = true;
-    offsetX = e.clientX - win.offsetLeft;
-    offsetY = e.clientY - win.offsetTop;
+    offsetX    = e.clientX - win.offsetLeft;
+    offsetY    = e.clientY - win.offsetTop;
     win.style.zIndex = getNextZIndex();
   });
-
-  document.addEventListener("mousemove", (e) => {
+  document.addEventListener("mousemove", e => {
     if (isDragging) {
       win.style.left = `${e.clientX - offsetX}px`;
-      win.style.top = `${e.clientY - offsetY}px`;
+      win.style.top  = `${e.clientY - offsetY}px`;
     }
   });
-
-  document.addEventListener("mouseup", () => {
-    isDragging = false;
-  });
+  document.addEventListener("mouseup", () => { isDragging = false; });
 });
+
+// TYPEWRITER (if used)
 document.querySelectorAll('.typewriter').forEach(el => {
   const text = el.getAttribute('data-text');
   el.textContent = '';
   let i = 0;
-  const type = () => {
+  (function type() {
     if (i < text.length) {
-      el.textContent += text.charAt(i);
-      i++;
+      el.textContent += text.charAt(i++);
       setTimeout(type, 30);
     }
-  };
-  type();
+  })();
 });
-// initialize desktop icons
+
+// ─── DESKTOP ICON INIT ───
 function initDesktopIcons() {
   document.querySelectorAll('.desktop-icon').forEach(icon => {
     // double-click to open
     icon.addEventListener('dblclick', () => {
-      const winId = icon.dataset.window;
-      openWindow(winId);
+      openWindow(icon.dataset.window);
       playBlip();
     });
 
-    // drag logic
+    // smooth drag: lock in current position, then follow cursor
     icon.addEventListener('mousedown', e => {
-  // 1) Grab its current screen position
-  const rect = icon.getBoundingClientRect();
+  e.preventDefault();
 
-  // 2) Lock that into inline styles so we have a numeric left/top to work from
-  icon.style.left = rect.left + 'px';
-  icon.style.top  = rect.top  + 'px';
+  // 1) Get icon and its parent container rects (viewport coords)
+  const rect       = icon.getBoundingClientRect();
+  const parentRect = icon.parentElement.getBoundingClientRect();
 
-  // 3) Compute shift relative to cursor
+  // 2) Lock in inline styles **relative to the parent**
+  icon.style.left = (rect.left - parentRect.left) + 'px';
+  icon.style.top  = (rect.top  - parentRect.top)  + 'px';
+
+  // 3) Compute cursor offset within the icon
   const shiftX = e.clientX - rect.left;
   const shiftY = e.clientY - rect.top;
-
-  // 4) Bring it to front
   icon.style.zIndex = getNextZIndex();
 
-  // 5) Now track mousemove
+  // 4) On mousemove, position relative to parent
   function onMouseMove(e) {
-    icon.style.left = e.pageX - shiftX + 'px';
-    icon.style.top  = e.pageY - shiftY + 'px';
+    icon.style.left = (e.clientX - shiftX - parentRect.left) + 'px';
+    icon.style.top  = (e.clientY - shiftY - parentRect.top)  + 'px';
   }
 
   document.addEventListener('mousemove', onMouseMove);
@@ -246,48 +256,73 @@ function initDesktopIcons() {
     document.removeEventListener('mousemove', onMouseMove);
     document.removeEventListener('mouseup', onUp);
   }, { once: true });
-
-  e.preventDefault();
 });
 
-// call it once on load
-window.addEventListener('load', initDesktopIcons);
-// ─── DESKTOP ICON INIT ───
-function initDesktopIcons() {
-  document.querySelectorAll('.desktop-icon').forEach(icon => {
-    // 1) double-click → open window + blip
-    icon.addEventListener('dblclick', () => {
-      const winId = icon.dataset.window;
-      openWindow(winId);
-      playBlip();
-    });
 
-    // 2) make draggable
-    icon.addEventListener('mousedown', e => {
-      const rect = icon.getBoundingClientRect();
-      const shiftX = e.clientX - rect.left;
-      const shiftY = e.clientY - rect.top;
-      icon.style.zIndex = getNextZIndex();
-
-      function onMouseMove(e) {
-        icon.style.left = e.pageX - shiftX + 'px';
-        icon.style.top  = e.pageY - shiftY + 'px';
-      }
-
-      document.addEventListener('mousemove', onMouseMove);
-      document.addEventListener('mouseup', function onUp() {
-        document.removeEventListener('mousemove', onMouseMove);
-        document.removeEventListener('mouseup', onUp);
-      }, { once: true });
-
-      e.preventDefault();
-    });
-
-    // disable default drag ghost
+    // prevent default image-drag ghost
     icon.ondragstart = () => false;
   });
 }
-
-// call on load (after boot screen hides, or immediately if you prefer)
 window.addEventListener('load', initDesktopIcons);
+
+// ─── STARFIELD BACKGROUND ───
+function initStarfield() {
+  const canvas = document.getElementById('background-canvas');
+  const ctx    = canvas.getContext('2d');
+
+  // Resize canvas to fill viewport
+  function resize() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  // Create stars
+  const numStars = 300;
+  const stars = [];
+  for (let i = 0; i < numStars; i++) {
+    stars.push({
+      x:     Math.random() * canvas.width,
+      y:     Math.random() * canvas.height,
+      z:     Math.random() * canvas.width,   // depth for speed variation
+      o:     Math.random()                   // initial opacity
+    });
+  }
+
+  // Animate
+  function animate() {
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';  // slight trail effect
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    for (let star of stars) {
+      // move star toward viewer
+      star.z -= 2;
+      if (star.z <= 0) {
+        star.z = canvas.width;
+        star.x = Math.random() * canvas.width;
+        star.y = Math.random() * canvas.height;
+      }
+
+      // project 3D into 2D
+      const k = 128.0 / star.z;
+      const px = (star.x - canvas.width  / 2) * k + canvas.width  / 2;
+      const py = (star.y - canvas.height / 2) * k + canvas.height / 2;
+      const size = Math.max(0, (1 - star.z / canvas.width) * 3);
+
+      // draw
+      ctx.beginPath();
+      ctx.globalAlpha = star.o;
+      ctx.fillStyle   = '#fff';
+      ctx.arc(px, py, size, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+    requestAnimationFrame(animate);
+  }
+  requestAnimationFrame(animate);
+}
+
+// Kick it off after everything else initializes
+window.addEventListener('load', initStarfield);
 
