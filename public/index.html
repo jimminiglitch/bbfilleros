@@ -1,24 +1,229 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Benjamin Filler</title>
-  <link rel="stylesheet" href="/style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-</head>
-<body>
-  <div class="container">
-    <h1>Benjamin Filler</h1>
-    <div class="card">
-      <img src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/whodat.gif?v=1746365769069" alt="Tiger" class="tiger" />
-      <div class="buttons">
-        <a href="#about" class="nav-button">About</a>
-        <a href="#projects" class="nav-button">Projects</a>
-        <a href="#resume" class="nav-button">Resume</a>
-        <a href="#contact" class="nav-button">Contact</a>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Benjamin Filler</title>
+    <link rel="stylesheet" href="/style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="scanlines"></div>
+    <audio id="blip" src="/blip.mp3"></audio>
+
+    <!-- Boot Screen Overlay -->
+    <div id="bootScreen" class="boot-screen">
+      <div class="boot-text">
+        <div class="line">[SYSTEM INITIALIZING...]</div>
+        <div class="line">LOADING: <span class="dots"></span></div>
       </div>
     </div>
-  </div>
-</body>
+
+    <div class="container">
+      <h1 class="glitch" data-text="Benjamin Filler">Benjamin Filler</h1>
+
+      <div class="card">
+        <div class="tiger-wrapper">
+          <img
+            src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/whodat.gif?v=1746365769069"
+            alt="Tiger"
+            class="tiger"
+          />
+          <div class="glow-overlay"></div>
+        </div>
+
+        <div class="buttons">
+          <a
+            href="#"
+            class="nav-button"
+            onclick="openWindow('about'); playBlip()"
+            >About</a
+          >
+          <a
+            href="#"
+            class="nav-button"
+            onclick="openWindow('projects'); playBlip()"
+            >Projects</a
+          >
+          <a
+            href="#"
+            class="nav-button"
+            onclick="openWindow('resume'); playBlip()"
+            >Resume</a
+          >
+          <a
+            href="#"
+            class="nav-button"
+            onclick="openWindow('contact'); playBlip()"
+            >Contact</a
+          >
+        </div>
+      </div>
+    </div>
+
+    <!-- Fake Window Popups -->
+    <div id="about" class="popup-window hidden">
+      <div class="window-header">
+        <span>ABOUT.EXE</span><button onclick="closeWindow('about')">X</button>
+      </div>
+      <div class="window-content">This is the about section!</div>
+    </div>
+
+    <div id="projects" class="popup-window hidden">
+      <div class="window-header">
+        <span>PROJECTS.EXE</span
+        ><button onclick="closeWindow('projects')">X</button>
+      </div>
+      <div class="window-content">Project showcase loading...</div>
+    </div>
+
+    <div id="resume" class="popup-window hidden">
+      <div class="window-header">
+        <span>RESUME.EXE</span
+        ><button onclick="closeWindow('resume')">X</button>
+      </div>
+      <div class="window-content">PDF or text resume goes here.</div>
+    </div>
+
+    <div id="contact" class="popup-window hidden">
+      <div class="window-header">
+        <span>CONTACT.EXE</span
+        ><button onclick="closeWindow('contact')">X</button>
+      </div>
+      <div class="window-content">You can reach me at xyz@email.com</div>
+    </div>
+
+    <canvas id="background-canvas"></canvas>
+
+    <script>
+      function playBlip() {
+        const blip = document.getElementById("blip");
+        blip.currentTime = 0;
+        blip.play();
+      }
+
+      // Open/Close window logic
+      function openWindow(id) {
+        document.getElementById(id).classList.remove("hidden");
+        document.getElementById(id).style.zIndex = 10;
+      }
+      function closeWindow(id) {
+        document.getElementById(id).classList.add("hidden");
+      }
+
+      // Boot screen simulation
+      let dots = document.querySelector(".dots");
+      let count = 0;
+      let interval = setInterval(() => {
+        dots.textContent += ".";
+        count++;
+        if (count > 3) {
+          dots.textContent = "";
+          count = 0;
+        }
+      }, 500);
+
+      window.addEventListener("load", () => {
+        setTimeout(() => {
+          document.getElementById("bootScreen").style.display = "none";
+          clearInterval(interval);
+        }, 3000);
+      });
+
+      // Starfield background
+      const canvas = document.getElementById("background-canvas");
+      const ctx = canvas.getContext("2d");
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      let stars = Array(250)
+        .fill()
+        .map(() => ({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          r: Math.random() * 1.2 + 0.5,
+        }));
+
+      function drawStars() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "#ffffff";
+        stars.forEach((s) => {
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+          ctx.fill();
+        });
+      }
+
+      function twinkle() {
+        stars.forEach((s) => (s.r = Math.random() * 1.2 + 0.5));
+      }
+
+      setInterval(() => {
+        twinkle();
+        drawStars();
+      }, 100);
+  // Add window controls to all popup windows
+  document.querySelectorAll('.popup-window').forEach(win => {
+    let header = win.querySelector('.window-header');
+    let isDragging = false, offsetX = 0, offsetY = 0;
+
+    // Add Min/Max buttons
+    const minBtn = document.createElement('button');
+    minBtn.textContent = '_';
+    minBtn.title = 'Minimize';
+    minBtn.onclick = () => {
+      const content = win.querySelector('.window-content');
+      content.style.display = (content.style.display === 'none') ? 'block' : 'none';
+    };
+
+    const maxBtn = document.createElement('button');
+    maxBtn.textContent = '▭';
+    maxBtn.title = 'Maximize';
+    maxBtn.onclick = () => {
+      if (win.classList.contains('maximized')) {
+        win.classList.remove('maximized');
+        win.style.width = '400px';
+        win.style.height = 'auto';
+        win.style.top = '100px';
+        win.style.left = '50%';
+        win.style.transform = 'translateX(-50%)';
+      } else {
+        win.classList.add('maximized');
+        win.style.width = '100vw';
+        win.style.height = '100vh';
+        win.style.top = '0';
+        win.style.left = '0';
+        win.style.transform = 'none';
+      }
+    };
+
+    header.insertBefore(minBtn, header.querySelector('button'));
+    header.insertBefore(maxBtn, header.querySelector('button'));
+
+    // Dragging logic
+    header.addEventListener('mousedown', e => {
+      isDragging = true;
+      const rect = win.getBoundingClientRect();
+      offsetX = e.clientX - rect.left;
+      offsetY = e.clientY - rect.top;
+      win.style.transform = 'none';
+      win.style.left = `${rect.left}px`;
+      win.style.top = `${rect.top}px`;
+    });
+
+    document.addEventListener('mousemove', e => {
+      if (isDragging) {
+        win.style.left = `${e.clientX - offsetX}px`;
+        win.style.top = `${e.clientY - offsetY}px`;
+      }
+    });
+
+    document.addEventListener('mouseup', () => {
+      isDragging = false;
+    });
+  });
+</script>
+  </body>
 </html>

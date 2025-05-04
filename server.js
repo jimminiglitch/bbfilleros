@@ -1,12 +1,28 @@
-const express = require("express");
-const app = express();
+// server.js
+const path = require("path");
+const fastify = require("fastify")({ logger: true });
+const fastifyStatic = require("@fastify/static");
 
-app.use(express.static("public"));
-
-app.get("/", (req, res) => {
-  res.sendFile(__dirname + "/index.html");
+// Serve static files from /public
+fastify.register(fastifyStatic, {
+  root: path.join(__dirname, "public"),
+  prefix: "/",
 });
 
-const listener = app.listen(process.env.PORT || 3000, () => {
-  console.log("Your app is listening on port " + listener.address().port);
+// Route to serve index.html
+fastify.get("/", (request, reply) => {
+  reply.sendFile("index.html");
 });
+
+// Start the server
+const start = async () => {
+  try {
+    await fastify.listen({ port: process.env.PORT || 3000, host: "0.0.0.0" });
+    fastify.log.info(`Server listening on ${fastify.server.address().port}`);
+  } catch (err) {
+    fastify.log.error(err);
+    process.exit(1);
+  }
+};
+
+start();
