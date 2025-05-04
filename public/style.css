@@ -576,3 +576,25 @@ canvas#background-canvas {
   image-rendering: pixelated;
   filter: drop-shadow(0 0 10px #ff00ff);
 }
+.taskbar-window-buttons {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.taskbar-btn {
+  background: #320032;
+  border: 1px solid #ff00ff;
+  color: #c1bfff;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.5rem;
+  padding: 4px 6px;
+  box-shadow: 0 0 6px #ff00ff;
+  cursor: pointer;
+}
+
+.taskbar-btn.active {
+  background: #ff00ff;
+  color: black;
+  box-shadow: 0 0 12px #ff99ff;
+}

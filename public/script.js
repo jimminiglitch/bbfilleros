@@ -16,7 +16,8 @@ function openWindow(id) {
     win.classList.remove("hidden");
     win.style.zIndex = getNextZIndex();
     win.style.display = "block";
-    // Restore previous position and size if stored
+
+    // Restore size/position
     const stored = windowStates[id];
     if (stored) {
       win.style.top = stored.top;
@@ -24,25 +25,35 @@ function openWindow(id) {
       win.style.width = stored.width;
       win.style.height = stored.height;
     }
+
+    // Add or activate taskbar button
+    addToTaskbar(id);
   }
 }
 
 // Close window
 function closeWindow(id) {
   const win = document.getElementById(id);
+  const btn = document.querySelector(`.taskbar-btn[data-id="${id}"]`);
   if (win) {
     win.classList.add("hidden");
     win.style.display = "none";
   }
+  if (btn) btn.remove();
 }
+
 
 // Minimize window
 function minimizeWindow(id) {
   const win = document.getElementById(id);
-  if (win) {
+  const btn = document.querySelector(`.taskbar-btn[data-id="${id}"]`);
+  if (win && btn) {
     win.classList.add("hidden");
+    win.style.display = "none";
+    btn.classList.remove("active");
   }
 }
+
 
 // Maximize/Restore window
 function toggleMaximizeWindow(id) {
@@ -74,6 +85,37 @@ function toggleMaximizeWindow(id) {
     }
   }
 }
+function addToTaskbar(id) {
+  const taskbar = document.getElementById("taskbar");
+  let existing = document.querySelector(`.taskbar-btn[data-id="${id}"]`);
+
+  if (!existing) {
+    const btn = document.createElement("button");
+    btn.classList.add("taskbar-btn");
+    btn.setAttribute("data-id", id);
+    btn.innerText = id.toUpperCase();
+    btn.addEventListener("click", () => toggleWindow(id));
+    taskbar.appendChild(btn);
+  } else {
+    existing.classList.add("active");
+  }
+}
+
+function toggleWindow(id) {
+  const win = document.getElementById(id);
+  const btn = document.querySelector(`.taskbar-btn[data-id="${id}"]`);
+  if (win.classList.contains("hidden")) {
+    win.classList.remove("hidden");
+    win.style.display = "block";
+    win.style.zIndex = getNextZIndex();
+    btn.classList.add("active");
+  } else {
+    win.classList.add("hidden");
+    win.style.display = "none";
+    btn.classList.remove("active");
+  }
+}
+
 
 // Get next z-index
 let currentZIndex = 10;
