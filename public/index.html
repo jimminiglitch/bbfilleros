@@ -6,24 +6,34 @@
     <title>Benjamin Filler</title>
     <link rel="stylesheet" href="/style.css" />
     <link
-      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap"
       rel="stylesheet"
     />
   </head>
   <body>
     <div class="scanlines"></div>
     <audio id="blip" src="/blip.mp3"></audio>
+    <audio id="bootSound" src="/blip.mp3"></audio>
 
+    <!-- Boot Screen -->
     <div id="bootScreen" class="boot-screen">
-      <div class="boot-text">
-        <div class="line">[SYSTEM INITIALIZING...]</div>
-        <div class="line">LOADING: <span class="dots"></span></div>
-      </div>
+  <div class="boot-content">
+    <img
+      src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/whodat.gif?v=1746365769069"
+      alt="Tiger"
+      class="boot-tiger"
+    />
+    <div class="boot-text">
+      <div class="line">[SYSTEM INITIALIZING...]</div>
+      <div class="line">LOADING: <span class="dots"></span></div>
     </div>
+  </div>
+</div>
 
+
+    <!-- Header Section -->
     <div class="container">
       <h1 class="glitch" data-text="Benjamin Filler">Benjamin Filler</h1>
-
       <div class="card">
         <div class="tiger-wrapper">
           <img
@@ -33,215 +43,151 @@
           />
           <div class="glow-overlay"></div>
         </div>
-
         <div class="buttons">
-          <a href="#" class="nav-button" onclick="openWindow('about'); playBlip()">About</a>
-          <a href="#" class="nav-button" onclick="openWindow('projects'); playBlip()">Projects</a>
-          <a href="#" class="nav-button" onclick="openWindow('resume'); playBlip()">Resume</a>
-          <a href="#" class="nav-button" onclick="openWindow('contact'); playBlip()">Contact</a>
+          <a
+            href="#"
+            class="nav-button"
+            onclick="openWindow('about'); playBlip()"
+            >About</a
+          >
+          <a
+            href="#"
+            class="nav-button"
+            onclick="openWindow('projects'); playBlip()"
+            >Projects</a
+          >
+          <a
+            href="#"
+            class="nav-button"
+            onclick="openWindow('resume'); playBlip()"
+            >Resume</a
+          >
+          <a
+            href="#"
+            class="nav-button"
+            onclick="openWindow('contact'); playBlip()"
+            >Contact</a
+          >
         </div>
       </div>
     </div>
 
-    <!-- Window Popups -->
+    <!-- WINDOWS -->
     <div id="about" class="popup-window hidden">
       <div class="window-header">
-        <span>ABOUT.EXE</span><button onclick="closeWindow('about')">X</button>
+        <span>ABOUT.EXE</span>
+        <button class="maximize">▭</button>
+        <button class="minimize">_</button>
+        <button class="close" onclick="closeWindow('about')">X</button>
       </div>
-      <div class="window-content"><div class="about-inner">
-  <h2>👾 WHO IS BENJAMIN FILLER?</h2>
-  <p>
-    I'm a media creator, director, and narrative systems designer from Michigan. I tell stories
-    across film, games, and interactive spaces.
-  </p>
-  <p>
-    My work blends cinematic technique, code-based immersion, and analog grit. I like strange 
-    archives, gripping installations, damaged footage, modular synths, and custom hardware.
-  </p>
-
-  <h3>💾 KEYWORDS</h3>
-  <ul>
-    <li>⛓ Experimental Documentary</li>
-    <li>🧠 Narrative Design</li>
-    <li>🛸 Cyberpunk Escapism</li>
-    <li>🎮 Game Worlds / Story Maps</li>
-    <li>📼 Lo-fi / New Media Aesthetics</li>
-  </ul>
-</div>
-</div>
+      <div class="window-content">This is the about section!</div>
     </div>
 
     <div id="projects" class="popup-window hidden">
       <div class="window-header">
-        <span>PROJECTS.EXE</span><button onclick="closeWindow('projects')">X</button>
+        <span>PROJECTS.EXE</span>
+        <button class="maximize">▭</button>
+        <button class="minimize">_</button>
+        <button class="close" onclick="closeWindow('projects')">X</button>
       </div>
-      <div class="window-content"><div class="projects-inner">
-  <h2 class="projects-title">🎮 Projects & Features</h2>
+      <div class="window-content">
+        <div class="projects-inner">
+          <h2 class="projects-title">🎮 PROJECTS.EXE</h2>
 
-<div class="projects-inner">
-  <h2 class="projects-title">🎮 PROJECTS.EXE</h2>
+          <div
+            class="project-card"
+            onclick="launchProject(this, 'Fedora Diaries.exe')"
+          >
+            <h3 class="project-name">The Fedora Diaries</h3>
+            <p class="project-desc">
+              Immersive escape room with soundscape, set design, and software
+              integration.
+            </p>
+            <div class="terminal-line">&gt; Ready...</div>
+          </div>
 
-  <div class="project-card" onclick="launchProject(this, 'Fedora Diaries.exe')">
-    <h3 class="project-name">The Fedora Diaries</h3>
-    <p class="project-desc">Immersive escape room with original soundscape, set design, and software integration.</p>
-    <div class="terminal-line">&gt; Ready...</div>
-  </div>
+          <div
+            class="project-card"
+            onclick="launchProject(this, 'R3D3CH0.sys')"
+          >
+            <h3 class="project-name">R3D3CH0</h3>
+            <p class="project-desc">
+              Cyberpunk short story reimagined as ArcGIS map and mobile
+              experience.
+            </p>
+            <div class="terminal-line">&gt; Ready...</div>
+          </div>
 
-  <div class="project-card" onclick="launchProject(this, 'R3D3CH0.sys')">
-    <h3 class="project-name">R3D3CH0</h3>
-    <p class="project-desc">Cyberpunk story-as-map. Built in ArcGIS, ported to mobile and browser-based platforms.</p>
-    <div class="terminal-line">&gt; Ready...</div>
-  </div>
+          <div
+            class="project-card"
+            onclick="launchProject(this, 'ClydeCup2024.mov')"
+          >
+            <h3 class="project-name">The Illustrious Clyde Cup</h3>
+            <p class="project-desc">
+              Mini-golf doc. Screened at Greater Farmington Film Festival
+              (2024).
+            </p>
+            <div class="terminal-line">&gt; Ready...</div>
+          </div>
 
-  <div class="project-card" onclick="launchProject(this, 'ClydeCup2024.mov')">
-    <h3 class="project-name">The Illustrious Clyde Cup</h3>
-    <p class="project-desc">Documentary on Detroit’s mini-golf rivalry. Farmington Festival official selection 2024.</p>
-    <div class="terminal-line">&gt; Ready...</div>
-  </div>
+          <div
+            class="project-card"
+            onclick="launchProject(this, 'BirdingWithBrian.avi')"
+          >
+            <h3 class="project-name">Birding With Brian</h3>
+            <p class="project-desc">
+              Experimental documentary — festival circuit 2024-25.
+            </p>
+            <div class="terminal-line">&gt; Ready...</div>
+          </div>
+        </div>
 
-  <div class="project-card" onclick="launchProject(this, 'BirdingWithBrian.avi')">
-    <h3 class="project-name">Birding With Brian</h3>
-    <p class="project-desc">Experimental doc. Planet 9 + Wolf Tree Film Festivals. Best Editing winner at OCC Fest.</p>
-    <div class="terminal-line">&gt; Ready...</div>
-  </div>
-</div>
-
+        <!-- Splash overlay -->
+        <div id="project-splash" class="hidden">
+          <div class="splash-inner">
+            <h2 class="splash-title">🔷 Launching...</h2>
+            <p class="splash-text">
+              Executing program: <span id="splash-name">PROJECT.EXE</span>
+            </p>
+            <p class="splash-sub">
+              Loading resources... establishing uplink...
+            </p>
+            <button onclick="closeSplash()">↩ Return to Library</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <div id="resume" class="popup-window hidden">
       <div class="window-header">
-        <span>RESUME.EXE</span><button onclick="closeWindow('resume')">X</button>
+        <span>RESUME.EXE</span>
+        <button class="maximize">▭</button>
+        <button class="minimize">_</button>
+        <button class="close" onclick="closeWindow('resume')">X</button>
       </div>
-      <div class="window-content"><div class="resume-inner">
-  <div class="top-bar">
-    <a href="https://kungfufilla.wixsite.com/my-site-4/" target="_blank" class="btn">&#x2190; Back</a>
-    <a href="https://cdn.glitch.global/0ade3230-a4bb-4d2d-98fc-5cab2591127c/Benjamin%20Filler%20Resume%202025.pdf?v=1744722722267" target="_blank" class="btn">&#x2B07; Download PDF</a>
-  </div>
-
-  <h1 style="color: var(--neon-cyan); text-align: center;">Benjamin Filler</h1>
-  <p style="text-align: center; color: var(--neon-purple); font-size: 1rem;">
-    bbfiller@umich.edu | (248) 212-4644 | Birmingham, MI
-  </p>
-
-  <div class="section">
-    <h2>Education</h2>
-    <p>
-      <span class="neon-label">The University of Michigan-Dearborn</span><br>
-      Bachelor of Arts — Media Production<br>
-      Minor: Game Studies and Design<br>
-      Dearborn, MI — Graduation: May 2026
-    </p>
-    <p>
-      <span class="neon-label">Oakland Community College</span><br>
-      Associate of Arts — Cinematic Arts<br>
-      Royal Oak, MI — Graduation: June 2024
-    </p>
-  </div>
-
-  <div class="section">
-    <h2>Experience</h2>
-    <p>
-      <span class="neon-label">Oakland Community College</span><br>
-      Adjunct Instructor — Jan. 2024 – Present<br>
-      Mentor students in cinematic arts and digital video production.
-    </p>
-    <p>
-      <span class="neon-label">Amigo & Amigo</span><br>
-      Creative Consultant — Oct. 2019 – Sept. 2023<br>
-      Collaborated with international teams on large-scale transmedia installations.
-    </p>
-  </div>
-
-  <div class="section">
-    <h2>Projects</h2>
-    <p><span class="neon-label">The Fedora Diaries</span><br>
-      Designed set, soundscape, and software for transmedia escape room.</p>
-    <p><span class="neon-label">R3D3CH0</span><br>
-      Wrote, designed, and implemented interactive story into ArcGIS map & mobile app.</p>
-    <p><span class="neon-label">The Illustrious Clyde Cup</span><br>
-      Writer, Director, Editor — Movies from the Mitten (2024), Farmington Film Fest</p>
-    <p><span class="neon-label">Birding With Brian</span><br>
-      Writer, Director, Editor — Planet 9 (2024), Wolf Tree (2025), Best Editing Award</p>
-  </div>
-
-  <div class="section">
-    <h2>Skills</h2>
-    <div class="skills-grid">
-      <div>
-        <p class="neon-label">Technical</p>
-        <ul>
-          <li>Camera operation</li>
-          <li>Video editing</li>
-          <li>Visual & sound design</li>
-          <li>Digital illustration</li>
-          <li>Web & software dev</li>
-        </ul>
+      <div class="window-content">
+        <!-- resume content will go here -->
       </div>
-      <div>
-        <p class="neon-label">Storytelling</p>
-        <ul>
-          <li>Narrative development</li>
-          <li>Audience engagement</li>
-          <li>Worldbuilding</li>
-          <li>Scriptwriting</li>
-        </ul>
-      </div>
-      <div>
-        <p class="neon-label">Tools</p>
-        <ul>
-          <li>Adobe Creative Suite</li>
-          <li>Final Cut, DaVinci</li>
-          <li>Audacity, Logic</li>
-          <li>Figma, ArcGIS</li>
-          <li>HTML, CSS, JS, Python</li>
-        </ul>
-      </div>
-      <div>
-        <p class="neon-label">Collaboration</p>
-        <ul>
-          <li>Leadership</li>
-          <li>Creative teamwork</li>
-          <li>Communication</li>
-          <li>IP knowledge</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</div>
-</div>
     </div>
 
     <div id="contact" class="popup-window hidden">
       <div class="window-header">
-        <span>CONTACT.EXE</span><button onclick="closeWindow('contact')">X</button>
+        <span>CONTACT.EXE</span>
+        <button class="maximize">▭</button>
+        <button class="minimize">_</button>
+        <button class="close" onclick="closeWindow('contact')">X</button>
       </div>
-      <div class="window-content"><div class="contact-window">
-  <h2 class="contact-title">Contact Me</h2>
-  <div class="contact-grid">
-    <div class="contact-left">
-      <h3 class="neon-pink">Get In Touch</h3>
-      <p><span class="icon">📧</span> <strong>Email</strong><br>bbfiller@umich.edu</p>
-      <p><span class="icon">📞</span> <strong>Phone</strong><br>(two48) 2one2-4six44</p>
-      <p><span class="icon">📍</span> <strong>Location</strong><br>Birmingham, MI</p>
-    </div>
-    <form class="contact-form" onsubmit="event.preventDefault(); alert('Message submitted! (This is just a mockup for now.)')">
-      <label>Name</label>
-      <input type="text" placeholder="Your name" required />
-      <label>Email</label>
-      <input type="email" placeholder="you@email.com" required />
-      <label>Message</label>
-      <textarea rows="4" placeholder="Say hi..."></textarea>
-      <button type="submit">Submit</button>
-    </form>
-  </div>
-</div>
-</div>
+      <div class="window-content">
+        <!-- contact content will go here -->
+      </div>
     </div>
 
+    <!-- Canvas Starfield -->
     <canvas id="background-canvas"></canvas>
 
+    <!-- Start Menu -->
     <div id="start-bar">
       <button id="start-button">START</button>
-      <div id="taskbar-icons" style="display: flex; gap: 5px; padding-left: 5px;"></div>
       <span id="clock"></span>
     </div>
 
@@ -252,6 +198,7 @@
       <a href="#" onclick="openWindow('contact')">Contact</a>
     </div>
 
+    <!-- Main Script -->
     <script src="/script.js"></script>
   </body>
 </html>
