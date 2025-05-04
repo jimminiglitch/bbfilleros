@@ -1,403 +1,585 @@
 // script.js
 
-// Play blip sound
+// Audio elements
+const blipSound = document.getElementById("blip")
+const bootSound = document.getElementById("bootSound")
+const hoverSound = document.getElementById("hoverSound")
+
+// Play sound functions
 function playBlip() {
-  const blip = document.getElementById("blip");
-  if (blip) {
-    blip.currentTime = 0;
-    blip.play();
+  if (blipSound) {
+    blipSound.currentTime = 0
+    blipSound.volume = 0.2
+    blipSound.play()
   }
 }
 
-// Open window
+function playHover() {
+  if (hoverSound) {
+    hoverSound.volume = 0.1
+    hoverSound.currentTime = 0
+    hoverSound.play()
+  }
+}
+
+// Window management
+const windows = {}
+let activeWindow = null
+let zIndex = 100
+
+// Initialize windows
+function initWindows() {
+  // Get all windows
+  const windowElements = document.querySelectorAll(".popup-window")
+
+  windowElements.forEach((win) => {
+    const id = win.id
+    windows[id] = {
+      element: win,
+      minimized: false,
+      maximized: false,
+      position: { x: 0, y: 0 },
+      size: { width: 0, height: 0 },
+    }
+
+    // Set initial position
+    const randomX = Math.random() * (window.innerWidth - 500)
+    const randomY = Math.random() * (window.innerHeight - 400)
+    win.style.left = `${randomX}px`
+    win.style.top = `${randomY}px`
+
+    // Make window draggable
+    const header = win.querySelector(".window-header")
+    makeDraggable(win, header)
+
+    // Add event listeners for window buttons
+    const closeBtn = win.querySelector(".close")
+    if (closeBtn) {
+      closeBtn.addEventListener("click", () => closeWindow(id))
+    }
+
+    const maxBtn = win.querySelector(".maximize")
+    if (maxBtn) {
+      maxBtn.addEventListener("click", () => toggleMaximize(id))
+    }
+
+    const minBtn = win.querySelector(".minimize")
+    if (minBtn) {
+      minBtn.addEventListener("click", () => minimizeWindow(id))
+    }
+
+    // Add context menu
+    win.addEventListener("contextmenu", showContextMenu)
+  })
+
+  // Start button
+  const startButton = document.getElementById("start-button")
+  const startMenu = document.getElementById("start-menu")
+
+  startButton.addEventListener("click", () => {
+    startMenu.style.display = startMenu.style.display === "block" ? "none" : "block"
+    playBlip()
+  })
+
+  // Close start menu when clicking elsewhere
+  document.addEventListener("click", (e) => {
+    if (!startButton.contains(e.target) && !startMenu.contains(e.target)) {
+      startMenu.style.display = "none"
+    }
+  })
+
+  // Close context menu when clicking elsewhere
+  document.addEventListener("click", (e) => {
+    const contextMenu = document.getElementById("context-menu")
+    if (contextMenu && !contextMenu.contains(e.target)) {
+      contextMenu.classList.add("hidden")
+    }
+  })
+
+  // Make desktop icons draggable
+  const desktopIcons = document.querySelectorAll(".desktop-icon")
+  desktopIcons.forEach((icon) => {
+    makeDraggable(icon, icon)
+  })
+}
+
 function openWindow(id) {
-  const win = document.getElementById(id);
-  if (win) {
-    win.classList.remove("hidden");
-    win.style.zIndex = getNextZIndex();
-    win.style.display = "block";
+  if (!windows[id]) return
 
-    // Restore size/position
-    const stored = windowStates[id];
-    if (stored) {
-      win.style.top = stored.top;
-      win.style.left = stored.left;
-      win.style.width = stored.width;
-      win.style.height = stored.height;
-    }
+  const win = windows[id]
+  win.element.classList.remove("hidden")
 
-    // Add or activate taskbar button
-    addToTaskbar(id);
+  if (win.minimized) {
+    win.minimized = false
+    updateTaskbar()
+  }
+
+  focusWindow(id)
+  playBlip()
+
+  // Add to taskbar if not already there
+  updateTaskbar()
+
+  // Special handling for game window
+  if (id === "game") {
+    initGame()
+  }
+
+  // Special handling for glitchlab
+  if (id === "app_glitchlab") {
+    initGlitchLab()
   }
 }
 
-// Close window
 function closeWindow(id) {
-  const win = document.getElementById(id);
-  const btn = document.querySelector(`.taskbar-btn[data-id="${id}"]`);
-  if (win) {
-    win.classList.add("hidden");
-    win.style.display = "none";
-  }
-  if (btn) btn.remove();
+  if (!windows[id]) return
+
+  windows[id].element.classList.add("hidden")
+  updateTaskbar()
+  playBlip()
 }
 
-
-// Minimize window
 function minimizeWindow(id) {
-  const win = document.getElementById(id);
-  const btn = document.querySelector(`.taskbar-btn[data-id="${id}"]`);
-  if (win && btn) {
-    win.classList.add("hidden");
-    win.style.display = "none";
-    btn.classList.remove("active");
-  }
+  if (!windows[id]) return
+
+  windows[id].minimized = true
+  windows[id].element.classList.add("hidden")
+  updateTaskbar()
+  playBlip()
 }
 
+function toggleMaximize(id) {
+  if (!windows[id]) return
 
-// Maximize/Restore window
-function toggleMaximizeWindow(id) {
-  const win = document.getElementById(id);
-  if (win) {
-    if (!win.classList.contains("maximized")) {
-      // Store current position and size
-      windowStates[id] = {
-        top: win.style.top,
-        left: win.style.left,
-        width: win.style.width,
-        height: win.style.height,
-      };
-      win.classList.add("maximized");
-      win.style.top = "0";
-      win.style.left = "0";
-      win.style.width = "100%";
-      win.style.height = "100%";
-    } else {
-      // Restore previous position and size
-      const stored = windowStates[id];
-      if (stored) {
-        win.style.top = stored.top;
-        win.style.left = stored.left;
-        win.style.width = stored.width;
-        win.style.height = stored.height;
+  const win = windows[id]
+
+  if (!win.maximized) {
+    // Save current position and size
+    win.position.x = win.element.offsetLeft
+    win.position.y = win.element.offsetTop
+    win.size.width = win.element.offsetWidth
+    win.size.height = win.element.offsetHeight
+
+    // Maximize
+    win.element.classList.add("maximized")
+  } else {
+    // Restore
+    win.element.classList.remove("maximized")
+    win.element.style.left = `${win.position.x}px`
+    win.element.style.top = `${win.position.y}px`
+    win.element.style.width = `${win.size.width}px`
+    win.element.style.height = `${win.size.height}px`
+  }
+
+  win.maximized = !win.maximized
+  playBlip()
+}
+
+function focusWindow(id) {
+  if (!windows[id]) return
+
+  // Set active window
+  if (activeWindow) {
+    windows[activeWindow].element.style.zIndex = 100
+  }
+
+  activeWindow = id
+  windows[id].element.style.zIndex = ++zIndex
+
+  // Update taskbar
+  updateTaskbar()
+}
+
+function updateTaskbar() {
+  const taskbar = document.getElementById("taskbar")
+  taskbar.innerHTML = ""
+
+  // Add buttons for open windows
+  for (const id in windows) {
+    if (!windows[id].element.classList.contains("hidden")) {
+      const button = document.createElement("button")
+      button.className = "taskbar-btn"
+      if (activeWindow === id) {
+        button.classList.add("active")
       }
-      win.classList.remove("maximized");
+
+      const title = windows[id].element.querySelector(".window-header span").textContent
+      button.textContent = title
+
+      button.addEventListener("click", () => {
+        if (windows[id].minimized) {
+          windows[id].minimized = false
+          windows[id].element.classList.remove("hidden")
+        } else if (activeWindow === id) {
+          minimizeWindow(id)
+        }
+        focusWindow(id)
+      })
+
+      taskbar.appendChild(button)
     }
   }
 }
-function addToTaskbar(id) {
-  const taskbar = document.getElementById("taskbar");
-  let existing = document.querySelector(`.taskbar-btn[data-id="${id}"]`);
 
-  if (!existing) {
-    const btn = document.createElement("button");
-    btn.classList.add("taskbar-btn");
-    btn.setAttribute("data-id", id);
-    btn.innerText = id.toUpperCase();
-    btn.addEventListener("click", () => toggleWindow(id));
-    taskbar.appendChild(btn);
-  } else {
-    existing.classList.add("active");
-  }
-}
+function makeDraggable(element, handle) {
+  let pos1 = 0,
+    pos2 = 0,
+    pos3 = 0,
+    pos4 = 0
 
-function toggleWindow(id) {
-  const win = document.getElementById(id);
-  const btn = document.querySelector(`.taskbar-btn[data-id="${id}"]`);
-  if (win.classList.contains("hidden")) {
-    win.classList.remove("hidden");
-    win.style.display = "block";
-    win.style.zIndex = getNextZIndex();
-    btn.classList.add("active");
-  } else {
-    win.classList.add("hidden");
-    win.style.display = "none";
-    btn.classList.remove("active");
-  }
-}
+  handle.onmousedown = dragMouseDown
 
+  function dragMouseDown(e) {
+    e = e || window.event
+    e.preventDefault()
 
-// Get next z-index
-let currentZIndex = 10;
-function getNextZIndex() {
-  return ++currentZIndex;
-}
+    // Get mouse position at startup
+    pos3 = e.clientX
+    pos4 = e.clientY
 
-// Store window states
-const windowStates = {};
-
-// Update clock
-function updateClock() {
-  const clock = document.getElementById("clock");
-  if (clock) {
-    const now = new Date();
-    clock.textContent = now.toLocaleTimeString();
-  }
-}
-setInterval(updateClock, 1000);
-updateClock();
-
-// Start menu toggle
-const startButton = document.getElementById("start-button");
-const startMenu = document.getElementById("start-menu");
-startButton.addEventListener("click", () => {
-  startMenu.style.display = startMenu.style.display === "flex" ? "none" : "flex";
-});
-
-// Boot screen
-window.addEventListener("load", () => {
-  const bootScreen = document.getElementById("bootScreen");
-  if (bootScreen) {
-    setTimeout(() => {
-      bootScreen.style.display = "none";
-      bootScreen.classList.add("hidden"); // Ensures it doesn't block interaction
-    }, 3000); // You can adjust the duration here
-  }
-
-  // Also ensure the shutdown overlay is hidden just in case
-  const shutdownOverlay = document.getElementById("shutdown-overlay");
-  if (shutdownOverlay) {
-    shutdownOverlay.classList.add("hidden");
-    shutdownOverlay.style.display = "none";
-  }
-});
-
-
-// Project splash
-function launchProject(element, name) {
-  const splash = document.getElementById("project-splash");
-  const splashName = document.getElementById("splash-name");
-  if (splash && splashName) {
-    splashName.textContent = name;
-    splash.classList.remove("hidden");
-  }
-}
-
-function closeSplash() {
-  const splash = document.getElementById("project-splash");
-  if (splash) {
-    splash.classList.add("hidden");
-  }
-}
-
-// Window header buttons
-document.querySelectorAll(".popup-window").forEach((win) => {
-  const id = win.id;
-  const header = win.querySelector(".window-header");
-  const minimizeBtn = header.querySelector(".minimize");
-  const maximizeBtn = header.querySelector(".maximize");
-  const closeBtn = header.querySelector(".close");
-
-  if (minimizeBtn) {
-    minimizeBtn.addEventListener("click", () => minimizeWindow(id));
-  }
-  if (maximizeBtn) {
-    maximizeBtn.addEventListener("click", () => toggleMaximizeWindow(id));
-  }
-  if (closeBtn) {
-    closeBtn.addEventListener("click", () => closeWindow(id));
-  }
-
-  // Drag functionality
-  let isDragging = false;
-  let offsetX, offsetY;
-
-  header.addEventListener("mousedown", (e) => {
-    isDragging = true;
-    offsetX = e.clientX - win.offsetLeft;
-    offsetY = e.clientY - win.offsetTop;
-    win.style.zIndex = getNextZIndex();
-  });
-
-  document.addEventListener("mousemove", (e) => {
-    if (isDragging) {
-      win.style.left = `${e.clientX - offsetX}px`;
-      win.style.top = `${e.clientY - offsetY}px`;
+    // Bring window to front
+    const id = element.id
+    if (windows[id]) {
+      focusWindow(id)
     }
-  });
 
-  document.addEventListener("mouseup", () => {
-    isDragging = false;
-  });
-});
+    document.onmouseup = closeDragElement
+    document.onmousemove = elementDrag
+  }
 
-const hoverSound = new Audio('/blip.mp3');
-document.querySelectorAll('.project-card').forEach(card => {
-  card.addEventListener('mouseenter', () => {
-    hoverSound.currentTime = 0;
-    hoverSound.play();
-  });
-});
+  function elementDrag(e) {
+    e = e || window.event
+    e.preventDefault()
 
-function openProjectPreview(projectId) {
-  const id = `preview-${projectId}`;
-  openWindow(id);
+    // Calculate new position
+    pos1 = pos3 - e.clientX
+    pos2 = pos4 - e.clientY
+    pos3 = e.clientX
+    pos4 = e.clientY
+
+    // Check if window is maximized
+    const id = element.id
+    if (windows[id] && windows[id].maximized) {
+      return
+    }
+
+    // Set element's new position
+    element.style.top = element.offsetTop - pos2 + "px"
+    element.style.left = element.offsetLeft - pos1 + "px"
+  }
+
+  function closeDragElement() {
+    document.onmouseup = null
+    document.onmousemove = null
+  }
 }
 
-document.querySelectorAll('.typewriter').forEach(el => {
-  const text = el.getAttribute('data-text');
-  el.textContent = '';
-  let i = 0;
-  const type = () => {
-    if (i < text.length) {
-      el.textContent += text.charAt(i);
-      i++;
-      setTimeout(type, 30);
-    }
-  };
-  type();
-});
-let focusedWindowId = null;
+// Context menu
+function showContextMenu(e) {
+  e.preventDefault()
 
-document.querySelectorAll('.popup-window').forEach(win => {
-  win.addEventListener('contextmenu', (e) => {
-    e.preventDefault();
-    focusedWindowId = win.id;
+  const contextMenu = document.getElementById("context-menu")
+  contextMenu.style.left = `${e.clientX}px`
+  contextMenu.style.top = `${e.clientY}px`
+  contextMenu.classList.remove("hidden")
 
-    const menu = document.getElementById('context-menu');
-    menu.style.top = `${e.clientY}px`;
-    menu.style.left = `${e.clientX}px`;
-    menu.classList.remove('hidden');
-  });
-});
+  // Set focused window for context menu actions
+  const windowElement = e.currentTarget
+  const id = windowElement.id
+  if (windows[id]) {
+    focusWindow(id)
+  }
+}
 
-// Hide menu on click elsewhere
-document.addEventListener('click', () => {
-  document.getElementById('context-menu').classList.add('hidden');
-});
-
-// Menu actions
 function closeFocusedWindow() {
-  if (focusedWindowId) closeWindow(focusedWindowId);
-}
+  if (activeWindow) {
+    closeWindow(activeWindow)
+  }
 
-function toggleFocusedMaximize() {
-  if (focusedWindowId) toggleMaximizeWindow(focusedWindowId);
+  const contextMenu = document.getElementById("context-menu")
+  contextMenu.classList.add("hidden")
 }
 
 function minimizeFocusedWindow() {
-  if (focusedWindowId) minimizeWindow(focusedWindowId);
+  if (activeWindow) {
+    minimizeWindow(activeWindow)
+  }
+
+  const contextMenu = document.getElementById("context-menu")
+  contextMenu.classList.add("hidden")
 }
-document.querySelectorAll('.popup-window').forEach(win => {
-  const resizeHandle = document.createElement('div');
-  resizeHandle.classList.add('resize-handle');
-  resizeHandle.style.position = 'absolute';
-  resizeHandle.style.right = '0';
-  resizeHandle.style.bottom = '0';
-  resizeHandle.style.width = '15px';
-  resizeHandle.style.height = '15px';
-  resizeHandle.style.cursor = 'nwse-resize';
-  resizeHandle.style.zIndex = '10';
-  win.appendChild(resizeHandle);
 
-  let isResizing = false;
-
-  resizeHandle.addEventListener('mousedown', (e) => {
-    e.stopPropagation();
-    isResizing = true;
-    document.body.style.userSelect = 'none';
-  });
-
-  document.addEventListener('mousemove', (e) => {
-    if (isResizing) {
-      const rect = win.getBoundingClientRect();
-      win.style.width = `${e.clientX - rect.left}px`;
-      win.style.height = `${e.clientY - rect.top}px`;
-    }
-  });
-
-  document.addEventListener('mouseup', () => {
-    isResizing = false;
-    document.body.style.userSelect = 'auto';
-  });
-});
-
-
-document.querySelectorAll('.popup-window').forEach(win => {
-  win.addEventListener('contextmenu', (e) => {
-    e.preventDefault();
-    focusedWindowId = win.id;
-    const menu = document.getElementById('context-menu');
-    menu.style.top = `${e.clientY}px`;
-    menu.style.left = `${e.clientX}px`;
-    menu.classList.remove('hidden');
-  });
-
-  // Add drag-to-resize handles
-  const resizeHandle = document.createElement('div');
-  resizeHandle.style.position = 'absolute';
-  resizeHandle.style.right = '0';
-  resizeHandle.style.bottom = '0';
-  resizeHandle.style.width = '15px';
-  resizeHandle.style.height = '15px';
-  resizeHandle.style.cursor = 'nwse-resize';
-  resizeHandle.style.zIndex = '10';
-  win.appendChild(resizeHandle);
-
-  let isResizing = false;
-
-  resizeHandle.addEventListener('mousedown', (e) => {
-    e.stopPropagation();
-    isResizing = true;
-    document.body.style.userSelect = 'none';
-  });
-
-  document.addEventListener('mousemove', (e) => {
-    if (isResizing) {
-      const rect = win.getBoundingClientRect();
-      win.style.width = `${e.clientX - rect.left}px`;
-      win.style.height = `${e.clientY - rect.top}px`;
-    }
-  });
-
-  document.addEventListener('mouseup', () => {
-    isResizing = false;
-    document.body.style.userSelect = 'auto';
-  });
-});
-
-document.addEventListener('click', () => {
-  document.getElementById('context-menu').classList.add('hidden');
-});
-
-window.addEventListener("load", () => {
-  const bootScreen = document.getElementById("bootScreen");
-  const shutdownOverlay = document.getElementById("shutdown-overlay");
-
-  // Ensure both overlays are hidden after load
-  if (shutdownOverlay) {
-    shutdownOverlay.classList.add("hidden");
-    shutdownOverlay.style.display = "none";
+function toggleFocusedMaximize() {
+  if (activeWindow) {
+    toggleMaximize(activeWindow)
   }
 
-  if (bootScreen) {
+  const contextMenu = document.getElementById("context-menu")
+  contextMenu.classList.add("hidden")
+}
+
+// Project preview
+function openProjectPreview(projectId) {
+  const splash = document.getElementById("project-splash")
+  const splashName = document.getElementById("splash-name")
+
+  // Set project name
+  switch (projectId) {
+    case "fedora":
+      splashName.textContent = "FEDORA_DIARIES.EXE"
+      break
+    case "r3d3ch0":
+      splashName.textContent = "R3D3CH0.EXE"
+      break
+    case "clydecup":
+      splashName.textContent = "CLYDE_CUP.EXE"
+      break
+    case "brian":
+      splashName.textContent = "BIRDING_WITH_BRIAN.EXE"
+      break
+    default:
+      splashName.textContent = "PROJECT.EXE"
+  }
+
+  splash.classList.remove("hidden")
+  playBlip()
+}
+
+function closeSplash() {
+  const splash = document.getElementById("project-splash")
+  splash.classList.add("hidden")
+  playBlip()
+}
+
+// Clock
+function initClock() {
+  const clockElement = document.getElementById("clock")
+
+  function updateClock() {
+    const now = new Date()
+    let hours = now.getHours()
+    const minutes = now.getMinutes().toString().padStart(2, "0")
+    const ampm = hours >= 12 ? "PM" : "AM"
+
+    hours = hours % 12
+    hours = hours ? hours : 12 // Convert 0 to 12
+
+    clockElement.textContent = `${hours}:${minutes} ${ampm}`
+  }
+
+  updateClock()
+  setInterval(updateClock, 1000)
+}
+
+// Shutdown
+function toggleShutdown() {
+  const shutdownOverlay = document.getElementById("shutdown-overlay")
+  shutdownOverlay.classList.remove("hidden")
+  shutdownOverlay.style.display = "flex"
+
+  setTimeout(() => {
+    window.location.reload()
+  }, 3000)
+}
+
+// Starfield background
+function initStarfield() {
+  const canvas = document.getElementById("background-canvas")
+  const ctx = canvas.getContext("2d")
+
+  // Set canvas size
+  function resizeCanvas() {
+    canvas.width = window.innerWidth
+    canvas.height = window.innerHeight
+  }
+
+  resizeCanvas()
+  window.addEventListener("resize", resizeCanvas)
+
+  // Create stars
+  const stars = []
+  const numStars = 200
+  const colors = ["#ffffff", "#00ffcc", "#ff77aa", "#3377ff"]
+
+  for (let i = 0; i < numStars; i++) {
+    stars.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      radius: Math.random() * 1.5,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      speed: Math.random() * 0.5 + 0.1,
+    })
+  }
+
+  // Animate stars
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+    // Draw stars
+    stars.forEach((star) => {
+      ctx.beginPath()
+      ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2)
+      ctx.fillStyle = star.color
+      ctx.fill()
+
+      // Move star
+      star.y += star.speed
+
+      // Reset star if it goes off screen
+      if (star.y > canvas.height) {
+        star.y = 0
+        star.x = Math.random() * canvas.width
+      }
+    })
+
+    requestAnimationFrame(animate)
+  }
+
+  animate()
+}
+
+// Typewriter effect
+function initTypewriter() {
+  const elements = document.querySelectorAll(".typewriter")
+  elements.forEach((el) => {
+    const text = el.getAttribute("data-text")
+    if (text) {
+      el.textContent = ""
+      let i = 0
+      const interval = setInterval(() => {
+        if (i < text.length) {
+          el.textContent += text.charAt(i)
+          i++
+        } else {
+          clearInterval(interval)
+        }
+      }, 50)
+    }
+  })
+}
+
+// GlitchLab
+function initGlitchLab() {
+  const canvas = document.getElementById("glitchlab-canvas")
+  if (!canvas) return
+
+  const ctx = canvas.getContext("2d")
+  const particles = []
+  let glitchEffect = true
+
+  // Create particles
+  for (let i = 0; i < 50; i++) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      size: Math.random() * 5 + 1,
+      speedX: Math.random() * 3 - 1.5,
+      speedY: Math.random() * 3 - 1.5,
+      color: `hsl(${Math.random() * 60 + 280}, 100%, 50%)`,
+    })
+  }
+
+  function animate() {
+    // Clear canvas with semi-transparent black for trail effect
+    ctx.fillStyle = "rgba(0, 0, 0, 0.1)"
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+    // Update and draw particles
+    particles.forEach((p) => {
+      p.x += p.speedX
+      p.y += p.speedY
+
+      // Bounce off edges
+      if (p.x < 0 || p.x > canvas.width) p.speedX *= -1
+      if (p.y < 0 || p.y > canvas.height) p.speedY *= -1
+
+      // Draw particle
+      ctx.beginPath()
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2)
+      ctx.fillStyle = p.color
+      ctx.fill()
+
+      // Draw connecting lines
+      particles.forEach((p2) => {
+        const dx = p.x - p2.x
+        const dy = p.y - p2.y
+        const distance = Math.sqrt(dx * dx + dy * dy)
+
+        if (distance < 50) {
+          ctx.beginPath()
+          ctx.strokeStyle = p.color
+          ctx.lineWidth = 0.5
+          ctx.moveTo(p.x, p.y)
+          ctx.lineTo(p2.x, p2.y)
+          ctx.stroke()
+        }
+      })
+    })
+
+    // Apply glitch effect
+    if (glitchEffect && Math.random() > 0.95) {
+      const sliceY = Math.random() * canvas.height
+      const sliceHeight = Math.random() * 20 + 5
+      const imageData = ctx.getImageData(0, sliceY, canvas.width, sliceHeight)
+      const offsetX = Math.random() * 20 - 10
+      ctx.putImageData(imageData, offsetX, sliceY)
+    }
+
+    requestAnimationFrame(animate)
+  }
+
+  animate()
+
+  // Toggle glitch effect
+  window.toggleGlitchEffect = () => {
+    glitchEffect = !glitchEffect
+    playBlip()
+  }
+
+  // Intensity slider
+  const intensitySlider = document.getElementById("glitch-intensity")
+  if (intensitySlider) {
+    intensitySlider.addEventListener("input", function () {
+      const value = this.value
+      particles.forEach((p) => {
+        p.size = Math.random() * (value / 10) + 1
+        p.speedX = Math.random() * (value / 25) - value / 50
+        p.speedY = Math.random() * (value / 25) - value / 50
+      })
+    })
+  }
+}
+
+// Form submission
+function submitForm() {
+  alert("Message submitted! (This is just a mockup for now.)")
+  playBlip()
+}
+
+// Initialize everything on load
+window.addEventListener("DOMContentLoaded", () => {
+  // Boot sequence
+  setTimeout(() => {
+    document.getElementById("bootScreen").style.opacity = "0"
     setTimeout(() => {
-      bootScreen.classList.add("hidden");
-      bootScreen.style.display = "none";
-    }, 3000); // Delay in milliseconds
+      document.getElementById("bootScreen").style.display = "none"
+      initStarfield()
+      initWindows()
+      initClock()
+      initTypewriter()
+    }, 500)
+  }, 3000)
+
+  // Initialize audio
+  if (bootSound) {
+    bootSound.volume = 0.3
+    bootSound.play()
   }
-});
 
-// --- Desktop Icon Dragging ---
-document.querySelectorAll('.desktop-icon').forEach(icon => {
-  let isDragging = false;
-  let offsetX, offsetY;
+  // Add hover sound to buttons
+  const buttons = document.querySelectorAll("button, .nav-button, .desktop-icon, .file, .menu-item")
+  buttons.forEach((btn) => {
+    btn.addEventListener("mouseenter", playHover)
+  })
+})
 
-  icon.addEventListener('mousedown', (e) => {
-    isDragging = true;
-    offsetX = e.clientX - icon.offsetLeft;
-    offsetY = e.clientY - icon.offsetTop;
-    icon.style.zIndex = getNextZIndex();
-  });
-
-  document.addEventListener('mousemove', (e) => {
-    if (isDragging) {
-      icon.style.left = `${e.clientX - offsetX}px`;
-      icon.style.top = `${e.clientY - offsetY}px`;
-    }
-  });
-
-  document.addEventListener('mouseup', () => {
-    isDragging = false;
-  });
-});

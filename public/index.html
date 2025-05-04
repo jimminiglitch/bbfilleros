@@ -3,17 +3,19 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Benjamin Filler</title>
+    <title>Benjamin Filler | Digital Portfolio</title>
     <link rel="stylesheet" href="/style.css" />
     <link
       href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap"
       rel="stylesheet"
     />
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>
   </head>
   <body>
     <div class="scanlines"></div>
-    <audio id="blip" src="/blip.mp3"></audio>
-    <audio id="bootSound" src="/blip.mp3"></audio>
+    <audio id="blip" src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/blip.mp3?v=1746368158788"></audio>
+    <audio id="bootSound" src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/boot.mp3?v=1746385389503"></audio>
+    <audio id="hoverSound" src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/hover.mp3?v=1746385487927" preload="auto"></audio>
 
     <!-- Boot Screen -->
     <div id="bootScreen" class="boot-screen">
@@ -25,7 +27,10 @@
         />
         <div class="boot-text">
           <div class="line">[SYSTEM INITIALIZING...]</div>
-          <div class="line">LOADING: <span class="dots"></span></div>
+          <div class="line">LOADING CORE MODULES: <span class="dots"></span></div>
+          <div class="boot-progress">
+            <div class="boot-bar"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -67,6 +72,12 @@
             onclick="openWindow('contact'); playBlip()"
             >Contact</a
           >
+          <a
+            href="#"
+            class="nav-button"
+            onclick="openWindow('game'); playBlip()"
+            >Time Ship</a
+          >
         </div>
       </div>
     </div>
@@ -92,14 +103,22 @@
             footage, modular synths, and custom hardware.
           </p>
 
-          <h3>💾 KEYWORDS</h3>
-          <ul>
-            <li>⛓ Experimental Documentary</li>
-            <li>🧠 Narrative Design</li>
-            <li>🛸 Cyberpunk Escapism</li>
-            <li>🎮 Game Worlds &amp; Story Maps</li>
-            <li>📼 Lo-fi / New Media Aesthetics</li>
-          </ul>
+          <div class="terminal-box">
+            <div class="terminal-header">
+              <span>terminal</span>
+            </div>
+            <div class="terminal-content">
+              <div class="terminal-line">$ whoami</div>
+              <div class="terminal-line">benjamin_filler</div>
+              <div class="terminal-line">$ cat skills.txt</div>
+              <div class="terminal-line typewriter" data-text="⛓ Experimental Documentary
+🧠 Narrative Design
+🛸 Cyberpunk Escapism
+🎮 Game Worlds & Story Maps
+📼 Lo-fi / New Media Aesthetics"></div>
+              <div class="terminal-line blink">_</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -107,7 +126,9 @@
     <div id="projects" class="popup-window hidden">
       <div class="window-header">
         <span>PROJECTS.EXE</span>
-        <button class="window-btn close" data-target="projects">X</button>
+        <button class="maximize">▭</button>
+        <button class="minimize">_</button>
+        <button class="close" onclick="closeWindow('projects')">X</button>
       </div>
       <div class="window-content projects-inner">
         <div class="projects-title">~ showcase loaded ~</div>
@@ -334,17 +355,23 @@
                 ><br />bbfiller@umich.edu
               </p>
               <p>
-                <span class="icon">📞</span> <strong>Phone</strong><br />(two48)
-                2one2-4six44
+                <span class="icon">📞</span> <strong>Phone</strong><br />(248)
+                212-4644
               </p>
               <p>
                 <span class="icon">📍</span> <strong>Location</strong
                 ><br />Birmingham, MI
               </p>
+              <div class="social-icons">
+                <a href="#" class="social-icon">🐦</a>
+                <a href="#" class="social-icon">📸</a>
+                <a href="#" class="social-icon">🎮</a>
+                <a href="#" class="social-icon">🎬</a>
+              </div>
             </div>
             <form
               class="contact-form"
-              onsubmit="event.preventDefault(); alert('Message submitted! (This is just a mockup for now.)')"
+              onsubmit="event.preventDefault(); submitForm()"
             >
               <label>Name</label>
               <input type="text" placeholder="Your name" required />
@@ -355,6 +382,25 @@
               <button type="submit">Submit</button>
             </form>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Game Window -->
+    <div id="game" class="popup-window hidden">
+      <div class="window-header">
+        <span>TIMESHIP.EXE</span>
+        <button class="maximize">▭</button>
+        <button class="minimize">_</button>
+        <button class="close" onclick="closeWindow('game')">X</button>
+      </div>
+      <div class="window-content game-container">
+        <div id="game-canvas"></div>
+        <div class="game-instructions">
+          <h3>Time Ship Controls</h3>
+          <p>Arrow keys to navigate</p>
+          <p>Reach the port to trade and rest</p>
+          <p>Watch your Time Energy!</p>
         </div>
       </div>
     </div>
@@ -370,10 +416,14 @@
     </div>
 
     <div id="start-menu">
-      <a href="#" onclick="openWindow('about')">About</a>
-      <a href="#" onclick="openWindow('projects')">Projects</a>
-      <a href="#" onclick="openWindow('resume')">Resume</a>
-      <a href="#" onclick="openWindow('contact')">Contact</a>
+      <a href="#" onclick="openWindow('about'); playBlip()">About</a>
+      <a href="#" onclick="openWindow('projects'); playBlip()">Projects</a>
+      <a href="#" onclick="openWindow('resume'); playBlip()">Resume</a>
+      <a href="#" onclick="openWindow('contact'); playBlip()">Contact</a>
+      <a href="#" onclick="openWindow('game'); playBlip()">Time Ship</a>
+      <a href="#" onclick="openWindow('explorer'); playBlip()">Explorer</a>
+      <div class="menu-divider"></div>
+      <a href="#" onclick="toggleShutdown(); playBlip()">Shutdown</a>
     </div>
 
     <div id="context-menu" class="context-menu hidden">
@@ -384,13 +434,7 @@
       <div class="menu-item" onclick="minimizeFocusedWindow()">Minimize</div>
     </div>
 
-    <div class="menu-item" onclick="closeFocusedWindow()">Close</div>
-    <div class="menu-item" onclick="toggleFocusedMaximize()">
-      Maximize/Restore
-    </div>
-    <div class="menu-item" onclick="minimizeFocusedWindow()">Minimize</div>
-
-    <!-- 3. Optional Shutdown Overlay -->
+    <!-- Shutdown Overlay -->
     <div id="shutdown-overlay" class="hidden">
       <div class="shutdown-content">
         <p>[ SYSTEM TERMINATION IN PROGRESS ]</p>
@@ -398,7 +442,7 @@
       </div>
     </div>
 
-    <!-- 4. Optional Explorer Window -->
+    <!-- Explorer Window -->
     <div id="explorer" class="popup-window hidden">
       <div class="window-header">
         <span>EXPLORER.EXE</span>
@@ -417,20 +461,28 @@
           <div class="file" ondblclick="openWindow('app_glitchlab')">
             🧪 glitch_lab.app
           </div>
+          <div class="file" ondblclick="openWindow('game')">
+            🚀 timeship.exe
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Add these other fake windows as siblings to your other windows (like About, Resume, etc.) -->
+    <!-- Add these other fake windows -->
     <div id="app_installer" class="popup-window hidden">
       <div class="window-header">
         <span>INSTALL_ALT.EXE</span>
         <button class="close" onclick="closeWindow('app_installer')">X</button>
       </div>
       <div class="window-content">
-        <p>Installing Alt Flesh toolkit...</p>
-        <p>Status: <span class="typewriter" data-text="> success"></span></p>
-        <button onclick="closeWindow('app_installer')">OK</button>
+        <div class="installer-content">
+          <h3>Installing Alt Flesh toolkit...</h3>
+          <div class="progress-bar">
+            <div class="progress-fill"></div>
+          </div>
+          <p>Status: <span class="typewriter" data-text="> success"></span></p>
+          <button onclick="closeWindow('app_installer')">OK</button>
+        </div>
       </div>
     </div>
 
@@ -440,8 +492,15 @@
         <button class="close" onclick="closeWindow('app_reader')">X</button>
       </div>
       <div class="window-content">
-        <p>They say the signal began humming in the ruins...</p>
-        <p>More to come.</p>
+        <div class="text-reader">
+          <div class="text-content">
+            <p>They say the signal began humming in the ruins...</p>
+            <p>The old networks never truly died, they just went dormant.</p>
+            <p>Some believe the Alt Flesh protocol was designed to bridge the gap between digital consciousness and analog reality.</p>
+            <p>But who would want to live in both worlds at once?</p>
+            <p class="blink">_</p>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -451,8 +510,16 @@
         <button class="close" onclick="closeWindow('app_glitchlab')">X</button>
       </div>
       <div class="window-content">
-        <p>⚠ Experimental Build Detected ⚠</p>
-        <p>Rendering synthwave particles...</p>
+        <div class="glitchlab-content">
+          <p>⚠ Experimental Build Detected ⚠</p>
+          <p>Rendering synthwave particles...</p>
+          <canvas id="glitchlab-canvas" width="400" height="300"></canvas>
+          <div class="glitchlab-controls">
+            <button onclick="toggleGlitchEffect()">Toggle Effect</button>
+            <input type="range" min="1" max="100" value="50" id="glitch-intensity">
+            <label for="glitch-intensity">Intensity</label>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -460,76 +527,39 @@
       <div
         class="desktop-icon"
         style="top: 100px; left: 50px"
-        ondblclick="openWindow('about')"
+        ondblclick="openWindow('about'); playBlip()"
       >
-        <img src="/icons/about.png" alt="About" />
+        <img src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/about-icon.png" alt="About" />
         <div class="icon-label">About</div>
       </div>
       <div
         class="desktop-icon"
         style="top: 180px; left: 50px"
-        ondblclick="openWindow('projects')"
+        ondblclick="openWindow('projects'); playBlip()"
       >
-        <img src="/icons/projects.png" alt="Projects" />
+        <img src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/projects-icon.png" alt="Projects" />
         <div class="icon-label">Projects</div>
       </div>
       <div
         class="desktop-icon"
         style="top: 260px; left: 50px"
-        ondblclick="openWindow('explorer')"
+        ondblclick="openWindow('explorer'); playBlip()"
       >
-        <img src="/icons/folder.png" alt="Explorer" />
+        <img src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/folder-icon.png" alt="Explorer" />
         <div class="icon-label">Files</div>
       </div>
-    </div>
-
-    <!-- Main Script -->
-    <script src="/script.js"></script>
-
-  
-      <div class="menu-item" onclick="closeFocusedWindow()">Close</div>
-      <div class="menu-item" onclick="toggleFocusedMaximize()">
-        Maximize/Restore
+      <div
+        class="desktop-icon"
+        style="top: 340px; left: 50px"
+        ondblclick="openWindow('game'); playBlip()"
+      >
+        <img src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/game-icon.png" alt="Game" />
+        <div class="icon-label">Time Ship</div>
       </div>
-      <div class="menu-item" onclick="minimizeFocusedWindow()">Minimize</div>
- 
-  <div class="shutdown-content">
-    <p>[ SYSTEM TERMINATION IN PROGRESS ]</p>
-    <p>Goodnight, cowboy.</p>
-  </div>
-    
-  <div class="window-header">
-    <span>EXPLORER.EXE</span>
-    <button class="maximize">▭</button>
-    <button class="minimize">_</button>
-    <button class="close" onclick="closeWindow('explorer')">X</button>
-  </div>
-  <div class="window-content">
-    <div class="file-grid">
-      <div class="file" ondblclick="openWindow('app_installer')">💾 install_altflesh.exe</div>
-      <div class="file" ondblclick="openWindow('app_reader')">📄 lore_notes.txt</div>
-      <div class="file" ondblclick="openWindow('app_glitchlab')">🧪 glitch_lab.app</div>
     </div>
-  </div>
-    
-  <div class="window-header">
-    <span>NOTES.TXT</span>
-    <button class="close" onclick="closeWindow('app_reader')">X</button>
-  </div>
-  <div class="window-content">
-    <p>They say the signal began humming in the ruins...</p>
-    <p>More to come.</p>
-  </div>
 
-  <div class="window-header">
-    <span>GLITCH_LAB.APP</span>
-    <button class="close" onclick="closeWindow('app_glitchlab')">X</button>
-  </div>
-  <div class="window-content">
-    <p>⚠ Experimental Build Detected ⚠</p>
-    <p>Rendering synthwave particles...</p>
-  </div>
-
-    
+    <!-- Main Scripts -->
+    <script src="/script.js"></script>
+    <script src="/main.js"></script>
   </body>
 </html>
