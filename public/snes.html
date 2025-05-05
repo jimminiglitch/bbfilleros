@@ -1,61 +1,78 @@
-<!-- public/snes.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <title>SNES.EXE</title>
   <style>
-    html, body, #emu { margin:0; padding:0; width:100%; height:100%; background:black; display:flex; flex-direction:column; }
-    #menu { background: rgba(0,0,0,0.9); padding: 0.5rem; color: var(--neon-cyan); font-family: 'Press Start 2P', monospace; display:flex; gap:1rem; }
-    #menu button { background: transparent; border: 2px solid var(--neon-purple); padding:0.5rem; cursor:pointer; color: var(--neon-purple); }
-    #emu { flex:1; }
+    html, body, #emu {
+      margin: 0; padding: 0;
+      width: 100%; height: 100%;
+      background: black;
+      display: flex; flex-direction: column;
+    }
+    #menu {
+      background: rgba(0,0,0,0.9);
+      padding: 0.5rem;
+      font-family: 'Press Start 2P', monospace;
+      color: #00f0ff; /* neon-cyan */
+      display: flex; flex-wrap: wrap; gap: 0.5rem;
+    }
+    #menu button {
+      background: transparent;
+      border: 2px solid #a9a1ff; /* neon-purple */
+      padding: 0.4rem 0.8rem;
+      cursor: pointer;
+      color: #a9a1ff;
+      font-size: 0.7rem;
+    }
+    #emu { flex: 1; }
   </style>
+
+  <!-- 1️⃣ Include EmulatorJS from a CDN -->
   <script src="https://cdn.jsdelivr.net/npm/emulatorjs@1.9.3/dist/emu.min.js"></script>
 </head>
 <body>
-  <div id="menu">
-    <!-- Buttons will be injected here -->
-  </div>
+  <!-- 2️⃣ Game-selector bar -->
+  <div id="menu"></div>
+  <!-- 3️⃣ Canvas/container for SNES core -->
   <div id="emu"></div>
 
   <script>
-    // 1) List your games here:
+    // 4️⃣ Your SNES ROMs go here:
     const games = {
-      "Shadowrun": "https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/Shadowrun%20(USA).sfc?v=1746468888283",  
-      "New Horizons":        "https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/New%20Horizons%20(USA).sfc?v=1746467603953"
-      // → add more key: URL pairs as needed
+      "New Horizons (USA)": "https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/New%20Horizons%20(USA).sfc?v=1746467603953",
+      "Shadowrun"    : "https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/Shadowrun%20(USA).sfc?v=1746468888283",
+      // ← add more "Label": "URL" entries here
     };
 
-    const menu = document.getElementById("menu"),
-          emuContainer = document.getElementById("emu");
-    let dos;  // our EmulatorJS instance
+    const menuEl = document.getElementById("menu");
+    const emuEl  = document.getElementById("emu");
+    let instance = null;
 
-    // 2) Build the selector buttons
-    Object.entries(games).forEach(([name, url]) => {
+    // build a button for each game
+    Object.entries(games).forEach(([label, url]) => {
       const btn = document.createElement("button");
-      btn.textContent = name;
-      btn.onclick = () => loadGame(url);
-      menu.appendChild(btn);
+      btn.textContent = label;
+      btn.onclick = () => launchROM(url);
+      menuEl.appendChild(btn);
     });
 
-    // 3) Load a game (destroys old instance if any)
-    function loadGame(romUrl) {
-      // clear old
-      emuContainer.innerHTML = "";
-      // spin up a fresh emulator
-      dos = new EmulatorJS({
-        element: emuContainer,
-        system:  'snes',
+    // instantiate or re-instantiate the emulator
+    function launchROM(romUrl) {
+      emuEl.innerHTML = "";  // kill previous instance
+      instance = new EmulatorJS({
+        element: emuEl,
+        system:  "snes",
         rom:      romUrl,
-        onStart:  () => console.log("Loaded", romUrl),
-        onError:  e => console.error("Emu error", e)
+        onStart:  () => console.log("Loaded SNES ROM:", romUrl),
+        onError:  e => console.error("EmulatorJS error:", e)
       });
     }
 
-    // 4) Auto-load the first one
+    // when the page first loads, auto-launch the first game
     window.addEventListener("DOMContentLoaded", () => {
-      const firstUrl = Object.values(games)[0];
-      if (firstUrl) loadGame(firstUrl);
+      const first = Object.values(games)[0];
+      if (first) launchROM(first);
     });
   </script>
 </body>

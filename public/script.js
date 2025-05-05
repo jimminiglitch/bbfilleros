@@ -125,12 +125,32 @@ function closeWindow(id) {
   const icon = document.getElementById(`taskbar-icon-${id}`);
   if (icon) icon.remove();
 
-  // SPECIAL: if this is SNES.EXE, remove its iframe
+// wrap your existing openWindow to handle SNES reload
+const origOpen = openWindow;
+openWindow = id => {
+  origOpen(id);
   if (id === "snes") {
-    const content = win.querySelector(".window-content");
-    const old = content.querySelector("iframe");
-    if (old) old.remove();
+    // force the iframe to reload by resetting its src
+    const win = document.getElementById("snes");
+    const iframe = win.querySelector("iframe");
+    if (iframe) {
+      iframe.src = "/snes.html";
+    }
   }
+};
+
+// wrap closeWindow to optionally tear it down
+const origClose = closeWindow;
+closeWindow = id => {
+  origClose(id);
+  if (id === "snes") {
+    // remove the iframe entirely so next open is fresh
+    const win = document.getElementById("snes");
+    const iframe = win.querySelector("iframe");
+    if (iframe) iframe.remove();
+  }
+};
+
 }
 
 // Toggle maximize / restore
