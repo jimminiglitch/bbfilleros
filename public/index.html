@@ -80,7 +80,7 @@
     </div>
 
     <!-- Nature ICON -->
-    <div class="desktop-icon" id="icon-gallery" data-window="gallery">
+    <div class="desktop-icon" id="icon-nature" data-window="nature">
       <img
         src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/VaporTree.png?v=1746411815542"
         alt="Nature"
@@ -251,30 +251,29 @@
       </div>
     </div>
 
-    <!-- GALLERY.EXE -->
-    <div id="gallery" class="popup-window hidden">
-      <div class="window-header">
-        <span>GALLERY.EXE</span>
-        <button class="maximize">▭</button>
-        <button class="minimize">_</button>
-        <button class="close" onclick="closeWindow('gallery')">X</button>
-      </div>
-      <div
-        class="window-content"
-        style="display: flex; flex-direction: column; align-items: center"
-      >
-        <img
-          id="gallery-img"
-          src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/project1.png?v=1"
-          alt="Gallery"
-          style="max-width: 100%; max-height: 80vh"
-        />
-        <div style="margin-top: 10px">
-          <button onclick="prevImage()">◀ Prev</button>
-          <button onclick="nextImage()">Next ▶</button>
-        </div>
-      </div>
+   <div id="nature" class="popup-window hidden">
+  <div class="window-header">
+    <span>NATURE.EXE</span>
+    <button class="maximize">▭</button>
+    <button class="minimize">_</button>
+    <button class="close" onclick="closeWindow('nature')">X</button>
+  </div>
+  <div
+    class="window-content"
+    style="display: flex; flex-direction: column; align-items: center;"
+  >
+    <img
+      id="nature-img"
+      src=""
+      alt="Nature Slideshow"
+      style="max-width: 100%; max-height: 80vh;"
+    />
+    <div style="margin-top: 10px;">
+      <button onclick="prevNature()">◀ Prev</button>
+      <button onclick="nextNature()">Next ▶</button>
     </div>
+  </div>
+</div>
 
     <!-- Canvas Starfield -->
     <canvas id="background-canvas"></canvas>
