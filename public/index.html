@@ -36,11 +36,11 @@
       </div>
     </div>
 
-    <!-- Main Container -->
+    <!-- Main Desktop Container -->
     <div class="container">
       <h1 class="glitch" data-text="Benjamin Filler">Benjamin Filler</h1>
 
-      <!-- Desktop Icons -->
+      <!-- Desktop Icons: everything lives in here -->
       <div id="desktop-icons">
         <div class="desktop-icon" id="icon-about" data-window="about">
           <img
@@ -49,6 +49,7 @@
           />
           <span>About</span>
         </div>
+
         <div class="desktop-icon" id="icon-projects" data-window="projects">
           <img
             src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/whodat.gif?v=1746365769069"
@@ -56,6 +57,7 @@
           />
           <span>Projects</span>
         </div>
+
         <div class="desktop-icon" id="icon-resume" data-window="resume">
           <img
             src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/DiskPic.png?v=1746392827503"
@@ -63,6 +65,7 @@
           />
           <span>Resume</span>
         </div>
+
         <div class="desktop-icon" id="icon-contact" data-window="contact">
           <img
             src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/EmailPic.png?v=1746392934373"
@@ -70,27 +73,26 @@
           />
           <span>Contact</span>
         </div>
-            <!-- NOTES ICON -->
-    <div class="desktop-icon" id="icon-notes" data-window="notes">
-      <img
-        src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/noteicon.png?v=1746411753417"
-        alt="Notes"
-      />
-      <span>Notes</span>
-    </div>
 
-    <!-- Nature ICON -->
-    <div class="desktop-icon" id="icon-nature" data-window="nature">
-      <img
-        src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/VaporTree.png?v=1746411815542"
-        alt="Nature"
-      />
-      <span>Nature</span>
-    </div>
+        <div class="desktop-icon" id="icon-notes" data-window="notes">
+          <img
+            src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/noteicon.png?v=1746411753417"
+            alt="Notes"
+          />
+          <span>Notes</span>
+        </div>
+
+        <div class="desktop-icon" id="icon-nature" data-window="nature">
+          <img
+            src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/VaporTree.png?v=1746411815542"
+            alt="Nature"
+          />
+          <span>Nature</span>
         </div>
       </div>
+    </div>
 
-    <!-- About Window -->
+    <!-- ABOUT Window -->
     <div id="about" class="popup-window hidden">
       <div class="window-header">
         <span>ABOUT.EXE</span>
@@ -102,13 +104,14 @@
         <div class="about-inner">
           <h2>👾 WHO IS BENJAMIN FILLER?</h2>
           <p>
-            I'm a media creator, director, and narrative systems designer from
-            Michigan. I tell stories across film, games, and interactive space.
+            I'm a media creator, director, and narrative systems designer
+            from Michigan. I tell stories across film, games, and interactive
+            space.
           </p>
           <p>
-            My work blends cinematic technique, code-based immersion, and analog
-            grit. I like strange archives, gripping installations, damaged
-            footage, modular synths, and custom hardware.
+            My work blends cinematic technique, code-based immersion, and
+            analog grit. I like strange archives, gripping installations,
+            damaged footage, modular synths, and custom hardware.
           </p>
           <h3>💾 KEYWORDS</h3>
           <ul>
@@ -122,7 +125,7 @@
       </div>
     </div>
 
-    <!-- Projects Window -->
+    <!-- PROJECTS Window -->
     <div id="projects" class="popup-window hidden">
       <div class="window-header">
         <span>PROJECTS.EXE</span>
@@ -144,10 +147,7 @@
             </p>
             <div class="terminal-line">&gt; Ready...</div>
           </div>
-          <div
-            class="project-card"
-            onclick="launchProject(this, 'R3D3CH0.sys')"
-          >
+          <div class="project-card" onclick="launchProject(this, 'R3D3CH0.sys')">
             <h3 class="project-name">R3D3CH0</h3>
             <p class="project-desc">
               Cyberpunk short story reimagined as ArcGIS map and mobile
@@ -192,7 +192,7 @@
       </div>
     </div>
 
-    <!-- Resume Window -->
+    <!-- RESUME Window -->
     <div id="resume" class="popup-window hidden">
       <div class="window-header">
         <span>RESUME.EXE</span>
@@ -200,16 +200,16 @@
         <button class="minimize">_</button>
         <button class="close" onclick="closeWindow('resume')">X</button>
       </div>
-      <div class="window-content" style="padding: 0">
+      <div class="window-content" style="padding:0">
         <iframe
           src="/resume.html"
-          style="width: 100%; height: 100%; border: none"
+          style="width:100%; height:100%; border:none"
           allowfullscreen
         ></iframe>
       </div>
     </div>
 
-    <!-- Contact Window -->
+    <!-- CONTACT Window -->
     <div id="contact" class="popup-window hidden">
       <div class="window-header">
         <span>CONTACT.EXE</span>
@@ -217,15 +217,16 @@
         <button class="minimize">_</button>
         <button class="close" onclick="closeWindow('contact')">X</button>
       </div>
-      <div class="window-content" style="padding: 0">
+      <div class="window-content" style="padding:0">
         <iframe
           src="/contact.html"
-          style="width: 100%; height: 100%; border: none"
+          style="width:100%; height:100%; border:none"
           allowfullscreen
         ></iframe>
       </div>
     </div>
-    <!-- NOTES.EXE -->
+
+    <!-- NOTES Window -->
     <div id="notes" class="popup-window hidden">
       <div class="window-header">
         <span>NOTES.EXE</span>
@@ -236,49 +237,47 @@
       <div class="window-content">
         <textarea
           id="notes-area"
-          style="
-            width: 100%;
-            height: 100%;
-            background: black;
-            color: #c1bfff;
-            border: none;
-            resize: none;
-            font-family: monospace;
-            padding: 10px;
-          "
           placeholder="Type your notes here…"
+          style="
+            width:100%; height:100%;
+            background:black; color:#c1bfff;
+            border:none; resize:none;
+            font-family:monospace;
+            padding:10px;
+          "
         ></textarea>
       </div>
     </div>
 
-   <div id="nature" class="popup-window hidden">
-  <div class="window-header">
-    <span>NATURE.EXE</span>
-    <button class="maximize">▭</button>
-    <button class="minimize">_</button>
-    <button class="close" onclick="closeWindow('nature')">X</button>
-  </div>
-  <div
-    class="window-content"
-    style="display: flex; flex-direction: column; align-items: center;"
-  >
-    <img
-      id="nature-img"
-      src=""
-      alt="Nature Slideshow"
-      style="max-width: 100%; max-height: 80vh;"
-    />
-    <div style="margin-top: 10px;">
-      <button onclick="prevNature()">◀ Prev</button>
-      <button onclick="nextNature()">Next ▶</button>
+    <!-- NATURE Window -->
+    <div id="nature" class="popup-window hidden">
+      <div class="window-header">
+        <span>NATURE.EXE</span>
+        <button class="maximize">▭</button>
+        <button class="minimize">_</button>
+        <button class="close" onclick="closeWindow('nature')">X</button>
+      </div>
+      <div
+        class="window-content"
+        style="display:flex; flex-direction:column; align-items:center;"
+      >
+        <img
+          id="nature-img"
+          src=""
+          alt="Nature Slideshow"
+          style="max-width:100%; max-height:80vh;"
+        />
+        <div style="margin-top:10px;">
+          <button onclick="prevNature()">◀ Prev</button>
+          <button onclick="nextNature()">Next ▶</button>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
 
-    <!-- Canvas Starfield -->
+    <!-- Starfield Background -->
     <canvas id="background-canvas"></canvas>
 
-    <!-- Start Bar & Clock -->
+    <!-- Taskbar & Clock -->
     <div id="start-bar">
       <button id="start-button">START</button>
       <div id="taskbar-icons"></div>
@@ -291,6 +290,8 @@
       <a href="#" onclick="openWindow('projects')">Projects</a>
       <a href="#" onclick="openWindow('resume')">Resume</a>
       <a href="#" onclick="openWindow('contact')">Contact</a>
+      <a href="#" onclick="openWindow('notes')">Notes</a>
+      <a href="#" onclick="openWindow('nature')">Nature</a>
     </div>
 
     <!-- Main Script -->
