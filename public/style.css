@@ -184,7 +184,7 @@ body {
 
 /* Header bar */
 .popup-window .window-header {
-  background: #111;
+  background: #111111;
   color: var(--neon-green);
   font-family: var(--font-press-start);
   font-size: 0.8rem;
@@ -230,7 +230,7 @@ body {
   margin-bottom: 1rem;
 }
 .boot-screen .boot-log {
-  width: 80%;
+  width: 100%;
   height: 200px;
   background: black;
   color: var(--neon-green);
@@ -241,8 +241,8 @@ body {
   margin-bottom: 1rem;
 }
 .boot-screen .progress-container {
-  width: 80%;
-  background: #333;
+  width: 100%;
+  background: #333333;
   height: 8px;
   border-radius: 4px;
 }
@@ -250,7 +250,7 @@ body {
   width: 0;
   height: 100%;
   background: var(--neon-cyan);
-  transition: width 0.2s ease;
+  transition: width 1s ease;
 }
 
 /*─────────────────────────────────────────────────────────────────────────────
@@ -260,7 +260,7 @@ body {
   position: fixed;
   bottom: 0; left: 0; right: 0;
   height: 30px;
-  background: rgba(0,0,0,0.8);
+  background: rgba(0.8,0.8,0.8,0.8);
   display: flex;
   align-items: center;
   padding: 0 0.5rem;
@@ -268,9 +268,9 @@ body {
   z-index: 500;
 }
 .taskbar-icon {
-  background: none;
-  border: none;
-  color: white;
+  background: cyan;
+  border: violet;
+  color: pink;
   margin-right: 0.5rem;
   cursor: pointer;
   font-size: 0.8rem;
@@ -294,7 +294,7 @@ body {
 }
 #start-menu a {
   padding: 0.5rem 1rem;
-  color: white;
+  color: pink;
   text-decoration: none;
   font-size: 0.8rem;
 }
