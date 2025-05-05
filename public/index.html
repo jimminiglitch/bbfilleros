@@ -6,7 +6,11 @@
     <title>Benjamin Filler</title>
 
     <!-- Favicon -->
-    <link rel="icon" href="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/Benny.png?v=1746392528967" type="image/png" />
+    <link
+      rel="icon"
+      href="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/Benny.png?v=1746392528967"
+      type="image/png"
+    />
 
     <!-- Google Fonts -->
     <link
@@ -40,7 +44,7 @@
     <div class="container">
       <h1 class="glitch" data-text="Benjamin Filler">Benjamin Filler</h1>
 
-      <!-- Desktop Icons: everything lives in here -->
+      <!-- Desktop Icons -->
       <div id="desktop-icons">
         <div class="desktop-icon" id="icon-about" data-window="about">
           <img
@@ -129,7 +133,6 @@
           />
           <span>Snake</span>
         </div>
-
       </div>
     </div>
 
@@ -300,7 +303,10 @@
         <button class="maximize">▭</button>
         <button class="close" onclick="closeWindow('nature')">X</button>
       </div>
-      <div class="window-content" style="display:flex; flex-direction:column; align-items:center;">
+      <div
+        class="window-content"
+        style="display:flex; flex-direction:column; align-items:center;"
+      >
         <img
           id="nature-img"
           src=""
@@ -384,7 +390,10 @@
         style="display:flex; flex-direction:column; align-items:center; padding:1rem; gap:1rem;"
       >
         <audio id="music-player"></audio>
-        <div id="now-playing" style="font-family:var(--font-vt323); color:var(--neon-cyan);">
+        <div
+          id="now-playing"
+          style="font-family:var(--font-vt323); color:var(--neon-cyan);"
+        >
           ▶ Loading…
         </div>
         <div style="display:flex; gap:1rem;">
@@ -392,8 +401,10 @@
           <button onclick="togglePlay()">Play/Pause</button>
           <button onclick="nextTrack()">Next ▶</button>
         </div>
-        <ul id="playlist" style="list-style:none; padding-left:0; max-height:150px; overflow-y:auto; width:100%;">
-        </ul>
+        <ul
+          id="playlist"
+          style="list-style:none; padding-left:0; max-height:150px; overflow-y:auto; width:100%;"
+        ></ul>
       </div>
     </div>
 
@@ -405,12 +416,14 @@
         <button class="maximize">▭</button>
         <button class="close" onclick="closeWindow('snake')">X</button>
       </div>
-      <div class="window-content" style="padding:0; display:flex; justify-content:center; align-items:center;">
+      <div
+        class="window-content"
+        style="padding:0; display:flex; justify-content:center; align-items:center;"
+      >
         <canvas id="snake-canvas" width="400" height="400"></canvas>
       </div>
     </div>
 
-  
     <!-- Starfield Background -->
     <canvas id="background-canvas"></canvas>
 
