@@ -1,25 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>SNES.EXE</title>
-  <style>html,body,#emu{margin:0;padding:0;width:100%;height:100%;background:black;}</style>
+  <style>
+    html, body, #game {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background: black;
+    }
+  </style>
 </head>
 <body>
-  <div id="emu"></div>
+  <!-- this is where the emulator will mount -->
+  <div id="game"></div>
 
-  <!-- 1) real EmulatorJS script -->
-  <script src="https://cdn.emulatorjs.org/stable/data/loader.js"></script>
+  <script type="text/javascript">
+    // 1️⃣ Which DOM element to mount into
+    EJS_player   = '#game';
 
-  <!-- 2) instantiate your SNES ROM -->
-  <script>
-    const emu = new EmulatorJS({
-      element: document.getElementById('emu'),
-      system:  'snes',
-      romUrl:  'https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/New%20Horizons%20(USA).sfc?v=1746467419915',
-      onStart: () => console.log('SNES ready'),
-      onError: e => console.error(e)
-    });
+    // 2️⃣ Your ROM URL
+    EJS_gameUrl  = 'https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/New%20Horizons%20(USA).sfc?v=1746467603953';
+
+    // 3️⃣ Core selection
+    EJS_core     = 'snes';
+
+    // 4️⃣ Optional SNES extras
+    EJS_mouse    = false; // enable SNES mouse?
+    EJS_multitap = false; // enable multitap port emulation?
   </script>
+
+  <!-- 5️⃣ Pull in the EmulatorJS loader from the official CDN -->
+  <script src="https://www.emulatorjs.com/loader.js"></script>
 </body>
 </html>
