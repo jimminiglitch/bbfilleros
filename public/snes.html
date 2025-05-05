@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SNES Game</title>
+  <style>
+    html, body, #emu { margin:0; padding:0; width:100%; height:100%; background:black; }
+  </style>
+</head>
+<body>
+  <div id="emu"></div>
+
+  <!-- 1️⃣ Pull in EmulatorJS -->
+  <script src="https://cdn.jsdelivr.net/npm/emulatorjs@1.6.0/dist/emulator.min.js"></script>
+  <script>
+    // 2️⃣ Instantiate the SNES emulator in our #emu container:
+    const emu = new EmulatorJS({
+      element: document.getElementById('emu'),
+      system:  'snes',                                // SNES core
+      rom:     'https://cdn.glitch.global/abcd1234-.../SuperMarioWorld.sfc?v=1746460000000',
+      onStart: () => console.log('SNES emulator ready'),
+      onError: e => console.error('EmulatorJS error', e)
+    });
+  </script>
+</body>
+</html>
