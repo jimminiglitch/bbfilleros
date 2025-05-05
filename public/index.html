@@ -89,7 +89,7 @@
           />
           <span>Nature</span>
         </div>
-        <!-- …other icons… -->
+
         <div class="desktop-icon" id="icon-video1" data-window="video1">
           <img
             src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/VaporTV.png?v=1746411817932"
@@ -121,20 +121,24 @@
           />
           <span>Music</span>
         </div>
+
+        <div class="desktop-icon" id="icon-snake" data-window="snake">
+          <img
+            src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/TrippyWorm.png?v=1746410810962"
+            alt="Snake"
+          />
+          <span>Snake</span>
+        </div>
+
+        <div class="desktop-icon" id="icon-snes" data-window="snes">
+          <img
+            src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/DiskPic.png?v=1746392827503"
+            alt="SNES"
+          />
+          <span>SNES</span>
+        </div>
       </div>
     </div>
-    
-    <div class="desktop-icon" id="icon-snake" data-window="snake">
-  <img src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/TrippyWorm.png?v=1746410810962" alt="Snake" />
-  <span>Snake</span>
-</div>
-    
-<div class="desktop-icon" id="icon-snes" data-window="snes">
-  <img src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/DiskPic.png?v=1746392827503" alt="SNES">
-  <span>SNES</span>
-</div>
-
-
 
     <!-- ABOUT Window -->
     <div id="about" class="popup-window hidden">
@@ -149,13 +153,12 @@
           <h2>👾 WHO IS BENJAMIN FILLER?</h2>
           <p>
             I'm a media creator, director, and narrative systems designer from
-            Michigan. I share stories through words, images, sounds, games, and
-            interactive spaces.
+            Michigan. I tell stories across film, games, and interactive space.
           </p>
           <p>
             My work blends cinematic technique, code-based immersion, and analog
-            grit. I like strange archives, gripping installation, damaged
-            footage, modular synthetics, and custom hardware.
+            grit. I like strange archives, gripping installations, damaged
+            footage, modular synths, and custom hardware.
           </p>
           <h3>💾 KEYWORDS</h3>
           <ul>
@@ -191,10 +194,7 @@
             </p>
             <div class="terminal-line">&gt; Ready...</div>
           </div>
-          <div
-            class="project-card"
-            onclick="launchProject(this, 'R3D3CH0.sys')"
-          >
+          <div class="project-card" onclick="launchProject(this, 'R3D3CH0.sys')">
             <h3 class="project-name">R3D3CH0</h3>
             <p class="project-desc">
               Cyberpunk short story reimagined as ArcGIS map and mobile
@@ -247,10 +247,10 @@
         <button class="maximize">▭</button>
         <button class="close" onclick="closeWindow('resume')">X</button>
       </div>
-      <div class="window-content" style="padding: 0">
+      <div class="window-content">
         <iframe
           src="/resume.html"
-          style="width: 100%; height: 100%; border: none"
+          style="width:100%; height:100%; border:none; display:block;"
           allowfullscreen
         ></iframe>
       </div>
@@ -264,10 +264,10 @@
         <button class="maximize">▭</button>
         <button class="close" onclick="closeWindow('contact')">X</button>
       </div>
-      <div class="window-content" style="padding: 0">
+      <div class="window-content">
         <iframe
           src="/contact.html"
-          style="width: 100%; height: 100%; border: none"
+          style="width:100%; height:100%; border:none; display:block;"
           allowfullscreen
         ></iframe>
       </div>
@@ -286,14 +286,14 @@
           id="notes-area"
           placeholder="Type your notes here…"
           style="
-            width: 100%;
-            height: 100%;
-            background: black;
-            color: #c1bfff;
-            border: none;
-            resize: none;
-            font-family: monospace;
-            padding: 10px;
+            width:100%;
+            height:100%;
+            background:black;
+            color:#c1bfff;
+            border:none;
+            resize:none;
+            font-family:monospace;
+            padding:10px;
           "
         ></textarea>
       </div>
@@ -307,17 +307,14 @@
         <button class="maximize">▭</button>
         <button class="close" onclick="closeWindow('nature')">X</button>
       </div>
-      <div
-        class="window-content"
-        style="display: flex; flex-direction: column; align-items: center"
-      >
+      <div class="window-content" style="display:flex; flex-direction:column; align-items:center;">
         <img
           id="nature-img"
           src=""
           alt="Nature Slideshow"
-          style="max-width: 100%; max-height: 80vh"
+          style="max-width:100%; max-height:80vh;"
         />
-        <div style="margin-top: 10px">
+        <div style="margin-top:10px;">
           <button onclick="prevNature()">◀ Prev</button>
           <button onclick="nextNature()">Next ▶</button>
         </div>
@@ -328,7 +325,6 @@
     <div id="video1" class="popup-window hidden">
       <div class="window-header">
         <span>JOYFUL.EXE</span>
-        <!-- note: I've swapped minimize & maximize here per our last fix -->
         <button class="minimize">_</button>
         <button class="maximize">▭</button>
         <button class="close" onclick="closeWindow('video1')">X</button>
@@ -339,17 +335,15 @@
           src="https://cdn.glitch.me/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/A%20Joyful%20and%20Meaningful%20Life.mp4?v=1746453364188"
           controls
           autoplay
-          style="width: 100%; height: 100%; background: black"
-        >
-          Your browser does not support the video tag.
-        </video>
+          style="width:100%; height:100%; background:black;"
+        ></video>
       </div>
     </div>
 
+    <!-- VIDEO2.EXE -->
     <div id="video2" class="popup-window hidden">
       <div class="window-header">
         <span>PAPAZ.EXE</span>
-        <!-- note: I've swapped minimize & maximize here per our last fix -->
         <button class="minimize">_</button>
         <button class="maximize">▭</button>
         <button class="close" onclick="closeWindow('video2')">X</button>
@@ -360,17 +354,15 @@
           src="https://cdn.glitch.me/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/SEPChallengeVideo2.mp4?v=1746454142843"
           controls
           autoplay
-          style="width: 100%; height: 100%; background: black"
-        >
-          Your browser does not support the video tag.
-        </video>
+          style="width:100%; height:100%; background:black;"
+        ></video>
       </div>
     </div>
 
+    <!-- VIDEO3.EXE -->
     <div id="video3" class="popup-window hidden">
       <div class="window-header">
         <span>ABSTRACT.EXE</span>
-        <!-- note: I've swapped minimize & maximize here per our last fix -->
         <button class="minimize">_</button>
         <button class="maximize">▭</button>
         <button class="close" onclick="closeWindow('video3')">X</button>
@@ -381,95 +373,67 @@
           src="https://cdn.glitch.me/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/SEP%20Challenge-Video%206.mov?v=1746456155714"
           controls
           autoplay
-          style="width: 100%; height: 100%; background: black"
-        >
-          Your browser does not support the video tag.
-        </video>
+          style="width:100%; height:100%; background:black;"
+        ></video>
       </div>
     </div>
 
-    <!-- 2️⃣ MUSIC.EXE Popup Window -->
+    <!-- MUSIC.EXE -->
     <div id="music" class="popup-window hidden">
       <div class="window-header">
         <span>MUSIC.EXE</span>
-        <!-- minimize & maximize order swapped as requested -->
         <button class="minimize">_</button>
         <button class="maximize">▭</button>
         <button class="close" onclick="closeWindow('music')">X</button>
       </div>
       <div
         class="window-content"
-        style="
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          padding: 1rem;
-          gap: 1rem;
-        "
+        style="display:flex; flex-direction:column; align-items:center; padding:1rem; gap:1rem;"
       >
-        <!-- Audio element (no native controls) -->
         <audio id="music-player"></audio>
-
-        <!-- Now playing info -->
-        <div
-          id="now-playing"
-          style="font-family: var(--font-vt323); color: var(--neon-cyan)"
-        >
+        <div id="now-playing" style="font-family:var(--font-vt323); color:var(--neon-cyan);">
           ▶ Loading…
         </div>
-
-        <!-- Controls -->
-        <div style="display: flex; gap: 1rem">
+        <div style="display:flex; gap:1rem;">
           <button onclick="prevTrack()">◀ Prev</button>
           <button onclick="togglePlay()">Play/Pause</button>
           <button onclick="nextTrack()">Next ▶</button>
         </div>
-
-        <!-- Playlist -->
-        <ul
-          id="playlist"
-          style="
-            list-style: none;
-            padding-left: 0;
-            max-height: 150px;
-            overflow-y: auto;
-            width: 100%;
-          "
-        >
-          <!-- JS will populate this -->
+        <ul id="playlist" style="list-style:none; padding-left:0; max-height:150px; overflow-y:auto; width:100%;">
         </ul>
       </div>
     </div>
 
-<div id="snake" class="popup-window hidden">
-  <div class="window-header">
-    <span>SNAKE.EXE</span>
-    <button class="minimize">_</button>
-    <button class="maximize">▭</button>
-    <button class="close" onclick="closeWindow('snake')">X</button>
-  </div>
-  <div class="window-content" style="padding:0; display:flex; justify-content:center; align-items:center;">
-    <canvas id="snake-canvas" width="400" height="400"></canvas>
-  </div>
-</div>
-  
-<div id="snes" class="popup-window hidden">
-  <div class="window-header">
-    <span>SNES.EXE</span>
-    <button class="minimize">_</button>
-    <button class="maximize">▭</button>
-    <button class="close" onclick="closeWindow('snes')">X</button>
-  </div>
-  <div class="window-content" style="padding:0">
-    <iframe
-      src="/snes.html"
-      style="width:100%; height:100%; border:none; display:block;"
-      allowfullscreen>
-    </iframe>
-  </div>
-</div>
+    <!-- SNAKE.EXE -->
+    <div id="snake" class="popup-window hidden">
+      <div class="window-header">
+        <span>SNAKE.EXE</span>
+        <button class="minimize">_</button>
+        <button class="maximize">▭</button>
+        <button class="close" onclick="closeWindow('snake')">X</button>
+      </div>
+      <div class="window-content" style="padding:0; display:flex; justify-content:center; align-items:center;">
+        <canvas id="snake-canvas" width="400" height="400"></canvas>
+      </div>
+    </div>
 
-    
+    <!-- SNES.EXE -->
+    <div id="snes" class="popup-window hidden">
+      <div class="window-header">
+        <span>SNES.EXE</span>
+        <button class="minimize">_</button>
+        <button class="maximize">▭</button>
+        <button class="close" onclick="closeWindow('snes')">X</button>
+      </div>
+      <div class="window-content" style="padding:0;">
+        <iframe
+          src="/snes.html"
+          style="width:100%; height:100%; border:none; display:block;"
+          allowfullscreen
+        ></iframe>
+      </div>
+    </div>
+
     <!-- Starfield Background -->
     <canvas id="background-canvas"></canvas>
 
@@ -488,6 +452,8 @@
       <a href="#" onclick="openWindow('contact')">Contact</a>
       <a href="#" onclick="openWindow('notes')">Notes</a>
       <a href="#" onclick="openWindow('nature')">Nature</a>
+      <a href="#" onclick="openWindow('snake')">Snake</a>
+      <a href="#" onclick="openWindow('snes')">SNES</a>
     </div>
 
     <!-- Main Script -->
