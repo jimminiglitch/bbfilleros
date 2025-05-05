@@ -345,3 +345,41 @@ function onSelectEnd() {
   document.removeEventListener('mousemove', onSelectMove);
 }
 window.addEventListener('mousedown', onSelectStart);
+// ─── NOTES.EXE LOGIC ─────────────────────────────────────────────────────
+const notesArea = document.getElementById('notes-area');
+// load saved notes on open
+window.addEventListener('load', () => {
+  const saved = localStorage.getItem('desktopNotes');
+  if (saved) notesArea.value = saved;
+});
+// save on blur
+notesArea.addEventListener('blur', () => {
+  localStorage.setItem('desktopNotes', notesArea.value);
+});
+
+// ─── GALLERY.EXE LOGIC ───────────────────────────────────────────────────
+const galleryImages = [
+  'https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/project1.png?v=1',
+  'https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/project2.png?v=1',
+  'https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/project3.png?v=1'
+];
+let galleryIndex = 0;
+const galleryImgEl = document.getElementById('gallery-img');
+
+function showImage(index) {
+  galleryIndex = (index + galleryImages.length) % galleryImages.length;
+  galleryImgEl.src = galleryImages[galleryIndex];
+}
+
+function nextImage() {
+  showImage(galleryIndex + 1);
+}
+
+function prevImage() {
+  showImage(galleryIndex - 1);
+}
+
+// initialize gallery on load
+window.addEventListener('load', () => {
+  showImage(0);
+});
