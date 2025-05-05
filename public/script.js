@@ -2,15 +2,6 @@
 //   Main Script (script.js)
 //────────────────────────────────────────
 
-// Play the blip sound effect
-function playBlip() {
-  const blip = document.getElementById("blip");
-  if (blip) {
-    blip.currentTime = 0;
-    blip.play();
-  }
-}
-
 // Open a window by ID
 function openWindow(id) {
   const win = document.getElementById(id);
@@ -25,6 +16,10 @@ function openWindow(id) {
   win.classList.add("active");
   win.style.display = "block";
   win.style.zIndex = getNextZIndex();
+  
+  const vid = win.querySelector('video');
+if (vid) vid.play().catch(()=>{});
+
 
   // Restore previous position/size if stored
   const stored = windowStates[id];
@@ -220,7 +215,6 @@ function initDesktopIcons() {
   document.querySelectorAll(".desktop-icon").forEach(icon => {
     icon.addEventListener("dblclick", () => {
       openWindow(icon.dataset.window);
-      playBlip();
     });
     icon.addEventListener("mousedown", e => {
       e.preventDefault();
