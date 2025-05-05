@@ -4,63 +4,81 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Benjamin Filler</title>
-    <link rel="stylesheet" href="/style.css" />
+
+    <!-- Favicon -->
+    <link rel="icon" href="/Benny.png" type="image/png" />
+
+    <!-- Google Fonts -->
     <link
       href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap"
       rel="stylesheet"
     />
+
+    <!-- Main Stylesheet -->
+    <link rel="stylesheet" href="/style.css" />
   </head>
   <body>
+    <!-- Scanlines Overlay -->
     <div class="scanlines"></div>
+
+    <!-- SFX & Ambience -->
     <audio id="blip" src="/blip.mp3"></audio>
     <audio id="bootSound" src="/blip.mp3"></audio>
+    <audio id="ambience" src="/synth-loop.mp3" autoplay loop></audio>
 
-   <!-- Boot Screen -->
-<div id="bootScreen" class="boot-screen">
-  <div class="boot-content">
-    <img
-      src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/whodat.gif?v=1746365769069"
-      alt="Tiger"
-      class="boot-tiger"
-    />
-
-    <!-- Console log -->
-    <pre id="boot-log" class="boot-log"></pre>
-
-    <!-- Neon progress bar -->
-    <div class="progress-container">
-      <div id="progress-bar" class="progress-bar"></div>
+    <!-- Boot Screen -->
+    <div id="bootScreen" class="boot-screen">
+      <div class="boot-content">
+        <img
+          src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/whodat.gif?v=1746365769069"
+          alt="Tiger"
+          class="boot-tiger"
+        />
+        <pre id="boot-log" class="boot-log"></pre>
+        <div class="progress-container">
+          <div id="progress-bar" class="progress-bar"></div>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
 
-
-    <!-- Header Section -->
+    <!-- Main Container -->
     <div class="container">
       <h1 class="glitch" data-text="Benjamin Filler">Benjamin Filler</h1>
-        <!-- DESKTOP ICONS -->
-  <div id="desktop-icons">
-    <div class="desktop-icon" id="icon-about" data-window="about">
-      <img src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/Benny.png?v=1746392528967" alt="About" />
-      <span>About</span>
-    </div>
-    <div class="desktop-icon" id="icon-projects" data-window="projects">
-      <img src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/whodat.gif?v=1746365769069" alt="Projects" />
-      <span>Projects</span>
-    </div>
-    <div class="desktop-icon" id="icon-resume" data-window="resume">
-      <img src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/DiskPic.png?v=1746392827503" alt="Resume" />
-      <span>Resume</span>
-    </div>
-    <div class="desktop-icon" id="icon-contact" data-window="contact">
-      <img src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/EmailPic.png?v=1746392934373" alt="Contact" />
-      <span>Contact</span>
-    </div>
-  </div>
 
+      <!-- Desktop Icons -->
+      <div id="desktop-icons">
+        <div class="desktop-icon" id="icon-about" data-window="about">
+          <img
+            src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/Benny.png?v=1746392528967"
+            alt="About"
+          />
+          <span>About</span>
+        </div>
+        <div class="desktop-icon" id="icon-projects" data-window="projects">
+          <img
+            src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/whodat.gif?v=1746365769069"
+            alt="Projects"
+          />
+          <span>Projects</span>
+        </div>
+        <div class="desktop-icon" id="icon-resume" data-window="resume">
+          <img
+            src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/DiskPic.png?v=1746392827503"
+            alt="Resume"
+          />
+          <span>Resume</span>
+        </div>
+        <div class="desktop-icon" id="icon-contact" data-window="contact">
+          <img
+            src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/EmailPic.png?v=1746392934373"
+            alt="Contact"
+          />
+          <span>Contact</span>
+        </div>
+      </div>
     </div>
 
-    <!-- WINDOWS -->
+    <!-- About Window -->
     <div id="about" class="popup-window hidden">
       <div class="window-header">
         <span>ABOUT.EXE</span>
@@ -80,7 +98,6 @@
             grit. I like strange archives, gripping installations, damaged
             footage, modular synths, and custom hardware.
           </p>
-
           <h3>💾 KEYWORDS</h3>
           <ul>
             <li>⛓ Experimental Documentary</li>
@@ -93,6 +110,7 @@
       </div>
     </div>
 
+    <!-- Projects Window -->
     <div id="projects" class="popup-window hidden">
       <div class="window-header">
         <span>PROJECTS.EXE</span>
@@ -103,7 +121,6 @@
       <div class="window-content">
         <div class="projects-inner">
           <h2 class="projects-title">🎮 PROJECTS.EXE</h2>
-
           <div
             class="project-card"
             onclick="launchProject(this, 'Fedora Diaries.exe')"
@@ -115,11 +132,7 @@
             </p>
             <div class="terminal-line">&gt; Ready...</div>
           </div>
-
-          <div
-            class="project-card"
-            onclick="launchProject(this, 'R3D3CH0.sys')"
-          >
+          <div class="project-card" onclick="launchProject(this, 'R3D3CH0.sys')">
             <h3 class="project-name">R3D3CH0</h3>
             <p class="project-desc">
               Cyberpunk short story reimagined as ArcGIS map and mobile
@@ -127,7 +140,6 @@
             </p>
             <div class="terminal-line">&gt; Ready...</div>
           </div>
-
           <div
             class="project-card"
             onclick="launchProject(this, 'ClydeCup2024.mov')"
@@ -139,7 +151,6 @@
             </p>
             <div class="terminal-line">&gt; Ready...</div>
           </div>
-
           <div
             class="project-card"
             onclick="launchProject(this, 'BirdingWithBrian.avi')"
@@ -151,8 +162,6 @@
             <div class="terminal-line">&gt; Ready...</div>
           </div>
         </div>
-
-        <!-- Splash overlay -->
         <div id="project-splash" class="hidden">
           <div class="splash-inner">
             <h2 class="splash-title">🔷 Launching...</h2>
@@ -168,6 +177,7 @@
       </div>
     </div>
 
+    <!-- Resume Window -->
     <div id="resume" class="popup-window hidden">
       <div class="window-header">
         <span>RESUME.EXE</span>
@@ -176,167 +186,140 @@
         <button class="close" onclick="closeWindow('resume')">X</button>
       </div>
       <div class="window-content">
-        <!DOCTYPE html>
-        <html lang="en">
-          <head>
-            <meta charset="UTF-8" />
-            <meta
-              name="viewport"
-              content="width=device-width, initial-scale=1.0"
-            />
-            <title>Benjamin Filler - Résumé</title>
-          </head>
-          <body>
-            <div class="container">
-              <div class="top-bar">
-                <a
-                  href="https://cdn.glitch.global/0ade3230-a4bb-4d2d-98fc-5cab2591127c/Benjamin%20Filler%20Resume%202025.pdf?v=1744722722267"
-                  class="btn"
-                  style="font-size: 1rem"
-                  >&#x2B07; Download PDF</a
-                >
+        <div class="resume-inner">
+          <div class="top-bar">
+            <a
+              href="/Benjamin-Filler-Resume-2025.pdf"
+              class="btn"
+              style="font-size: 1rem"
+              >&#x2B07; Download PDF</a
+            >
+          </div>
+          <h1>Benjamin Filler</h1>
+          <p
+            style="
+              text-align: center;
+              color: #c1bfff;
+              font-size: 1.5rem;
+              margin-bottom: 2.5rem;
+            "
+          >
+            bbfiller@umich.edu | (248) 212-4644 | Birmingham, MI
+          </p>
+
+          <div class="section">
+            <h2>Education</h2>
+            <p>
+              <span class="neon-label"
+                >The University of Michigan-Dearborn</span
+              ><br />
+              Bachelor of Arts — Media Production<br />
+              Minor: Game Studies and Design<br />
+              Dearborn, MI — Graduation: May 2026
+            </p>
+            <p>
+              <span class="neon-label">Oakland Community College</span><br />
+              Associate of Arts — Cinematic Arts<br />
+              Royal Oak, MI — Graduation: June 2024
+            </p>
+          </div>
+
+          <div class="section">
+            <h2>Experience</h2>
+            <p>
+              <span class="neon-label">Oakland Community College</span><br />
+              Adjunct Instructor<br />
+              Farmington Hills, MI<br />
+              Jan. 2024 – Present<br />
+              Mentor students in cinematic arts and digital video production.
+            </p>
+            <p>
+              <span class="neon-label">Amigo &amp; Amigo</span><br />
+              Creative Consultant<br />
+              Sydney, AU<br />
+              Oct. 2019 – Sept. 2023<br />
+              Collaborated with international teams on large-scale transmedia public installations.
+            </p>
+          </div>
+
+          <div class="section">
+            <h2>Projects</h2>
+            <p>
+              <span class="neon-label">The Fedora Diaries</span><br />
+              Designed set, soundscape, and software for transmedia escape room.
+            </p>
+            <p>
+              <span class="neon-label">R3D3CH0</span><br />
+              Wrote, designed, and implemented short story and interactive elements into ArcGIS story map, converted to mobile app and browser.
+            </p>
+            <p>
+              <span class="neon-label">The Illustrious Clyde Cup</span><br />
+              Writer, Director, Editor<br />
+              Documentary feature — “Movies from the Mitten,” Greater Farmington Film Festival (2024)
+            </p>
+            <p>
+              <span class="neon-label">Birding With Brian</span><br />
+              Writer, Director, Editor<br />
+              Documentary feature — Planet 9 Film Festival (2024), Wolf Tree Film Festival (2025)<br />
+              Award: Best Editing — OCC Student Film Festival (2024)
+            </p>
+          </div>
+
+          <div class="section">
+            <h2>Skills</h2>
+            <div class="skills-grid">
+              <div>
+                <p class="neon-label">Technical</p>
+                <ul>
+                  <li>Camera operation</li>
+                  <li>Video editing</li>
+                  <li>Visual design</li>
+                  <li>Sound design</li>
+                  <li>Graphic design</li>
+                  <li>Digital illustration</li>
+                  <li>Web design</li>
+                  <li>Software development</li>
+                </ul>
               </div>
-
-              <h1>Benjamin Filler</h1>
-              <p
-                style="
-                  text-align: center;
-                  color: var(--neon-purple);
-                  font-size: 1.5rem;
-                  margin-bottom: 2.5rem;
-                "
-              >
-                bbfiller@umich.edu&nbsp;&nbsp;|&nbsp;&nbsp;(two48)
-                2one2-4six44&nbsp;&nbsp;|&nbsp;&nbsp;Birmingham, MI
-              </p>
-
-              <div class="section">
-                <h2>Education</h2>
-                <p>
-                  <span class="neon-label"
-                    >The University of Michigan-Dearborn</span
-                  ><br />
-                  Bachelor of Arts — Media Production<br />
-                  Minor: Game Studies and Design<br />
-                  Dearborn, MI — Graduation: May 2026
-                </p>
-                <p>
-                  <span class="neon-label">Oakland Community College</span
-                  ><br />
-                  Associate of Arts — Cinematic Arts<br />
-                  Royal Oak, MI — Graduation: June 2024
-                </p>
+              <div>
+                <p class="neon-label">Storytelling</p>
+                <ul>
+                  <li>Narrative development</li>
+                  <li>Audience engagement</li>
+                  <li>Worldbuilding</li>
+                  <li>Scriptwriting</li>
+                </ul>
               </div>
-
-              <div class="section">
-                <h2>Experience</h2>
-                <p>
-                  <span class="neon-label">Oakland Community College</span
-                  ><br />
-                  Adjunct Instructor<br />
-                  Farmington Hills, MI<br />
-                  Jan. 2024 – Present<br />
-                  Mentor students in cinematic arts and digital video
-                  production.
-                </p>
-                <p>
-                  <span class="neon-label">Amigo &amp; Amigo</span><br />
-                  Creative Consultant<br />
-                  Sydney, AU<br />
-                  Oct. 2019 – Sept. 2023<br />
-                  Collaborated with international teams on large-scale
-                  transmedia public&nbsp;installations.
-                </p>
+              <div>
+                <p class="neon-label">Tools</p>
+                <ul>
+                  <li>Adobe Creative Suite (Illustrator, Photoshop, Lightroom, Premiere Pro, After Effects)</li>
+                  <li>Final Cut Pro</li>
+                  <li>DaVinci Resolve</li>
+                  <li>Reason, Audacity, Logic</li>
+                  <li>ArcGIS Pro</li>
+                  <li>Figma</li>
+                  <li>Visual Studio Code</li>
+                  <li>HTML, Java, CSS, Python, Node.js, Electron</li>
+                </ul>
               </div>
-
-              <div class="section">
-                <h2>Projects</h2>
-                <p>
-                  <span class="neon-label">The Fedora Diaries</span><br />
-                  Designed set, soundscape, and software for transmedia escape
-                  room.
-                </p>
-                <p>
-                  <span class="neon-label">R3D3CH0</span><br />
-                  Wrote, designed, and implemented short story and interactive
-                  elements into ArcGIS story map,<br />
-                  converted to mobile application and web-based browser.
-                </p>
-                <p>
-                  <span class="neon-label">The Illustrious Clyde Cup</span
-                  ><br />
-                  Writer, Director, Editor<br />
-                  Documentary feature — “Movies from the Mitten,” Greater
-                  Farmington Film Festival (2024)
-                </p>
-                <p>
-                  <span class="neon-label">Birding With Brian</span><br />
-                  Writer, Director, Editor<br />
-                  Documentary feature — Planet 9 Film Festival (2024), Wolf Tree
-                  Film Festival (2025)<br />
-                  Award: Best Editing — OCC Student Film Festival (2024)
-                </p>
-              </div>
-
-              <div class="section">
-                <h2>Skills</h2>
-                <div class="skills-grid">
-                  <div>
-                    <p class="neon-label">Technical</p>
-                    <ul>
-                      <li>Camera operation</li>
-                      <li>Video editing</li>
-                      <li>Visual design</li>
-                      <li>Sound design</li>
-                      <li>Graphic design</li>
-                      <li>Digital illustration</li>
-                      <li>Web design</li>
-                      <li>Software development</li>
-                    </ul>
-                  </div>
-                  <div>
-                    <p class="neon-label">Storytelling</p>
-                    <ul>
-                      <li>Narrative development</li>
-                      <li>Audience engagement</li>
-                      <li>Worldbuilding</li>
-                      <li>Scriptwriting</li>
-                    </ul>
-                  </div>
-                  <div>
-                    <p class="neon-label">Tools</p>
-                    <ul>
-                      <li>
-                        Adobe Creative Suite (Illustrator, Photoshop, Lightroom,
-                        Premiere Pro, After Effects)
-                      </li>
-                      <li>Final Cut Pro</li>
-                      <li>DaVinci Resolve</li>
-                      <li>Reason, Audacity, Logic</li>
-                      <li>ArcGIS Pro</li>
-                      <li>Figma</li>
-                      <li>Visual Studio Code</li>
-                      <li>HTML, Java, CSS, Python, Node.js, Electron</li>
-                    </ul>
-                  </div>
-                  <div>
-                    <p class="neon-label">Collaboration</p>
-                    <ul>
-                      <li>Leadership</li>
-                      <li>Communication</li>
-                      <li>Creative thinking</li>
-                      <li>Teamwork in fast-paced environments</li>
-                      <li>Knowledge of intellectual property</li>
-                    </ul>
-                  </div>
-                </div>
+              <div>
+                <p class="neon-label">Collaboration</p>
+                <ul>
+                  <li>Leadership</li>
+                  <li>Communication</li>
+                  <li>Creative thinking</li>
+                  <li>Teamwork in fast-paced environments</li>
+                  <li>Knowledge of intellectual property</li>
+                </ul>
               </div>
             </div>
-          </body>
-        </html>
+          </div>
+        </div>
       </div>
     </div>
 
+    <!-- Contact Window -->
     <div id="contact" class="popup-window hidden">
       <div class="window-header">
         <span>CONTACT.EXE</span>
@@ -350,22 +333,13 @@
           <div class="contact-grid">
             <div class="contact-left">
               <h3 class="neon-pink">Get In Touch</h3>
-              <p>
-                <span class="icon">📧</span> <strong>Email</strong
-                ><br />bbfiller@umich.edu
-              </p>
-              <p>
-                <span class="icon">📞</span> <strong>Phone</strong><br />(two48)
-                2one2-4six44
-              </p>
-              <p>
-                <span class="icon">📍</span> <strong>Location</strong
-                ><br />Birmingham, MI
-              </p>
+              <p><span class="icon">📧</span> <strong>Email</strong><br />bbfiller@umich.edu</p>
+              <p><span class="icon">📞</span> <strong>Phone</strong><br />(248) 212-4644</p>
+              <p><span class="icon">📍</span> <strong>Location</strong><br />Birmingham, MI</p>
             </div>
             <form
               class="contact-form"
-              onsubmit="event.preventDefault(); alert('Message submitted! (This is just a mockup for now.)')"
+              onsubmit="event.preventDefault(); alert('Message submitted! (Mockup only)')"
             >
               <label>Name</label>
               <input type="text" placeholder="Your name" required />
@@ -383,13 +357,14 @@
     <!-- Canvas Starfield -->
     <canvas id="background-canvas"></canvas>
 
-    <!-- Start Menu -->
+    <!-- Start Bar & Clock -->
     <div id="start-bar">
       <button id="start-button">START</button>
       <div id="taskbar-icons"></div>
       <span id="clock"></span>
     </div>
 
+    <!-- Start Menu -->
     <div id="start-menu">
       <a href="#" onclick="openWindow('about')">About</a>
       <a href="#" onclick="openWindow('projects')">Projects</a>

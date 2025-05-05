@@ -1,5 +1,3 @@
-// script.js
-
 // Play blip sound
 function playBlip() {
   const blip = document.getElementById("blip");
@@ -30,55 +28,56 @@ function openWindow(id) {
     Object.assign(win.style, stored);
   }
 
-  // ── CLAMP TO VIEWPORT ──
+  // Clamp to viewport
   const rect = win.getBoundingClientRect();
-  const margin = 20;                             // px from edge
-  const vw     = window.innerWidth;
-  const vh     = window.innerHeight;
-
-  let newLeft = rect.left;
-  let newTop  = rect.top;
-  let newW    = rect.width;
-  let newH    = rect.height;
-
-  // width/height overflows: shrink
-  if (rect.width  > vw - margin*2) newW = vw - margin*2;
+  const margin = 20;
+  const vw = window.innerWidth, vh = window.innerHeight;
+  let newLeft = rect.left, newTop = rect.top, newW = rect.width, newH = rect.height;
+  if (rect.width > vw - margin*2) newW = vw - margin*2;
   if (rect.height > vh - margin*2) newH = vh - margin*2;
-
-  // reposition if off-screen
-  if (rect.left   < margin)           newLeft = margin;
-  if (rect.top    < margin)           newTop  = margin;
-  if (rect.right  > vw - margin)      newLeft = vw - margin - newW;
-  if (rect.bottom > vh - margin)      newTop  = vh - margin - newH;
-
-  // apply clamped values
-  win.style.left   = `${newLeft}px`;
-  win.style.top    = `${newTop}px`;
-  win.style.width  = `${newW}px`;
+  if (rect.left < margin) newLeft = margin;
+  if (rect.top < margin) newTop = margin;
+  if (rect.right > vw - margin) newLeft = vw - margin - newW;
+  if (rect.bottom > vh - margin) newTop = vh - margin - newH;
+  win.style.left = `${newLeft}px`;
+  win.style.top = `${newTop}px`;
+  win.style.width = `${newW}px`;
   win.style.height = `${newH}px`;
 }
 
+// Ambient synth fade-in
+window.addEventListener('load', () => {
+  const amb = document.getElementById("ambience");
+  if (amb) {
+    amb.volume = 0;
+    let v = 0;
+    const step = () => {
+      if (v < 0.1) {
+        v += 0.01;
+        amb.volume = v;
+        requestAnimationFrame(step);
+      }
+    };
+    step();
+  }
+});
 
-
-// ─── TASKBAR ICONS ───
-// Helper: add a button to the taskbar when minimizing
-function createTaskbarIcon(id) {
-  if (document.getElementById(`taskbar-icon-${id}`)) return;
-  const btn = document.createElement('button');
-  btn.id = `taskbar-icon-${id}`;
-  btn.className = 'taskbar-icon';
-  btn.textContent = id.toUpperCase();
-  btn.addEventListener('click', () => {
-    const win = document.getElementById(id);
-    win.classList.remove('hidden');
-    win.style.display = 'block';
-    win.style.zIndex = getNextZIndex();
-    btn.remove();
-  });
-  document.getElementById('taskbar-icons').appendChild(btn);
+// Simulate loading splash for projects
+function launchProject(element, name) {
+  const splash = document.getElementById("project-splash");
+  const splashName = document.getElementById("splash-name");
+  if (splash && splashName) {
+    splashName.textContent = name;
+    splash.classList.remove("hidden");
+    setTimeout(closeSplash, 3000);
+  }
+}
+function closeSplash() {
+  const splash = document.getElementById("project-splash");
+  if (splash) splash.classList.add("hidden");
 }
 
-// Minimize window & add taskbar icon
+// Minimize window & add to taskbar
 function minimizeWindow(id) {
   const win = document.getElementById(id);
   if (!win) return;
@@ -87,18 +86,32 @@ function minimizeWindow(id) {
   createTaskbarIcon(id);
 }
 
-// Close window & remove any taskbar icon
+// Close window with shutdown animation
 function closeWindow(id) {
   const win = document.getElementById(id);
-  if (win) {
+  if (!win) return;
+
+  const blackout = document.createElement('div');
+  blackout.style.position = 'fixed';
+  blackout.style.inset = 0;
+  blackout.style.background = 'black';
+  blackout.style.zIndex = 9999;
+  blackout.style.display = 'flex';
+  blackout.style.alignItems = 'center';
+  blackout.style.justifyContent = 'center';
+  blackout.innerHTML = '<img src="/static-shutdown.gif" style="width: 120px; image-rendering: pixelated;" />';
+  document.body.appendChild(blackout);
+
+  setTimeout(() => {
     win.classList.add('hidden');
     win.style.display = 'none';
-  }
-  const icon = document.getElementById(`taskbar-icon-${id}`);
-  if (icon) icon.remove();
+    const icon = document.getElementById(`taskbar-icon-${id}`);
+    if (icon) icon.remove();
+    blackout.remove();
+  }, 1200);
 }
 
-// Maximize / restore & clean up icon if needed
+// Maximize / restore
 function toggleMaximizeWindow(id) {
   const win = document.getElementById(id);
   if (!win) return;
@@ -118,12 +131,7 @@ function toggleMaximizeWindow(id) {
     if (icon) icon.remove();
   } else {
     const stored = windowStates[id];
-    if (stored) {
-      win.style.top = stored.top;
-      win.style.left = stored.left;
-      win.style.width = stored.width;
-      win.style.height = stored.height;
-    }
+    if (stored) Object.assign(win.style, stored);
     win.classList.remove('maximized');
   }
 }
@@ -134,10 +142,10 @@ function getNextZIndex() {
   return ++currentZIndex;
 }
 
-// Store window positions/sizes
+// Store window states
 const windowStates = {};
 
-// Update clock every second
+// Clock
 function updateClock() {
   const clock = document.getElementById("clock");
   if (clock) clock.textContent = new Date().toLocaleTimeString();
@@ -152,12 +160,11 @@ startButton.addEventListener("click", () => {
   startMenu.style.display = startMenu.style.display === "flex" ? "none" : "flex";
 });
 
+// Boot screen typing effect
 window.addEventListener('load', () => {
   const bootScreen = document.getElementById('bootScreen');
   const logEl      = document.getElementById('boot-log');
   const progress   = document.getElementById('progress-bar');
-
-  // Lines to “type” in the console
   const messages = [
     '[ OK ] Initializing hardware...',
     '[ OK ] Loading kernel modules...',
@@ -166,63 +173,53 @@ window.addEventListener('load', () => {
     '[ OK ] CyberDeck ready.',
     '[ DONE ] Boot complete.'
   ];
-
   let idx = 0;
   const total = messages.length;
-  const interval = 400; // ms between lines
-
   const typer = setInterval(() => {
-    // append next line
     logEl.textContent += messages[idx] + '\n';
-
-    // scroll if overflow
     logEl.scrollTop = logEl.scrollHeight;
-
-    // advance progress proportionally
     const pct = ((idx + 1) / total) * 100;
     progress.style.width = pct + '%';
-
     idx++;
     if (idx === total) {
       clearInterval(typer);
-      // small pause, then fade out
       setTimeout(() => {
         bootScreen.style.transition = 'opacity 0.8s';
         bootScreen.style.opacity = '0';
         setTimeout(() => { bootScreen.style.display = 'none'; }, 800);
       }, 500);
     }
-  }, interval);
+  }, 400);
 });
 
-
-// Project splash functions
-function launchProject(element, name) {
-  const splash     = document.getElementById("project-splash");
-  const splashName = document.getElementById("splash-name");
-  if (splash && splashName) {
-    splashName.textContent = name;
-    splash.classList.remove("hidden");
-  }
+// Taskbar icon creation
+function createTaskbarIcon(id) {
+  if (document.getElementById(`taskbar-icon-${id}`)) return;
+  const btn = document.createElement('button');
+  btn.id = `taskbar-icon-${id}`;
+  btn.className = 'taskbar-icon';
+  btn.textContent = id.toUpperCase();
+  btn.addEventListener('click', () => {
+    const win = document.getElementById(id);
+    win.classList.remove('hidden');
+    win.style.display = 'block';
+    win.style.zIndex = getNextZIndex();
+    btn.remove();
+  });
+  document.getElementById('taskbar-icons').appendChild(btn);
 }
-function closeSplash() {
-  const splash = document.getElementById("project-splash");
-  if (splash) splash.classList.add("hidden");
-}
 
-// WINDOW HEADER DRAG & BUTTONS
+// Window header drag & buttons
 document.querySelectorAll(".popup-window").forEach(win => {
-  const id          = win.id;
+  const id = win.id;
   const header      = win.querySelector(".window-header");
   const btnMinimize = header.querySelector(".minimize");
   const btnMaximize = header.querySelector(".maximize");
   const btnClose    = header.querySelector(".close");
-
   if (btnMinimize) btnMinimize.addEventListener("click", () => minimizeWindow(id));
   if (btnMaximize) btnMaximize.addEventListener("click", () => toggleMaximizeWindow(id));
-  if (btnClose)    btnClose.addEventListener   ("click", () => closeWindow(id));
+  if (btnClose)    btnClose.addEventListener("click", () => closeWindow(id));
 
-  // dragging logic
   let isDragging = false, offsetX = 0, offsetY = 0;
   header.addEventListener("mousedown", e => {
     isDragging = true;
@@ -239,7 +236,7 @@ document.querySelectorAll(".popup-window").forEach(win => {
   document.addEventListener("mouseup", () => { isDragging = false; });
 });
 
-// TYPEWRITER (if used)
+// Typewriter effect
 document.querySelectorAll('.typewriter').forEach(el => {
   const text = el.getAttribute('data-text');
   el.textContent = '';
@@ -252,126 +249,101 @@ document.querySelectorAll('.typewriter').forEach(el => {
   })();
 });
 
-// ─── DESKTOP ICON INIT ───
+// Desktop icons init with snap-to-grid
 function initDesktopIcons() {
   document.querySelectorAll('.desktop-icon').forEach(icon => {
-    // double-click to open
     icon.addEventListener('dblclick', () => {
       openWindow(icon.dataset.window);
       playBlip();
     });
-
     icon.addEventListener('mousedown', e => {
-  e.preventDefault();
-
-  const parentRect = icon.parentElement.getBoundingClientRect();
-  const clickRect  = icon.getBoundingClientRect();
-
-  // Determine which icons to drag as a group
-  let group;
-  if (icon.classList.contains('selected')) {
-    group = Array.from(document.querySelectorAll('.desktop-icon.selected'));
-  } else {
-    // clear old selection, select just this one
-    document.querySelectorAll('.desktop-icon.selected')
-      .forEach(ic => ic.classList.remove('selected'));
-    icon.classList.add('selected');
-    group = [icon];
-  }
-
-  // Compute cursor‐to‐icon offset
-  const shiftX = e.clientX - clickRect.left;
-  const shiftY = e.clientY - clickRect.top;
-
-  // Lock each icon’s starting position (relative to parent)
-  const groupData = group.map(ic => {
-    const r = ic.getBoundingClientRect();
-    const startLeft = r.left - parentRect.left;
-    const startTop  = r.top  - parentRect.top;
-    ic.style.left = startLeft + 'px';
-    ic.style.top  = startTop  + 'px';
-    ic.style.zIndex = getNextZIndex();  // bring them all forward
-    return { icon: ic, startLeft, startTop };
-  });
-
-  // Move them all together
-  function onMouseMove(e) {
-    const newLeft = e.clientX - shiftX - parentRect.left;
-    const newTop  = e.clientY - shiftY - parentRect.top;
-    const dx = newLeft - groupData[0].startLeft;
-    const dy = newTop - groupData[0].startTop;
-
-    groupData.forEach(({ icon, startLeft, startTop }) => {
-      icon.style.left = startLeft + dx + 'px';
-      icon.style.top  = startTop  + dy + 'px';
+      e.preventDefault();
+      const parentRect = icon.parentElement.getBoundingClientRect();
+      const clickRect  = icon.getBoundingClientRect();
+      let group;
+      if (icon.classList.contains('selected')) {
+        group = Array.from(document.querySelectorAll('.desktop-icon.selected'));
+      } else {
+        document.querySelectorAll('.desktop-icon.selected').forEach(ic => ic.classList.remove('selected'));
+        icon.classList.add('selected');
+        group = [icon];
+      }
+      const shiftX = e.clientX - clickRect.left;
+      const shiftY = e.clientY - clickRect.top;
+      const groupData = group.map(ic => {
+        const r = ic.getBoundingClientRect();
+        const startLeft = r.left - parentRect.left;
+        const startTop  = r.top  - parentRect.top;
+        ic.style.left = startLeft + 'px';
+        ic.style.top  = startTop + 'px';
+        ic.style.zIndex = getNextZIndex();
+        return { icon: ic, startLeft, startTop };
+      });
+      function onMouseMove(e) {
+        const newLeft = e.clientX - shiftX - parentRect.left;
+        const newTop  = e.clientY - shiftY - parentRect.top;
+        const dx = newLeft - groupData[0].startLeft;
+        const dy = newTop - groupData[0].startTop;
+        groupData.forEach(({ icon, startLeft, startTop }) => {
+          icon.style.left = startLeft + dx + 'px';
+          icon.style.top  = startTop + dy + 'px';
+        });
+      }
+      document.addEventListener('mousemove', onMouseMove);
+      document.addEventListener('mouseup', function onUp() {
+        document.removeEventListener('mousemove', onMouseMove);
+        // Snap to 100×100 grid
+        const grid = 100;
+        groupData.forEach(({ icon }) => {
+          const r = icon.getBoundingClientRect();
+          const left = Math.round((r.left - parentRect.left) / grid) * grid;
+          const top  = Math.round((r.top  - parentRect.top ) / grid) * grid;
+          icon.style.left = `${left}px`;
+          icon.style.top  = `${top}px`;
+        });
+        document.removeEventListener('mouseup', onUp);
+      }, { once: true });
+      icon.ondragstart = () => false;
     });
-  }
-
-  document.addEventListener('mousemove', onMouseMove);
-  document.addEventListener('mouseup', function onUp() {
-    document.removeEventListener('mousemove', onMouseMove);
-    document.removeEventListener('mouseup', onUp);
-  }, { once: true });
-});
-
-
-
-    // prevent default image-drag ghost
-    icon.ondragstart = () => false;
   });
 }
 window.addEventListener('load', initDesktopIcons);
 
-// ─── STARFIELD BACKGROUND ───
+// Starfield background
 function initStarfield() {
   const canvas = document.getElementById('background-canvas');
   const ctx    = canvas.getContext('2d');
-
-  // Resize canvas to fill viewport
   function resize() {
     canvas.width  = window.innerWidth;
     canvas.height = window.innerHeight;
   }
   window.addEventListener('resize', resize);
   resize();
-
-  // Create stars
   const numStars = 300;
-  const stars = [];
-  for (let i = 0; i < numStars; i++) {
-    stars.push({
-      x:     Math.random() * canvas.width,
-      y:     Math.random() * canvas.height,
-      z:     Math.random() * canvas.width,   // depth for speed variation
-      o:     Math.random()                   // initial opacity
-    });
-  }
-
-  // Animate
+  const stars = Array.from({ length: numStars }, () => ({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    z: Math.random() * canvas.width,
+    o: Math.random()
+  }));
   function animate() {
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';  // slight trail effect
+    ctx.fillStyle = 'rgba(0,0,0,0.4)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-
     for (let star of stars) {
-      // move star toward viewer
       star.z -= 2;
       if (star.z <= 0) {
         star.z = canvas.width;
         star.x = Math.random() * canvas.width;
         star.y = Math.random() * canvas.height;
       }
-
-      // project 3D into 2D
       const k = 128.0 / star.z;
-      const px = (star.x - canvas.width  / 2) * k + canvas.width  / 2;
-      const py = (star.y - canvas.height / 2) * k + canvas.height / 2;
-      const size = Math.max(0, (1 - star.z / canvas.width) * 3);
-
-      // draw
+      const px = (star.x - canvas.width/2) * k + canvas.width/2;
+      const py = (star.y - canvas.height/2) * k + canvas.height/2;
+      const size = Math.max(0, (1 - star.z/canvas.width)*3);
       ctx.beginPath();
       ctx.globalAlpha = star.o;
       ctx.fillStyle   = '#fff';
-      ctx.arc(px, py, size, 0, Math.PI * 2);
+      ctx.arc(px, py, size, 0, Math.PI*2);
       ctx.fill();
     }
     ctx.globalAlpha = 1;
@@ -379,68 +351,27 @@ function initStarfield() {
   }
   requestAnimationFrame(animate);
 }
-
-// Kick it off after everything else initializes
 window.addEventListener('load', initStarfield);
 
-// ─── CLICK-AND-DRAG MULTI-SELECT ───
-
-let selStartX, selStartY, selDiv;
-
-function onSelectStart(e) {
-  // don’t start if clicking on an icon, window, or taskbar
-  if (e.target.closest('.desktop-icon, .popup-window, #start-bar, #start-menu')) return;
-
-  selStartX = e.clientX;
-  selStartY = e.clientY;
-
-  // make the selection DIV
-  selDiv = document.createElement('div');
-  selDiv.id = 'selection-rect';
-  selDiv.style.left   = `${selStartX}px`;
-  selDiv.style.top    = `${selStartY}px`;
-  selDiv.style.width  = '0px';
-  selDiv.style.height = '0px';
-  document.body.appendChild(selDiv);
-
-  document.addEventListener('mousemove', onSelectMove);
-  document.addEventListener('mouseup', onSelectEnd, { once: true });
-  e.preventDefault();
+// Fake error popup
+function triggerFakeError() {
+  const popup = document.createElement('div');
+  popup.className = 'popup-window';
+  popup.style.top = '150px';
+  popup.style.left = '150px';
+  popup.innerHTML = `
+    <div class="window-header">
+      <span>GLITCH.MSG</span>
+      <button class="close" onclick="this.closest('.popup-window').remove()">X</button>
+    </div>
+    <div class="window-content">
+      <h2>🔥 SYSTEM FAULT</h2>
+      <p>Memory leak detected in dreamspace buffer. Reality may degrade shortly.</p>
+      <button onclick="this.closest('.popup-window').remove()">Acknowledge</button>
+    </div>`;
+  document.body.appendChild(popup);
+  popup.style.zIndex = getNextZIndex();
 }
-
-function onSelectMove(e) {
-  const currentX = e.clientX;
-  const currentY = e.clientY;
-
-  // calculate box coords & size
-  const x = Math.min(currentX, selStartX);
-  const y = Math.min(currentY, selStartY);
-  const w = Math.abs(currentX - selStartX);
-  const h = Math.abs(currentY - selStartY);
-
-  selDiv.style.left   = `${x}px`;
-  selDiv.style.top    = `${y}px`;
-  selDiv.style.width  = `${w}px`;
-  selDiv.style.height = `${h}px`;
-
-  // highlight icons completely inside the box
-  const box = selDiv.getBoundingClientRect();
-  document.querySelectorAll('.desktop-icon').forEach(icon => {
-    const r = icon.getBoundingClientRect();
-    const inside =
-      r.left   >= box.left &&
-      r.right  <= box.right &&
-      r.top    >= box.top &&
-      r.bottom <= box.bottom;
-    icon.classList.toggle('selected', inside);
-  });
-}
-
-function onSelectEnd() {
-  if (selDiv) selDiv.remove();
-  selDiv = null;
-  document.removeEventListener('mousemove', onSelectMove);
-}
-
-// hook it up
-window.addEventListener('mousedown', onSelectStart);
+setTimeout(() => {
+  if (Math.random() > 0.5) triggerFakeError();
+}, 30000 + Math.random()*15000);
