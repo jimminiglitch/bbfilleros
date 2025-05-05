@@ -540,3 +540,86 @@ window.addEventListener('load', () => {
     }
   });
 });
+
+// near the top of script.js
+let snakeInterval;
+
+function startSnake() {
+  const canvas = document.getElementById('snake-canvas');
+  const ctx    = canvas.getContext('2d');
+  const grid   = 20;               // size of one “cell”
+  let count   = 0;
+  let snake   = [{ x:9, y:9 }];    // initial position
+  let vx = 1, vy = 0;              // initial velocity
+  let apple = { x:5, y:5 };
+
+  // arrow-key controls
+  window.addEventListener('keydown', e => {
+    if (e.key === 'ArrowLeft'  && vx !== 1) { vx = -1; vy =  0; }
+    if (e.key === 'ArrowUp'    && vy !== 1) { vx =  0; vy = -1; }
+    if (e.key === 'ArrowRight' && vx !== -1){ vx =  1; vy =  0; }
+    if (e.key === 'ArrowDown'  && vy !== -1){ vx =  0; vy =  1; }
+  });
+
+  function loop() {
+    if (++count < 4) return;  // slow down to ~15fps
+    count = 0;
+
+    // move snake head
+    snake.unshift({ x: snake[0].x + vx, y: snake[0].y + vy });
+
+    // ate apple?
+    if (snake[0].x === apple.x && snake[0].y === apple.y) {
+      apple = {
+        x: Math.floor(Math.random() * (canvas.width / grid)),
+        y: Math.floor(Math.random() * (canvas.height / grid))
+      };
+    } else {
+      snake.pop();
+    }
+
+    // clear
+    ctx.fillStyle = 'black';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // draw apple
+    ctx.fillStyle = 'red';
+    ctx.fillRect(apple.x * grid, apple.y * grid, grid - 2, grid - 2);
+
+    // draw snake
+    ctx.fillStyle = 'lime';
+    for (let segment of snake) {
+      ctx.fillRect(segment.x * grid, segment.y * grid, grid - 2, grid - 2);
+    }
+
+    // check collisions
+    if (
+      snake[0].x < 0 ||
+      snake[0].x >= canvas.width / grid ||
+      snake[0].y < 0 ||
+      snake[0].y >= canvas.height / grid ||
+      snake.slice(1).some(s => s.x === snake[0].x && s.y === snake[0].y)
+    ) {
+      clearInterval(snakeInterval);
+      alert('💥 Game Over!');
+    }
+  }
+
+  snakeInterval = setInterval(loop, 1000 / 15);
+}
+
+// tie it into your openWindow()
+const origOpen = openWindow;
+openWindow = id => {
+  origOpen(id);
+  if (id === 'snake') {
+    // if it hasn’t run yet, (re)start:
+    if (!snakeInterval) startSnake();
+  } else if (snakeInterval) {
+    // pause if they close it:
+    clearInterval(snakeInterval);
+    snakeInterval = null;
+  }
+};
+
+
