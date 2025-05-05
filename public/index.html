@@ -97,6 +97,13 @@
       />
       <span>Joyful</span>
     </div>
+        <div class="desktop-icon" id="icon-video2" data-window="video2">
+      <img
+        src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/VaporTV.png?v=1746411817932"
+        alt="Papaz"
+      />
+      <span>Papaz</span>
+    </div>
 
       </div>
     </div>
@@ -296,6 +303,26 @@
     <video
       id="video1-player"
       src="https://cdn.glitch.me/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/A%20Joyful%20and%20Meaningful%20Life.mp4?v=1746453364188"
+      controls
+      autoplay
+      style="width:100%; height:100%; background:black;"
+    >
+      Your browser does not support the video tag.
+    </video>
+  </div>
+</div>
+    <div id="video2" class="popup-window hidden">
+  <div class="window-header">
+    <span>PAPAZ.EXE</span>
+    <!-- note: I've swapped minimize & maximize here per our last fix -->
+    <button class="minimize">_</button>
+    <button class="maximize">▭</button>
+    <button class="close" onclick="closeWindow('video2')">X</button>
+  </div>
+  <div class="window-content">
+    <video
+      id="video2-player"
+      src="https://cdn.glitch.me/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/SEPChallengeVideo2.mp4?v=1746454142843"
       controls
       autoplay
       style="width:100%; height:100%; background:black;"
