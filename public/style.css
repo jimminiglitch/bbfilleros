@@ -139,6 +139,8 @@ body {
 #icon-video2   { top: 300px; left: 140px; }
 #icon-video3   { top: 300px; left: 240px; }
 #icon-music    { top: 400px; left:  40px; }
+#icon-snake    { top: 400px; left: 140px; }
+
 
 /* Selected state */
 .desktop-icon.selected {
@@ -349,10 +351,14 @@ body {
 ─────────────────────────────────────────────────────────────────────────────*/
 #background-canvas {
   position: fixed;
-  top: 0; left: 0;
-  width: 100vw; height: 100vh;
-  z-index: -1;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;      /* behind everything else */
+  background: black;/* fallback */
 }
+
 /*─────────────────────────────────────────────────────────────────────────────
   MAKE EMBEDDED IFRAMES FILL THEIR POPUP WINDOWS
 ─────────────────────────────────────────────────────────────────────────────*/
