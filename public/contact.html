@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contact Me</title>
+    <style>
+      /*── FONTS & VARIABLES ──*/
+      @font-face {
+        font-family: "Press Start 2P";
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+        src: url("https://fonts.gstatic.com/s/pressstart2p/v15/e3t4euO8T-267oIAQAu6jDQyK3nVivM.woff2")
+          format("woff2");
+      }
+      @font-face {
+        font-family: "VT323";
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+        src: url("https://fonts.gstatic.com/s/vt323/v17/pxiKyp0ihIEF2isfFJU.woff2")
+          format("woff2");
+      }
+      :root {
+        --font-press-start: "Press Start 2P", monospace;
+        --font-vt323: "VT323", monospace;
+        --neon-purple: #a9a1ff;
+        --neon-pink: #f3a1ff;
+        --neon-cyan: #00f0ff;
+        --neon-green: #00ff66;
+      }
+      * {
+        box-sizing: border-box;
+      }
+
+      /*── PAGE LAYOUT ──*/
+      body {
+        margin: 0;
+        padding: 2rem;
+        background: black;
+        color: white;
+        font-family: var(--font-vt323);
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        min-height: 100vh;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+      }
+      .container {
+        background: rgba(0, 0, 0, 0.9);
+        border: 2px solid var(--neon-purple);
+        border-radius: 1.5rem;
+        padding: 2rem;
+        box-shadow: 0 0 10px var(--neon-pink);
+        max-width: 900px;
+        width: 100%;
+      }
+      h1 {
+        font-family: var(--font-press-start);
+        font-size: 2rem;
+        color: var(--neon-cyan);
+        text-align: center;
+        text-shadow: 0 0 10px var(--neon-cyan);
+        margin: 0 0 1.5rem;
+      }
+
+      /*── GRID ──*/
+      .contact-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+      }
+
+      /*── LEFT PANEL ──*/
+      .contact-left {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+      .contact-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+      .icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.5rem;
+        height: 2.5rem;
+        background: var(--neon-purple);
+        border-radius: 50%;
+        font-size: 1.25rem;
+        color: black;
+      }
+      .contact-item .label {
+        margin: 0;
+        font-family: var(--font-press-start);
+        font-size: 0.9rem;
+        color: var(--neon-pink);
+      }
+      .contact-item .value {
+        margin: 0;
+        font-size: 1rem;
+        color: var(--neon-green);
+      }
+
+      /*── RIGHT PANEL (FORM) ──*/
+      .contact-right {
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+      }
+      .contact-right label {
+        display: block;
+        margin-bottom: 0.25rem;
+        font-family: var(--font-press-start);
+        font-size: 0.8rem;
+        color: var(--neon-cyan);
+      }
+      .contact-right input,
+      .contact-right textarea {
+        width: 100%;
+        background: transparent;
+        border: 1px solid var(--neon-cyan);
+        border-radius: 0.5rem;
+        padding: 0.75rem;
+        color: white;
+        font-family: var(--font-vt323);
+        font-size: 1rem;
+        outline: none;
+        resize: none;
+      }
+      .contact-right input::placeholder,
+      .contact-right textarea::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+      }
+      .submit-btn {
+        align-self: flex-end;
+        background: var(--neon-purple);
+        border: none;
+        border-radius: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        font-family: var(--font-press-start);
+        font-size: 0.8rem;
+        color: var(--neon-cyan);
+        cursor: pointer;
+        transition: background 0.3s;
+      }
+      .submit-btn:hover {
+        background: var(--neon-pink);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Contact Me</h1>
+      <div class="contact-grid">
+        <!-- LEFT: Contact Info -->
+        <div class="contact-left">
+          <div class="contact-item">
+            <span class="icon">📧</span>
+            <div>
+              <p class="label">Email</p>
+              <p class="value">bbfiller@umich.edu</p>
+            </div>
+          </div>
+          <div class="contact-item">
+            <span class="icon">📞</span>
+            <div>
+              <p class="label">Phone</p>
+              <p class="value">(248) 212-4644</p>
+            </div>
+          </div>
+          <div class="contact-item">
+            <span class="icon">📍</span>
+            <div>
+              <p class="label">Location</p>
+              <p class="value">Birmingham, MI</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: Contact Form -->
+        <div class="contact-right">
+          <form onsubmit="event.preventDefault(); alert('Message submitted! (Mockup only)')">
+            <div>
+              <label for="name">Name</label>
+              <input id="name" type="text" placeholder="Your name" required />
+            </div>
+            <div>
+              <label for="email">Email</label>
+              <input id="email" type="email" placeholder="you@email.com" required />
+            </div>
+            <div>
+              <label for="message">Message</label>
+              <textarea id="message" placeholder="Say hi..."></textarea>
+            </div>
+            <button type="submit" class="submit-btn">Submit</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

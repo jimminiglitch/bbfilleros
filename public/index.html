@@ -191,38 +191,21 @@
 
     <!-- Contact Window -->
     <div id="contact" class="popup-window hidden">
-      <div class="window-header">
-        <span>CONTACT.EXE</span>
-        <button class="maximize">▭</button>
-        <button class="minimize">_</button>
-        <button class="close" onclick="closeWindow('contact')">X</button>
-      </div>
-      <div class="window-content">
-        <div class="contact-window">
-          <h2 class="contact-title">Contact Me</h2>
-          <div class="contact-grid">
-            <div class="contact-left">
-              <h3 class="neon-pink">Get In Touch</h3>
-              <p><span class="icon">📧</span> <strong>Email</strong><br />bbfiller@umich.edu</p>
-              <p><span class="icon">📞</span> <strong>Phone</strong><br />(248) 212-4644</p>
-              <p><span class="icon">📍</span> <strong>Location</strong><br />Birmingham, MI</p>
-            </div>
-            <form
-              class="contact-form"
-              onsubmit="event.preventDefault(); alert('Message submitted! (Mockup only)')"
-            >
-              <label>Name</label>
-              <input type="text" placeholder="Your name" required />
-              <label>Email</label>
-              <input type="email" placeholder="you@email.com" required />
-              <label>Message</label>
-              <textarea rows="4" placeholder="Say hi..."></textarea>
-              <button type="submit">Submit</button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
+  <div class="window-header">
+    <span>CONTACT.EXE</span>
+    <button class="maximize">▭</button>
+    <button class="minimize">_</button>
+    <button class="close" onclick="closeWindow('contact')">X</button>
+  </div>
+  <div class="window-content" style="padding: 0;">
+    <iframe
+      src="/contact.html"
+      style="width: 100%; height: 100%; border: none;"
+      allowfullscreen
+    ></iframe>
+  </div>
+</div>
+
 
     <!-- Canvas Starfield -->
     <canvas id="background-canvas"></canvas>

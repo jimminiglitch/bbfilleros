@@ -363,3 +363,60 @@ function closeWindow(id) {
   const icon = document.getElementById(`taskbar-icon-${id}`);
   if (icon) icon.remove();
 }
+const path = require('path');
+const fastify = require('fastify')({ logger: true });
+const nodemailer = require('nodemailer');
+
+// 1️⃣ Serve static assets
+fastify.register(require('@fastify/static'), {
+  root: path.join(__dirname, 'public'),
+  prefix: '/'
+});
+
+// 2️⃣ Parse form bodies & JSON
+fastify.register(require('@fastify/formbody'));
+
+// 3️⃣ Configure your SMTP transporter via env vars
+//    (Set these in Glitch’s .env: SMTP_HOST, SMTP_PORT, SMTP_SECURE, SMTP_USER, SMTP_PASS, CONTACT_EMAIL)
+const transporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST,
+  port: Number(process.env.SMTP_PORT) || 587,
+  secure: process.env.SMTP_SECURE === 'true', // true → port 465
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS
+  }
+});
+
+// 4️⃣ Contact endpoint
+fastify.post('/contact', async (request, reply) => {
+  const { name, email, message } = request.body;
+  try {
+    await transporter.sendMail({
+      from: `"Website Contact" <${process.env.SMTP_USER}>`,
+      to:   process.env.CONTACT_EMAIL,
+      subject: `Contact Form: ${name}`,
+      text: `You’ve got a new message:\n\nName: ${name}\nEmail: ${email}\nMessage:\n${message}`
+    });
+    return reply.code(200).send({ success: true });
+  } catch (err) {
+    fastify.log.error(err);
+    return reply.code(500).send({ success: false, error: 'Could not send message' });
+  }
+});
+
+// 5️⃣ Serve index.html
+fastify.get('/', async (request, reply) => {
+  return reply.sendFile('index.html');
+});
+
+const start = async () => {
+  try {
+    await fastify.listen({ host: '0.0.0.0', port: process.env.PORT || 3000 });
+    console.log('Server running…');
+  } catch (err) {
+    fastify.log.error(err);
+    process.exit(1);
+  }
+};
+start();
