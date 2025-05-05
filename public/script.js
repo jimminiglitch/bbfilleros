@@ -359,9 +359,12 @@ notesArea.addEventListener('blur', () => {
 
 // ─── GALLERY.EXE LOGIC ───────────────────────────────────────────────────
 const galleryImages = [
-  'https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/project1.png?v=1',
-  'https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/project2.png?v=1',
-  'https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/project3.png?v=1'
+  'https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/Galloway%20Geese%20at%20Sunset.png?v=1746411517025',
+  'https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/A%20Sedge%20of%20Sandhill%20on%20the%20Green.png?v=1746411505927',
+  'https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/GoldenHourGeese.png?v=1746411283749',
+  'https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/bombilate%20vicissitude.png?v=1746411262153',
+  
+  
 ];
 let galleryIndex = 0;
 const galleryImgEl = document.getElementById('gallery-img');
