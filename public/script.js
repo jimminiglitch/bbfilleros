@@ -78,12 +78,20 @@ function minimizeWindow(id) {
 function closeWindow(id) {
   const win = document.getElementById(id);
   if (win) {
-    win.classList.add("hidden");
-    win.style.display = "none";
+    // === pause any video inside ===
+    const vid = win.querySelector('video');
+    if (vid) {
+      vid.pause();
+      vid.currentTime = 0;
+    }
+    // ==============================
+    win.classList.add('hidden');
+    win.style.display = 'none';
   }
   const icon = document.getElementById(`taskbar-icon-${id}`);
   if (icon) icon.remove();
 }
+
 
 function toggleMaximizeWindow(id) {
   const win = document.getElementById(id);
