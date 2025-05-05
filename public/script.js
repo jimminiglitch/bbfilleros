@@ -408,3 +408,70 @@ window.addEventListener('load', () => {
   preloadImages(natureImages);
   showNatureImage(0);
 });
+
+
+
+
+// ─── MUSIC.EXE LOGIC ─────────────────────────────────────────────────────
+
+// 1) Your music files (hosted in assets or elsewhere)
+const tracks = [
+  { title: "Morning Synth", url: "https://cdn.glitch.global/.../morning-synth.mp3" },
+  { title: "Lo-Fi Beats",  url: "https://cdn.glitch.global/.../lofi-beats.mp3"  },
+  { title: "Techno Pulse", url: "https://cdn.glitch.global/.../techno-pulse.mp3" }
+];
+
+let trackIndex = 0;
+const player     = document.getElementById("music-player");
+const nowEl      = document.getElementById("now-playing");
+const listEl     = document.getElementById("playlist");
+
+// 2) Populate the playlist UI
+tracks.forEach((t, i) => {
+  const li = document.createElement("li");
+  li.textContent = t.title;
+  li.style.cursor = "pointer";
+  li.onclick = () => playTrack(i);
+  listEl.appendChild(li);
+});
+
+// 3) Core playback functions
+function playTrack(i) {
+  trackIndex = (i + tracks.length) % tracks.length;
+  player.src = tracks[trackIndex].url;
+  player.play();
+  updateUI();
+}
+
+function nextTrack() { playTrack(trackIndex + 1); }
+function prevTrack() { playTrack(trackIndex - 1); }
+
+function togglePlay() {
+  if (player.paused) {
+    player.play();
+  } else {
+    player.pause();
+  }
+  updateUI();
+}
+
+// 4) Update “Now playing…” text & highlight
+function updateUI() {
+  nowEl.textContent = (player.paused ? "❚❚" : "▶") + " " + tracks[trackIndex].title;
+  Array.from(listEl.children).forEach((li, i) => {
+    li.style.color = i === trackIndex ? "var(--neon-green)" : "white";
+  });
+}
+
+// 5) Auto-advance when one track ends
+player.addEventListener("ended", nextTrack);
+
+// 6) Pause/reset on window close
+const origClose = closeWindow;
+closeWindow = id => {
+  if (id === "music" && player) {
+    player.pause();
+    player.currentTime = 0;
+  }
+  origClose(id);
+};

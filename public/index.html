@@ -97,6 +97,7 @@
       />
       <span>Joyful</span>
     </div>
+       
         <div class="desktop-icon" id="icon-video2" data-window="video2">
       <img
         src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/VaporTV.png?v=1746411817932"
@@ -104,6 +105,14 @@
       />
       <span>Papaz</span>
     </div>
+        
+        <div class="desktop-icon" id="icon-music" data-window="music">
+  <img
+    src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/CDROM.gif?v=1746411773467"
+    alt="Music"
+  />
+  <span>Music</span>
+</div>
 
       </div>
     </div>
@@ -332,6 +341,37 @@
   </div>
 </div>
 
+    <!-- 2️⃣ MUSIC.EXE Popup Window -->
+<div id="music" class="popup-window hidden">
+  <div class="window-header">
+    <span>MUSIC.EXE</span>
+    <!-- minimize & maximize order swapped as requested -->
+    <button class="minimize">_</button>
+    <button class="maximize">▭</button>
+    <button class="close" onclick="closeWindow('music')">X</button>
+  </div>
+  <div class="window-content" style="display:flex; flex-direction:column; align-items:center; padding:1rem; gap:1rem;">
+    <!-- Audio element (no native controls) -->
+    <audio id="music-player"></audio>
+
+    <!-- Now playing info -->
+    <div id="now-playing" style="font-family:var(--font-vt323); color:var(--neon-cyan);">
+      ▶ Loading…
+    </div>
+
+    <!-- Controls -->
+    <div style="display:flex; gap:1rem;">
+      <button onclick="prevTrack()">◀ Prev</button>
+      <button onclick="togglePlay()">Play/Pause</button>
+      <button onclick="nextTrack()">Next ▶</button>
+    </div>
+
+    <!-- Playlist -->
+    <ul id="playlist" style="list-style:none; padding-left:0; max-height:150px; overflow-y:auto; width:100%;">
+      <!-- JS will populate this -->
+    </ul>
+  </div>
+</div>
 
     <!-- Starfield Background -->
     <canvas id="background-canvas"></canvas>
