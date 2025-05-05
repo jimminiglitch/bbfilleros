@@ -130,13 +130,6 @@
           <span>Snake</span>
         </div>
 
-        <div class="desktop-icon" id="icon-snes" data-window="snes">
-          <img
-            src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/DiskPic.png?v=1746392827503"
-            alt="SNES"
-          />
-          <span>SNES</span>
-        </div>
       </div>
     </div>
 
@@ -417,23 +410,7 @@
       </div>
     </div>
 
-    <!-- SNES.EXE -->
-    <div id="snes" class="popup-window hidden">
-      <div class="window-header">
-        <span>SNES.EXE</span>
-        <button class="minimize">_</button>
-        <button class="maximize">▭</button>
-        <button class="close" onclick="closeWindow('snes')">X</button>
-      </div>
-      <div class="window-content" style="padding:0;">
-        <iframe
-          src="/snes.html"
-          style="width:100%; height:100%; border:none; display:block;"
-          allowfullscreen
-        ></iframe>
-      </div>
-    </div>
-
+  
     <!-- Starfield Background -->
     <canvas id="background-canvas"></canvas>
 
@@ -453,7 +430,6 @@
       <a href="#" onclick="openWindow('notes')">Notes</a>
       <a href="#" onclick="openWindow('nature')">Nature</a>
       <a href="#" onclick="openWindow('snake')">Snake</a>
-      <a href="#" onclick="openWindow('snes')">SNES</a>
     </div>
 
     <!-- Main Script -->

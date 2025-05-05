@@ -20,10 +20,6 @@ function getNextZIndex() {
 // Remember window positions/sizes
 const windowStates = {};
 
-// Open a window by ID (rebuild SNES iframe if needed)
-function openWindow(id) {
-  const win = document.getElementById(id);
-  if (!win) return;
 
   // Hide start menu & deactivate others
   document.getElementById("start-menu").style.display = "none";
@@ -54,17 +50,7 @@ function openWindow(id) {
     width:`${newW}px`, height:`${newH}px`
   });
 
-  // If SNES window, rebuild its iframe
-  if (id === "snes") {
-    const content = win.querySelector(".window-content");
-    const old = content.querySelector("iframe");
-    if (old) old.remove();
-    const iframe = document.createElement("iframe");
-    iframe.src = "/snes.html";
-    iframe.style.cssText = "width:100%;height:100%;border:none;display:block;";
-    content.appendChild(iframe);
-  }
-}
+  
 
 // Create a taskbar icon for a minimized window
 function createTaskbarIcon(id) {
@@ -121,13 +107,6 @@ function closeWindow(id) {
   const icon = document.getElementById(`taskbar-icon-${id}`);
   if (icon) icon.remove();
 
-  // Tear down SNES iframe on close
-  if (id === "snes") {
-    const content = win.querySelector(".window-content");
-    const old = content.querySelector("iframe");
-    if (old) old.remove();
-  }
-}
 
 // Toggle maximize / restore
 function toggleMaximizeWindow(id) {
