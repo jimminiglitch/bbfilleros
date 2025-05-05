@@ -272,6 +272,90 @@ function initDesktopIcons() {
 }
 window.addEventListener("load", initDesktopIcons);
 
+// Wrap your existing openWindow…
+const origOpen = openWindow;
+openWindow = id => {
+  origOpen(id);
+
+ // ─── SNAKE GAME (rainbow psych-trails) ────────────────────────────────
+function initSnake() {
+  const canvas = document.getElementById('snake-canvas');
+  const ctx    = canvas.getContext('2d');
+  const grid   = 20;
+  let snake    = [{ x:9, y:9 }];
+  let dx = 1, dy = 0;
+  let apple;
+  let hueOffset = 0;
+
+  function placeApple() {
+    apple = {
+      x: Math.floor(Math.random() * (canvas.width / grid)),
+      y: Math.floor(Math.random() * (canvas.height / grid))
+    };
+  }
+  placeApple();
+
+  // arrow-key controls
+  window.addEventListener('keydown', e => {
+    if (e.key === 'ArrowUp'    && dy === 0) { dx =  0; dy = -1; }
+    if (e.key === 'ArrowDown'  && dy === 0) { dx =  0; dy =  1; }
+    if (e.key === 'ArrowLeft'  && dx === 0) { dx = -1; dy =  0; }
+    if (e.key === 'ArrowRight' && dx === 0) { dx =  1; dy =  0; }
+  });
+
+  // start / restart interval
+  if (window.snakeInterval) {
+    clearInterval(window.snakeInterval);
+  }
+  let frameCount = 0;
+  window.snakeInterval = setInterval(() => {
+    if (++frameCount < 4) return;
+    frameCount = 0;
+
+    // move head
+    const head = { x: snake[0].x + dx, y: snake[0].y + dy };
+    snake.unshift(head);
+
+    // eat apple?
+    if (head.x === apple.x && head.y === apple.y) {
+      placeApple();
+    } else {
+      snake.pop();
+    }
+
+    // collision?
+    if (
+      head.x < 0 || head.y < 0 ||
+      head.x >= canvas.width/grid || head.y >= canvas.height/grid ||
+      snake.slice(1).some(s => s.x === head.x && s.y === head.y)
+    ) {
+      clearInterval(window.snakeInterval);
+      window.snakeInterval = null;
+      return alert('Game Over! Score: ' + (snake.length - 1));
+    }
+
+    // fade background lightly (trail effect)
+    ctx.fillStyle = 'rgba(0,0,0,0.2)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // draw apple
+    ctx.fillStyle = 'magenta';
+    ctx.fillRect(apple.x*grid, apple.y*grid, grid-2, grid-2);
+
+    // draw rainbow snake
+    snake.forEach((seg, i) => {
+      const hue = (hueOffset + i*10) % 360;
+      ctx.fillStyle = `hsl(${hue}, 100%, 50%)`;
+      ctx.fillRect(seg.x*grid, seg.y*grid, grid-2, grid-2);
+    });
+
+    // shift the rainbow
+    hueOffset = (hueOffset + 2) % 360;
+  }, 1000/15);
+}
+
+
+
 // ─── STARFIELD BACKGROUND ────────────────────────────────────────────────
 function initStarfield() {
   const canvas = document.getElementById("background-canvas");
@@ -475,3 +559,5 @@ closeWindow = id => {
   }
   origClose(id);
 };
+
+
