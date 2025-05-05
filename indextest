@@ -89,6 +89,38 @@
           />
           <span>Nature</span>
         </div>
+        <!-- …other icons… -->
+        <div class="desktop-icon" id="icon-video1" data-window="video1">
+          <img
+            src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/VaporTV.png?v=1746411817932"
+            alt="Joyful"
+          />
+          <span>Joyful</span>
+        </div>
+
+        <div class="desktop-icon" id="icon-video2" data-window="video2">
+          <img
+            src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/VaporTV.png?v=1746411817932"
+            alt="Papaz"
+          />
+          <span>Papaz</span>
+        </div>
+
+        <div class="desktop-icon" id="icon-video3" data-window="video3">
+          <img
+            src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/VaporTV.png?v=1746411817932"
+            alt="Abstract"
+          />
+          <span>Abstract</span>
+        </div>
+
+        <div class="desktop-icon" id="icon-music" data-window="music">
+          <img
+            src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/CDROM.gif?v=1746411773467"
+            alt="Music"
+          />
+          <span>Music</span>
+        </div>
       </div>
     </div>
 
@@ -104,14 +136,14 @@
         <div class="about-inner">
           <h2>👾 WHO IS BENJAMIN FILLER?</h2>
           <p>
-            I'm a media creator, director, and narrative systems designer
-            from Michigan. I share stories through words, images, sounds, games, and interactive
-            spaces.
+            I'm a media creator, director, and narrative systems designer from
+            Michigan. I share stories through words, images, sounds, games, and
+            interactive spaces.
           </p>
           <p>
-            My work blends cinematic technique, code-based immersion, and
-            analog grit. I like strange archives, gripping installation,
-            damaged footage, modular synthetics, and custom hardware.
+            My work blends cinematic technique, code-based immersion, and analog
+            grit. I like strange archives, gripping installation, damaged
+            footage, modular synthetics, and custom hardware.
           </p>
           <h3>💾 KEYWORDS</h3>
           <ul>
@@ -147,7 +179,10 @@
             </p>
             <div class="terminal-line">&gt; Ready...</div>
           </div>
-          <div class="project-card" onclick="launchProject(this, 'R3D3CH0.sys')">
+          <div
+            class="project-card"
+            onclick="launchProject(this, 'R3D3CH0.sys')"
+          >
             <h3 class="project-name">R3D3CH0</h3>
             <p class="project-desc">
               Cyberpunk short story reimagined as ArcGIS map and mobile
@@ -200,10 +235,10 @@
         <button class="maximize">▭</button>
         <button class="close" onclick="closeWindow('resume')">X</button>
       </div>
-      <div class="window-content" style="padding:0">
+      <div class="window-content" style="padding: 0">
         <iframe
           src="/resume.html"
-          style="width:100%; height:100%; border:none"
+          style="width: 100%; height: 100%; border: none"
           allowfullscreen
         ></iframe>
       </div>
@@ -217,10 +252,10 @@
         <button class="maximize">▭</button>
         <button class="close" onclick="closeWindow('contact')">X</button>
       </div>
-      <div class="window-content" style="padding:0">
+      <div class="window-content" style="padding: 0">
         <iframe
           src="/contact.html"
-          style="width:100%; height:100%; border:none"
+          style="width: 100%; height: 100%; border: none"
           allowfullscreen
         ></iframe>
       </div>
@@ -239,11 +274,14 @@
           id="notes-area"
           placeholder="Type your notes here…"
           style="
-            width:100%; height:100%;
-            background:black; color:#c1bfff;
-            border:none; resize:none;
-            font-family:monospace;
-            padding:10px;
+            width: 100%;
+            height: 100%;
+            background: black;
+            color: #c1bfff;
+            border: none;
+            resize: none;
+            font-family: monospace;
+            padding: 10px;
           "
         ></textarea>
       </div>
@@ -259,18 +297,135 @@
       </div>
       <div
         class="window-content"
-        style="display:flex; flex-direction:column; align-items:center;"
+        style="display: flex; flex-direction: column; align-items: center"
       >
         <img
           id="nature-img"
           src=""
           alt="Nature Slideshow"
-          style="max-width:100%; max-height:80vh;"
+          style="max-width: 100%; max-height: 80vh"
         />
-        <div style="margin-top:10px;">
+        <div style="margin-top: 10px">
           <button onclick="prevNature()">◀ Prev</button>
           <button onclick="nextNature()">Next ▶</button>
         </div>
+      </div>
+    </div>
+
+    <!-- VIDEO1.EXE -->
+    <div id="video1" class="popup-window hidden">
+      <div class="window-header">
+        <span>JOYFUL.EXE</span>
+        <!-- note: I've swapped minimize & maximize here per our last fix -->
+        <button class="minimize">_</button>
+        <button class="maximize">▭</button>
+        <button class="close" onclick="closeWindow('video1')">X</button>
+      </div>
+      <div class="window-content">
+        <video
+          id="video1-player"
+          src="https://cdn.glitch.me/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/A%20Joyful%20and%20Meaningful%20Life.mp4?v=1746453364188"
+          controls
+          autoplay
+          style="width: 100%; height: 100%; background: black"
+        >
+          Your browser does not support the video tag.
+        </video>
+      </div>
+    </div>
+
+    <div id="video2" class="popup-window hidden">
+      <div class="window-header">
+        <span>PAPAZ.EXE</span>
+        <!-- note: I've swapped minimize & maximize here per our last fix -->
+        <button class="minimize">_</button>
+        <button class="maximize">▭</button>
+        <button class="close" onclick="closeWindow('video2')">X</button>
+      </div>
+      <div class="window-content">
+        <video
+          id="video2-player"
+          src="https://cdn.glitch.me/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/SEPChallengeVideo2.mp4?v=1746454142843"
+          controls
+          autoplay
+          style="width: 100%; height: 100%; background: black"
+        >
+          Your browser does not support the video tag.
+        </video>
+      </div>
+    </div>
+
+    <div id="video3" class="popup-window hidden">
+      <div class="window-header">
+        <span>ABSTRACT.EXE</span>
+        <!-- note: I've swapped minimize & maximize here per our last fix -->
+        <button class="minimize">_</button>
+        <button class="maximize">▭</button>
+        <button class="close" onclick="closeWindow('video3')">X</button>
+      </div>
+      <div class="window-content">
+        <video
+          id="video3-player"
+          src="https://cdn.glitch.me/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/SEP%20Challenge-Video%206.mov?v=1746456155714"
+          controls
+          autoplay
+          style="width: 100%; height: 100%; background: black"
+        >
+          Your browser does not support the video tag.
+        </video>
+      </div>
+    </div>
+
+    <!-- 2️⃣ MUSIC.EXE Popup Window -->
+    <div id="music" class="popup-window hidden">
+      <div class="window-header">
+        <span>MUSIC.EXE</span>
+        <!-- minimize & maximize order swapped as requested -->
+        <button class="minimize">_</button>
+        <button class="maximize">▭</button>
+        <button class="close" onclick="closeWindow('music')">X</button>
+      </div>
+      <div
+        class="window-content"
+        style="
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          padding: 1rem;
+          gap: 1rem;
+        "
+      >
+        <!-- Audio element (no native controls) -->
+        <audio id="music-player"></audio>
+
+        <!-- Now playing info -->
+        <div
+          id="now-playing"
+          style="font-family: var(--font-vt323); color: var(--neon-cyan)"
+        >
+          ▶ Loading…
+        </div>
+
+        <!-- Controls -->
+        <div style="display: flex; gap: 1rem">
+          <button onclick="prevTrack()">◀ Prev</button>
+          <button onclick="togglePlay()">Play/Pause</button>
+          <button onclick="nextTrack()">Next ▶</button>
+        </div>
+
+        <!-- Playlist -->
+        <ul
+          id="playlist"
+          style="
+            list-style: none;
+            padding-left: 0;
+            max-height: 150px;
+            overflow-y: auto;
+            width: 100%;
+          "
+        >
+          <!-- JS will populate this -->
+        </ul>
       </div>
     </div>
 

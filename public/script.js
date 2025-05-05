@@ -475,3 +475,69 @@ closeWindow = id => {
   }
   origClose(id);
 };
+
+// ─── SNAKE GAME ────────────────────────────────────────────────
+function initSnake() {
+  const canvas = document.getElementById('snake-canvas'),
+        ctx    = canvas.getContext('2d'),
+        grid   = 20;
+  let snake = [{x:9, y:9}], dx=1, dy=0, food;
+  
+  function placeFood() {
+    food = {
+      x: Math.floor(Math.random() * (canvas.width/grid)),
+      y: Math.floor(Math.random() * (canvas.height/grid))
+    };
+  }
+  
+  function loop() {
+    // move
+    const head = { x: snake[0].x + dx, y: snake[0].y + dy };
+    snake.unshift(head);
+    // eat?
+    if (head.x === food.x && head.y === food.y) {
+      placeFood();
+    } else {
+      snake.pop();
+    }
+    // collision with walls or self?
+    if (
+      head.x < 0 || head.y < 0 ||
+      head.x >= canvas.width/grid || head.y >= canvas.height/grid ||
+      snake.slice(1).some(s => s.x===head.x && s.y===head.y)
+    ) {
+      return alert('Game Over! Score: ' + (snake.length - 1));
+    }
+    // draw
+    ctx.fillStyle = 'black';
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle = '#0f0';
+    snake.forEach(s => ctx.fillRect(s.x*grid, s.y*grid, grid-2, grid-2));
+    ctx.fillStyle = '#f00';
+    ctx.fillRect(food.x*grid, food.y*grid, grid-2, grid-2);
+    
+    setTimeout(loop, 100);
+  }
+  
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowUp'    && dy===0) { dx=0; dy=-1; }
+    if (e.key === 'ArrowDown'  && dy===0) { dx=0; dy= 1; }
+    if (e.key === 'ArrowLeft'  && dx===0) { dx=-1; dy=0; }
+    if (e.key === 'ArrowRight' && dx===0) { dx= 1; dy=0; }
+  });
+  
+  placeFood();
+  loop();
+}
+
+window.addEventListener('load', () => {
+  // whenever the snake window first opens…
+  const snakeWin = document.getElementById('snake');
+  snakeWin.addEventListener('transitionend', () => {
+    if (!snakeWin.classList.contains('hidden') && !snakeWin.dataset.inited) {
+      initSnake();
+      snakeWin.dataset.inited = 'true';
+    }
+  });
+});
+

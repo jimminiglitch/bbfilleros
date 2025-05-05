@@ -23,6 +23,9 @@ body {
   height: 100vh;
   position: relative;
 }
+.desktop-icon img {
+  filter: drop-shadow(0 0 4px rgba(255,141,161,0.3));
+}
 
 /*─────────────────────────────────────────────────────────────────────────────
   SCANLINES OVERLAY
@@ -129,9 +132,13 @@ body {
 #icon-about    { top: 100px; left:  40px; }
 #icon-projects { top: 100px; left: 140px; }
 #icon-resume   { top: 100px; left: 240px; }
-#icon-contact  { top: 100px; left: 340px; }
-#icon-notes    { top: 200px; left:  40px; }
-#icon-nature   { top: 200px; left: 140px; }
+#icon-contact  { top: 200px; left:  40px; }
+#icon-notes    { top: 200px; left: 140px; }
+#icon-nature   { top: 200px; left: 240px; }
+#icon-video1   { top: 300px; left:  40px; }
+#icon-video2   { top: 300px; left: 140px; }
+#icon-video3   { top: 300px; left: 240px; }
+#icon-music    { top: 400px; left:  40px; }
 
 /* Selected state */
 .desktop-icon.selected {

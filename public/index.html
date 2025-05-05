@@ -123,6 +123,17 @@
         </div>
       </div>
     </div>
+    
+    <div class="desktop-icon" id="icon-snake" data-window="snake">
+  <img src="/assets/icons/snake.png" alt="Snake" />
+  <span>Snake</span>
+</div>
+    
+<div class="desktop-icon" id="icon-tetris" data-window="tetris">
+  <img src="/assets/icons/tetris.png" alt="Tetris" />
+  <span>Tetris</span>
+</div>
+
 
     <!-- ABOUT Window -->
     <div id="about" class="popup-window hidden">
@@ -429,6 +440,33 @@
       </div>
     </div>
 
+    <!-- SNAKE.EXE -->
+<div id="snake" class="popup-window hidden">
+  <div class="window-header">
+    <span>SNAKE.EXE</span>
+    <button class="minimize">_</button>
+    <button class="maximize">▭</button>
+    <button class="close" onclick="closeWindow('snake')">X</button>
+  </div>
+  <div class="window-content" style="padding:0; display:flex; justify-content:center; align-items:center;">
+    <canvas id="snake-canvas" width="400" height="400"></canvas>
+  </div>
+</div>
+
+<!-- TETRIS.EXE -->
+<div id="tetris" class="popup-window hidden">
+  <div class="window-header">
+    <span>TETRIS.EXE</span>
+    <button class="minimize">_</button>
+    <button class="maximize">▭</button>
+    <button class="close" onclick="closeWindow('tetris')">X</button>
+  </div>
+  <div class="window-content" id="tetris-container" style="padding:0;">
+    <!-- we'll inject the Tetris game here -->
+  </div>
+</div>
+
+    
     <!-- Starfield Background -->
     <canvas id="background-canvas"></canvas>
 
