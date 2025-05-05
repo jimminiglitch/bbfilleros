@@ -410,21 +410,29 @@
       </div>
     </div>
 
-    <!-- SNAKE.EXE -->
-    <div id="snake" class="popup-window hidden">
-      <div class="window-header">
-        <span>SNAKE.EXE</span>
-        <button class="minimize">_</button>
-        <button class="maximize">▭</button>
-        <button class="close" onclick="closeWindow('snake')">X</button>
-      </div>
-      <div
-        class="window-content"
-        style="padding:0; display:flex; justify-content:center; align-items:center;"
-      >
-        <canvas id="snake-canvas" width="400" height="400"></canvas>
-      </div>
-    </div>
+    <!-- Snake UI Overlay -->
+<div id="snake-ui" style="
+     position:absolute; top:10px; left:50%;
+     transform:translateX(-50%);
+     color: var(--neon-cyan);
+     font-family: var(--font-press-start);
+     font-size: 1rem;
+     text-align: center;
+     z-index: 1000;
+     pointer-events: none;
+">
+  <span id="snake-score">Score: 0</span>
+  &nbsp;|&nbsp;
+  <span id="snake-level">Level: 1</span>
+  &nbsp;|&nbsp;
+  <span id="snake-best">Best: 0</span>
+  &nbsp;|&nbsp;
+  <span id="snake-status">Running</span>
+</div>
+
+<!-- Snake Music -->
+<audio id="snake-music" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3" loop></audio>
+
 
     <!-- Starfield Background -->
     <canvas id="background-canvas"></canvas>
