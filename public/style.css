@@ -373,3 +373,12 @@ canvas#background-canvas {
   width: 100%;
   max-width: 800px;
 }
+#icon-notes {
+  top: 200px;    /* third row (0, 100, 200) */
+  left: 0px;
+}
+
+#icon-gallery {
+  top: 200px;
+  left: 100px;   /* same horizontal spacing as your other icons */
+}
