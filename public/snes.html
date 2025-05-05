@@ -11,13 +11,13 @@
   <div id="emu"></div>
 
   <!-- 1️⃣ Pull in EmulatorJS -->
-  <script src="https://cdn.jsdelivr.net/npm/emulatorjs@1.6.0/dist/emulator.min.js"></script>
+  <script src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/New%20Horizons%20(USA).sfc?v=1746466125838"></script>
   <script>
     // 2️⃣ Instantiate the SNES emulator in our #emu container:
     const emu = new EmulatorJS({
       element: document.getElementById('emu'),
       system:  'snes',                                // SNES core
-      rom:     'https://cdn.glitch.global/abcd1234-.../SuperMarioWorld.sfc?v=1746460000000',
+      rom:     'https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/New%20Horizons%20(USA).sfc?v=1746466125838',
       onStart: () => console.log('SNES emulator ready'),
       onError: e => console.error('EmulatorJS error', e)
     });
