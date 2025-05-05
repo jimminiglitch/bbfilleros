@@ -135,7 +135,7 @@ body {
 #icon-video3   { top: 300px; left: 240px; }
 #icon-music    { top: 400px; left:  40px; }
 #icon-snake    { top: 400px; left: 140px; }
-#icon-snes     { top: 400px; left: 240px; }
+
 .desktop-icon.selected {
   background: rgba(255,255,255,0.1);
   border: 2px solid var(--neon-cyan);
