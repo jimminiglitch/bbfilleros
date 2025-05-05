@@ -86,30 +86,6 @@ function minimizeWindow(id) {
   createTaskbarIcon(id);
 }
 
-// Close window with shutdown animation
-function closeWindow(id) {
-  const win = document.getElementById(id);
-  if (!win) return;
-
-  const blackout = document.createElement('div');
-  blackout.style.position = 'fixed';
-  blackout.style.inset = 0;
-  blackout.style.background = 'black';
-  blackout.style.zIndex = 9999;
-  blackout.style.display = 'flex';
-  blackout.style.alignItems = 'center';
-  blackout.style.justifyContent = 'center';
-  blackout.innerHTML = '<img src="/static-shutdown.gif" style="width: 120px; image-rendering: pixelated;" />';
-  document.body.appendChild(blackout);
-
-  setTimeout(() => {
-    win.classList.add('hidden');
-    win.style.display = 'none';
-    const icon = document.getElementById(`taskbar-icon-${id}`);
-    if (icon) icon.remove();
-    blackout.remove();
-  }, 1200);
-}
 
 // Maximize / restore
 function toggleMaximizeWindow(id) {
@@ -375,3 +351,15 @@ function triggerFakeError() {
 setTimeout(() => {
   if (Math.random() > 0.5) triggerFakeError();
 }, 30000 + Math.random()*15000);
+function closeWindow(id) {
+  const win = document.getElementById(id);
+  if (!win) return;
+
+  // Hide the window immediately
+  win.classList.add('hidden');
+  win.style.display = 'none';
+
+  // Remove any taskbar icon for this window
+  const icon = document.getElementById(`taskbar-icon-${id}`);
+  if (icon) icon.remove();
+}
