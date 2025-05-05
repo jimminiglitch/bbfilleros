@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Snake.EXE</title>
+  <style>
+    :root {
+      --font-press-start: 'Press Start 2P', monospace;
+      --neon-cyan: #00f0ff;
+    }
+    html, body {
+      margin: 0;
+      height: 100%;
+      background: black;
+      overflow: hidden;
+    }
+    #snake-canvas {
+      display: block;
+      margin: 0 auto;
+      background: #000;
+    }
+    #snake-ui {
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: var(--font-press-start);
+      font-size: 1rem;
+      color: var(--neon-cyan);
+      text-align: center;
+      z-index: 1000;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="snake-canvas"></canvas>
+  <div id="snake-ui">
+    <span id="snake-score">Score: 0</span>
+    &nbsp;|&nbsp;
+    <span id="snake-level">Level: 1</span>
+    &nbsp;|&nbsp;
+    <span id="snake-best">Best: 0</span>
+    &nbsp;|&nbsp;
+    <span id="snake-status">Running</span>
+  </div>
+
+  <!-- music will kick in after you press a key or click -->
+  <audio
+    id="snake-music"
+    src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3"
+    loop
+    preload="auto"
+  ></audio>
+
+  <script src="/snake.js"></script>
+</body>
+</html>
