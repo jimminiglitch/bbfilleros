@@ -89,6 +89,15 @@
           />
           <span>Nature</span>
         </div>
+            <!-- …other icons… -->
+    <div class="desktop-icon" id="icon-video1" data-window="video1">
+      <img
+        src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/VaporTV.png?v=1746411817932"
+        alt="Joyful"
+      />
+      <span>Joyful</span>
+    </div>
+
       </div>
     </div>
 
@@ -273,6 +282,29 @@
         </div>
       </div>
     </div>
+    
+    <!-- VIDEO1.EXE -->
+<div id="video1" class="popup-window hidden">
+  <div class="window-header">
+    <span>JOYFUL.EXE</span>
+    <!-- note: I've swapped minimize & maximize here per our last fix -->
+    <button class="minimize">_</button>
+    <button class="maximize">▭</button>
+    <button class="close" onclick="closeWindow('video1')">X</button>
+  </div>
+  <div class="window-content">
+    <video
+      id="video1-player"
+      src="https://cdn.glitch.me/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/A%20Joyful%20and%20Meaningful%20Life.mp4?v=1746453364188"
+      controls
+      autoplay
+      style="width:100%; height:100%; background:black;"
+    >
+      Your browser does not support the video tag.
+    </video>
+  </div>
+</div>
+
 
     <!-- Starfield Background -->
     <canvas id="background-canvas"></canvas>
