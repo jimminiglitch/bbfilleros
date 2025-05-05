@@ -1,4 +1,4 @@
-// Play blip sound
+// ─── Play blip sound ───────────────────────────────────────────────────────
 function playBlip() {
   const blip = document.getElementById("blip");
   if (blip) {
@@ -7,77 +7,56 @@ function playBlip() {
   }
 }
 
-// Open window
+// ─── Window open/close & focus ────────────────────────────────────────────
 function openWindow(id) {
   const win = document.getElementById(id);
   if (!win) return;
 
-  // Hide start menu & deactivate others
   document.getElementById('start-menu').style.display = 'none';
   document.querySelectorAll('.popup-window').forEach(w => w.classList.remove('active'));
 
-  // Show & focus this window
   win.classList.remove('hidden');
   win.classList.add('active');
   win.style.display = 'block';
   win.style.zIndex = getNextZIndex();
 
-  // Restore stored position/size
   const stored = windowStates[id];
-  if (stored) {
-    Object.assign(win.style, stored);
-  }
+  if (stored) Object.assign(win.style, stored);
 
-  // Clamp to viewport
   const rect = win.getBoundingClientRect();
-  const margin = 20;
-  const vw = window.innerWidth, vh = window.innerHeight;
+  const margin = 20, vw = window.innerWidth, vh = window.innerHeight;
   let newLeft = rect.left, newTop = rect.top, newW = rect.width, newH = rect.height;
-  if (rect.width > vw - margin*2) newW = vw - margin*2;
+
+  if (rect.width  > vw - margin*2) newW = vw - margin*2;
   if (rect.height > vh - margin*2) newH = vh - margin*2;
-  if (rect.left < margin) newLeft = margin;
-  if (rect.top < margin) newTop = margin;
-  if (rect.right > vw - margin) newLeft = vw - margin - newW;
-  if (rect.bottom > vh - margin) newTop = vh - margin - newH;
-  win.style.left = `${newLeft}px`;
-  win.style.top = `${newTop}px`;
-  win.style.width = `${newW}px`;
+  if (rect.left   < margin)           newLeft = margin;
+  if (rect.top    < margin)           newTop  = margin;
+  if (rect.right  > vw - margin)      newLeft = vw - margin - newW;
+  if (rect.bottom > vh - margin)      newTop  = vh - margin - newH;
+
+  win.style.left   = `${newLeft}px`;
+  win.style.top    = `${newTop}px`;
+  win.style.width  = `${newW}px`;
   win.style.height = `${newH}px`;
 }
 
-// Ambient synth fade-in
-window.addEventListener('load', () => {
-  const amb = document.getElementById("ambience");
-  if (amb) {
-    amb.volume = 0;
-    let v = 0;
-    const step = () => {
-      if (v < 0.1) {
-        v += 0.01;
-        amb.volume = v;
-        requestAnimationFrame(step);
-      }
-    };
-    step();
-  }
-});
-
-// Simulate loading splash for projects
-function launchProject(element, name) {
-  const splash = document.getElementById("project-splash");
-  const splashName = document.getElementById("splash-name");
-  if (splash && splashName) {
-    splashName.textContent = name;
-    splash.classList.remove("hidden");
-    setTimeout(closeSplash, 3000);
-  }
-}
-function closeSplash() {
-  const splash = document.getElementById("project-splash");
-  if (splash) splash.classList.add("hidden");
+// ─── Taskbar icons & minimize/maximize/close ─────────────────────────────
+function createTaskbarIcon(id) {
+  if (document.getElementById(`taskbar-icon-${id}`)) return;
+  const btn = document.createElement('button');
+  btn.id = `taskbar-icon-${id}`;
+  btn.className = 'taskbar-icon';
+  btn.textContent = id.toUpperCase();
+  btn.addEventListener('click', () => {
+    const win = document.getElementById(id);
+    win.classList.remove('hidden');
+    win.style.display = 'block';
+    win.style.zIndex = getNextZIndex();
+    btn.remove();
+  });
+  document.getElementById('taskbar-icons').appendChild(btn);
 }
 
-// Minimize window & add to taskbar
 function minimizeWindow(id) {
   const win = document.getElementById(id);
   if (!win) return;
@@ -86,8 +65,16 @@ function minimizeWindow(id) {
   createTaskbarIcon(id);
 }
 
+function closeWindow(id) {
+  const win = document.getElementById(id);
+  if (win) {
+    win.classList.add('hidden');
+    win.style.display = 'none';
+  }
+  const icon = document.getElementById(`taskbar-icon-${id}`);
+  if (icon) icon.remove();
+}
 
-// Maximize / restore
 function toggleMaximizeWindow(id) {
   const win = document.getElementById(id);
   if (!win) return;
@@ -107,21 +94,24 @@ function toggleMaximizeWindow(id) {
     if (icon) icon.remove();
   } else {
     const stored = windowStates[id];
-    if (stored) Object.assign(win.style, stored);
+    if (stored) {
+      win.style.top    = stored.top;
+      win.style.left   = stored.left;
+      win.style.width  = stored.width;
+      win.style.height = stored.height;
+    }
     win.classList.remove('maximized');
   }
 }
 
-// Z-index helper
+// ─── Z-index helper & storage ─────────────────────────────────────────────
 let currentZIndex = 10;
 function getNextZIndex() {
   return ++currentZIndex;
 }
-
-// Store window states
 const windowStates = {};
 
-// Clock
+// ─── Clock ────────────────────────────────────────────────────────────────
 function updateClock() {
   const clock = document.getElementById("clock");
   if (clock) clock.textContent = new Date().toLocaleTimeString();
@@ -129,19 +119,19 @@ function updateClock() {
 setInterval(updateClock, 1000);
 updateClock();
 
-// Start menu toggle
+// ─── Start menu toggle ────────────────────────────────────────────────────
 const startButton = document.getElementById("start-button");
 const startMenu   = document.getElementById("start-menu");
 startButton.addEventListener("click", () => {
   startMenu.style.display = startMenu.style.display === "flex" ? "none" : "flex";
 });
 
-// Boot screen typing effect
+// ─── Boot screen typewriter & progress ────────────────────────────────────
 window.addEventListener('load', () => {
   const bootScreen = document.getElementById('bootScreen');
   const logEl      = document.getElementById('boot-log');
   const progress   = document.getElementById('progress-bar');
-  const messages = [
+  const messages   = [
     '[ OK ] Initializing hardware...',
     '[ OK ] Loading kernel modules...',
     '[ OK ] Mounting filesystems...',
@@ -149,13 +139,11 @@ window.addEventListener('load', () => {
     '[ OK ] CyberDeck ready.',
     '[ DONE ] Boot complete.'
   ];
-  let idx = 0;
-  const total = messages.length;
+  let idx = 0, total = messages.length, interval = 400;
   const typer = setInterval(() => {
     logEl.textContent += messages[idx] + '\n';
     logEl.scrollTop = logEl.scrollHeight;
-    const pct = ((idx + 1) / total) * 100;
-    progress.style.width = pct + '%';
+    progress.style.width = `${((idx+1)/total)*100}%`;
     idx++;
     if (idx === total) {
       clearInterval(typer);
@@ -165,36 +153,33 @@ window.addEventListener('load', () => {
         setTimeout(() => { bootScreen.style.display = 'none'; }, 800);
       }, 500);
     }
-  }, 400);
+  }, interval);
 });
 
-// Taskbar icon creation
-function createTaskbarIcon(id) {
-  if (document.getElementById(`taskbar-icon-${id}`)) return;
-  const btn = document.createElement('button');
-  btn.id = `taskbar-icon-${id}`;
-  btn.className = 'taskbar-icon';
-  btn.textContent = id.toUpperCase();
-  btn.addEventListener('click', () => {
-    const win = document.getElementById(id);
-    win.classList.remove('hidden');
-    win.style.display = 'block';
-    win.style.zIndex = getNextZIndex();
-    btn.remove();
-  });
-  document.getElementById('taskbar-icons').appendChild(btn);
+// ─── Project splash ───────────────────────────────────────────────────────
+function launchProject(element, name) {
+  const splash     = document.getElementById("project-splash");
+  const splashName = document.getElementById("splash-name");
+  if (splash && splashName) {
+    splashName.textContent = name;
+    splash.classList.remove("hidden");
+  }
+}
+function closeSplash() {
+  document.getElementById("project-splash").classList.add("hidden");
 }
 
-// Window header drag & buttons
+// ─── Window header dragging & buttons ─────────────────────────────────────
 document.querySelectorAll(".popup-window").forEach(win => {
-  const id = win.id;
+  const id          = win.id;
   const header      = win.querySelector(".window-header");
   const btnMinimize = header.querySelector(".minimize");
   const btnMaximize = header.querySelector(".maximize");
   const btnClose    = header.querySelector(".close");
+
   if (btnMinimize) btnMinimize.addEventListener("click", () => minimizeWindow(id));
   if (btnMaximize) btnMaximize.addEventListener("click", () => toggleMaximizeWindow(id));
-  if (btnClose)    btnClose.addEventListener("click", () => closeWindow(id));
+  if (btnClose)    btnClose.addEventListener   ("click", () => closeWindow(id));
 
   let isDragging = false, offsetX = 0, offsetY = 0;
   header.addEventListener("mousedown", e => {
@@ -212,7 +197,7 @@ document.querySelectorAll(".popup-window").forEach(win => {
   document.addEventListener("mouseup", () => { isDragging = false; });
 });
 
-// Typewriter effect
+// ─── Typewriter utility (if used) ────────────────────────────────────────
 document.querySelectorAll('.typewriter').forEach(el => {
   const text = el.getAttribute('data-text');
   el.textContent = '';
@@ -225,7 +210,7 @@ document.querySelectorAll('.typewriter').forEach(el => {
   })();
 });
 
-// Desktop icons init with snap-to-grid
+// ─── DESKTOP ICON INIT (dblclick, drag & drop) ────────────────────────────
 function initDesktopIcons() {
   document.querySelectorAll('.desktop-icon').forEach(icon => {
     icon.addEventListener('dblclick', () => {
@@ -251,7 +236,7 @@ function initDesktopIcons() {
         const startLeft = r.left - parentRect.left;
         const startTop  = r.top  - parentRect.top;
         ic.style.left = startLeft + 'px';
-        ic.style.top  = startTop + 'px';
+        ic.style.top  = startTop  + 'px';
         ic.style.zIndex = getNextZIndex();
         return { icon: ic, startLeft, startTop };
       });
@@ -259,33 +244,24 @@ function initDesktopIcons() {
         const newLeft = e.clientX - shiftX - parentRect.left;
         const newTop  = e.clientY - shiftY - parentRect.top;
         const dx = newLeft - groupData[0].startLeft;
-        const dy = newTop - groupData[0].startTop;
+        const dy = newTop  - groupData[0].startTop;
         groupData.forEach(({ icon, startLeft, startTop }) => {
           icon.style.left = startLeft + dx + 'px';
-          icon.style.top  = startTop + dy + 'px';
+          icon.style.top  = startTop  + dy + 'px';
         });
       }
       document.addEventListener('mousemove', onMouseMove);
       document.addEventListener('mouseup', function onUp() {
         document.removeEventListener('mousemove', onMouseMove);
-        // Snap to 100×100 grid
-        const grid = 100;
-        groupData.forEach(({ icon }) => {
-          const r = icon.getBoundingClientRect();
-          const left = Math.round((r.left - parentRect.left) / grid) * grid;
-          const top  = Math.round((r.top  - parentRect.top ) / grid) * grid;
-          icon.style.left = `${left}px`;
-          icon.style.top  = `${top}px`;
-        });
         document.removeEventListener('mouseup', onUp);
       }, { once: true });
-      icon.ondragstart = () => false;
     });
+    icon.ondragstart = () => false;
   });
 }
 window.addEventListener('load', initDesktopIcons);
 
-// Starfield background
+// ─── STARFIELD BACKGROUND ────────────────────────────────────────────────
 function initStarfield() {
   const canvas = document.getElementById('background-canvas');
   const ctx    = canvas.getContext('2d');
@@ -296,25 +272,23 @@ function initStarfield() {
   window.addEventListener('resize', resize);
   resize();
   const numStars = 300;
-  const stars = Array.from({ length: numStars }, () => ({
-    x: Math.random() * canvas.width,
-    y: Math.random() * canvas.height,
-    z: Math.random() * canvas.width,
-    o: Math.random()
-  }));
+  const stars = [];
+  for (let i = 0; i < numStars; i++) {
+    stars.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, z: Math.random()*canvas.width, o: Math.random() });
+  }
   function animate() {
-    ctx.fillStyle = 'rgba(0,0,0,0.4)';
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     for (let star of stars) {
       star.z -= 2;
       if (star.z <= 0) {
         star.z = canvas.width;
-        star.x = Math.random() * canvas.width;
-        star.y = Math.random() * canvas.height;
+        star.x = Math.random()*canvas.width;
+        star.y = Math.random()*canvas.height;
       }
       const k = 128.0 / star.z;
-      const px = (star.x - canvas.width/2) * k + canvas.width/2;
-      const py = (star.y - canvas.height/2) * k + canvas.height/2;
+      const px = (star.x - canvas.width/2)*k + canvas.width/2;
+      const py = (star.y - canvas.height/2)*k + canvas.height/2;
       const size = Math.max(0, (1 - star.z/canvas.width)*3);
       ctx.beginPath();
       ctx.globalAlpha = star.o;
@@ -329,94 +303,45 @@ function initStarfield() {
 }
 window.addEventListener('load', initStarfield);
 
-// Fake error popup
-function triggerFakeError() {
-  const popup = document.createElement('div');
-  popup.className = 'popup-window';
-  popup.style.top = '150px';
-  popup.style.left = '150px';
-  popup.innerHTML = `
-    <div class="window-header">
-      <span>GLITCH.MSG</span>
-      <button class="close" onclick="this.closest('.popup-window').remove()">X</button>
-    </div>
-    <div class="window-content">
-      <h2>🔥 SYSTEM FAULT</h2>
-      <p>Memory leak detected in dreamspace buffer. Reality may degrade shortly.</p>
-      <button onclick="this.closest('.popup-window').remove()">Acknowledge</button>
-    </div>`;
-  document.body.appendChild(popup);
-  popup.style.zIndex = getNextZIndex();
+// ─── RAINBOW DRAG-SELECT MARQUEE ────────────────────────────────────────
+let selStartX, selStartY, selDiv;
+function onSelectStart(e) {
+  if (e.target.closest('.desktop-icon, .popup-window, #start-bar, #start-menu')) return;
+  selStartX = e.clientX; selStartY = e.clientY;
+  selDiv = document.createElement('div');
+  selDiv.id = 'selection-rect';
+  selDiv.style.left   = `${selStartX}px`;
+  selDiv.style.top    = `${selStartY}px`;
+  selDiv.style.width  = '0px';
+  selDiv.style.height = '0px';
+  document.body.appendChild(selDiv);
+  document.addEventListener('mousemove', onSelectMove);
+  document.addEventListener('mouseup',   onSelectEnd, { once: true });
+  e.preventDefault();
 }
-setTimeout(() => {
-  if (Math.random() > 0.5) triggerFakeError();
-}, 30000 + Math.random()*15000);
-function closeWindow(id) {
-  const win = document.getElementById(id);
-  if (!win) return;
-
-  // Hide the window immediately
-  win.classList.add('hidden');
-  win.style.display = 'none';
-
-  // Remove any taskbar icon for this window
-  const icon = document.getElementById(`taskbar-icon-${id}`);
-  if (icon) icon.remove();
+function onSelectMove(e) {
+  const x = Math.min(e.clientX, selStartX);
+  const y = Math.min(e.clientY, selStartY);
+  const w = Math.abs(e.clientX - selStartX);
+  const h = Math.abs(e.clientY - selStartY);
+  selDiv.style.left   = `${x}px`;
+  selDiv.style.top    = `${y}px`;
+  selDiv.style.width  = `${w}px`;
+  selDiv.style.height = `${h}px`;
+  const box = selDiv.getBoundingClientRect();
+  document.querySelectorAll('.desktop-icon').forEach(icon => {
+    const r = icon.getBoundingClientRect();
+    const inside =
+      r.left   >= box.left &&
+      r.right  <= box.right &&
+      r.top    >= box.top &&
+      r.bottom <= box.bottom;
+    icon.classList.toggle('selected', inside);
+  });
 }
-const path = require('path');
-const fastify = require('fastify')({ logger: true });
-const nodemailer = require('nodemailer');
-
-// 1️⃣ Serve static assets
-fastify.register(require('@fastify/static'), {
-  root: path.join(__dirname, 'public'),
-  prefix: '/'
-});
-
-// 2️⃣ Parse form bodies & JSON
-fastify.register(require('@fastify/formbody'));
-
-// 3️⃣ Configure your SMTP transporter via env vars
-//    (Set these in Glitch’s .env: SMTP_HOST, SMTP_PORT, SMTP_SECURE, SMTP_USER, SMTP_PASS, CONTACT_EMAIL)
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: Number(process.env.SMTP_PORT) || 587,
-  secure: process.env.SMTP_SECURE === 'true', // true → port 465
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS
-  }
-});
-
-// 4️⃣ Contact endpoint
-fastify.post('/contact', async (request, reply) => {
-  const { name, email, message } = request.body;
-  try {
-    await transporter.sendMail({
-      from: `"Website Contact" <${process.env.SMTP_USER}>`,
-      to:   process.env.CONTACT_EMAIL,
-      subject: `Contact Form: ${name}`,
-      text: `You’ve got a new message:\n\nName: ${name}\nEmail: ${email}\nMessage:\n${message}`
-    });
-    return reply.code(200).send({ success: true });
-  } catch (err) {
-    fastify.log.error(err);
-    return reply.code(500).send({ success: false, error: 'Could not send message' });
-  }
-});
-
-// 5️⃣ Serve index.html
-fastify.get('/', async (request, reply) => {
-  return reply.sendFile('index.html');
-});
-
-const start = async () => {
-  try {
-    await fastify.listen({ host: '0.0.0.0', port: process.env.PORT || 3000 });
-    console.log('Server running…');
-  } catch (err) {
-    fastify.log.error(err);
-    process.exit(1);
-  }
-};
-start();
+function onSelectEnd() {
+  if (selDiv) selDiv.remove();
+  selDiv = null;
+  document.removeEventListener('mousemove', onSelectMove);
+}
+window.addEventListener('mousedown', onSelectStart);
