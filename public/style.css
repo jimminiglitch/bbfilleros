@@ -153,10 +153,18 @@ canvas#background-canvas {
   100% { transform: skew(2deg); }
 }
 @keyframes glitch-anim {
-  0%,100%{clip:rect(0,9999px,0,0)}20%{clip:rect(10px,9999px,50px,0)}40%{clip:rect(85px,9999px,140px,0)}60%{clip:rect(10px,9999px,40px,0)}80%{clip:rect(55px,9999px,90px,0)}
+  0%, 100% { clip: rect(0, 9999px, 0, 0); }
+  20%       { clip: rect(10px, 9999px, 50px, 0); }
+  40%       { clip: rect(85px, 9999px, 140px, 0); }
+  60%       { clip: rect(10px, 9999px, 40px, 0); }
+  80%       { clip: rect(55px, 9999px, 90px, 0); }
 }
 @keyframes glitch-anim2 {
-  0%,100%{clip:rect(0,9999px,0,0)}10%{clip:rect(15px,9999px,45px,0)}30%{clip:rect(85px,9999px,120px,0)}50%{clip:rect(20px,9999px,60px,0)}70%{clip:rect(50px,9999px,85px,0)}
+  0%, 100% { clip: rect(0, 9999px, 0, 0); }
+  10%       { clip: rect(15px, 9999px, 45px, 0); }
+  30%       { clip: rect(85px, 9999px, 120px, 0); }
+  50%       { clip: rect(20px, 9999px, 60px, 0); }
+  70%       { clip: rect(50px, 9999px, 85px, 0); }
 }
 
 /*────────────────────────────────────────
@@ -238,10 +246,12 @@ canvas#background-canvas {
   margin: 0 auto 4px;
   image-rendering: pixelated;
 }
-#icon-about    { top: 0;   left: 0;    }
-#icon-projects { top: 0;   left: 100px; }
-#icon-resume   { top: 100px; left: 0;   }
+#icon-about    { top:   0px; left:   0px; }
+#icon-projects { top:   0px; left: 100px; }
+#icon-resume   { top: 100px; left:   0px; }
 #icon-contact  { top: 100px; left: 100px; }
+#icon-notes    { top: 200px; left:   0px; }
+#icon-gallery  { top: 200px; left: 100px; }
 .desktop-icon.selected {
   box-shadow: inset 0 0 5px #fff, 0 0 10px #fff;
 }
@@ -372,13 +382,4 @@ canvas#background-canvas {
 #resume.popup-window.maximized .resume-inner .section {
   width: 100%;
   max-width: 800px;
-}
-#icon-notes {
-  top: 200px;    /* third row (0, 100, 200) */
-  left: 0px;
-}
-
-#icon-gallery {
-  top: 200px;
-  left: 100px;   /* same horizontal spacing as your other icons */
 }
