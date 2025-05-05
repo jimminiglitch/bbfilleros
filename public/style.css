@@ -23,6 +23,9 @@ body {
   height: 100vh;
   position: relative;
 }
+.desktop-icon img {
+  filter: drop-shadow(0 0 4px rgba(255,141,161,0.3));
+}
 
 /*─────────────────────────────────────────────────────────────────────────────
   SCANLINES OVERLAY
