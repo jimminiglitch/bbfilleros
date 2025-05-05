@@ -20,12 +20,12 @@ function getNextZIndex() {
 // Remember window positions/sizes
 const windowStates = {};
 
-// Open a window by ID (with SNES iframe rebuild)
+// Open a window by ID (rebuild SNES iframe if needed)
 function openWindow(id) {
   const win = document.getElementById(id);
   if (!win) return;
 
-  // Hide start menu & deactivate other windows
+  // Hide start menu & deactivate others
   document.getElementById("start-menu").style.display = "none";
   document.querySelectorAll(".popup-window").forEach(w => w.classList.remove("active"));
 
@@ -35,30 +35,26 @@ function openWindow(id) {
   win.style.display = "block";
   win.style.zIndex = getNextZIndex();
 
-  // Restore previous position/size if stored
+  // Restore previous size/position
   const stored = windowStates[id];
-  if (stored) {
-    Object.assign(win.style, stored);
-  }
+  if (stored) Object.assign(win.style, stored);
 
-  // Clamp window to viewport
+  // Clamp to viewport
   const rect = win.getBoundingClientRect();
-  const margin = 20;
-  const vw = window.innerWidth;
-  const vh = window.innerHeight;
-  let newLeft = rect.left, newTop = rect.top, newW = rect.width, newH = rect.height;
-  if (rect.width > vw - margin * 2) newW = vw - margin * 2;
-  if (rect.height > vh - margin * 2) newH = vh - margin * 2;
+  const margin = 20, vw = innerWidth, vh = innerHeight;
+  let [newLeft, newTop, newW, newH] = [rect.left, rect.top, rect.width, rect.height];
+  if (rect.width > vw - margin*2) newW = vw - margin*2;
+  if (rect.height > vh - margin*2) newH = vh - margin*2;
   if (rect.left < margin) newLeft = margin;
   if (rect.top < margin) newTop = margin;
   if (rect.right > vw - margin) newLeft = vw - margin - newW;
   if (rect.bottom > vh - margin) newTop = vh - margin - newH;
-  win.style.left = `${newLeft}px`;
-  win.style.top = `${newTop}px`;
-  win.style.width = `${newW}px`;
-  win.style.height = `${newH}px`;
+  Object.assign(win.style, {
+    left:`${newLeft}px`, top:`${newTop}px`,
+    width:`${newW}px`, height:`${newH}px`
+  });
 
-  // SPECIAL: if this is SNES.EXE, rebuild its iframe
+  // If SNES window, rebuild its iframe
   if (id === "snes") {
     const content = win.querySelector(".window-content");
     const old = content.querySelector("iframe");
@@ -96,19 +92,19 @@ function minimizeWindow(id) {
   createTaskbarIcon(id);
 }
 
-// Close a window (pause media + teardown SNES iframe)
+// Close a window (pause media & teardown SNES)
 function closeWindow(id) {
   const win = document.getElementById(id);
   if (!win) return;
 
-  // Pause & rewind any video inside
+  // Pause any video
   const vid = win.querySelector("video");
   if (vid) {
     vid.pause();
     vid.currentTime = 0;
   }
 
-  // Pause & rewind the music player
+  // Pause music player
   if (id === "music") {
     const player = document.getElementById("music-player");
     if (player) {
@@ -117,40 +113,20 @@ function closeWindow(id) {
     }
   }
 
-  // Hide the window
+  // Hide window
   win.classList.add("hidden");
   win.style.display = "none";
 
-  // Remove from taskbar if present
+  // Remove taskbar icon
   const icon = document.getElementById(`taskbar-icon-${id}`);
   if (icon) icon.remove();
 
-// wrap your existing openWindow to handle SNES reload
-const origOpen = openWindow;
-openWindow = id => {
-  origOpen(id);
+  // Tear down SNES iframe on close
   if (id === "snes") {
-    // force the iframe to reload by resetting its src
-    const win = document.getElementById("snes");
-    const iframe = win.querySelector("iframe");
-    if (iframe) {
-      iframe.src = "/snes.html";
-    }
+    const content = win.querySelector(".window-content");
+    const old = content.querySelector("iframe");
+    if (old) old.remove();
   }
-};
-
-// wrap closeWindow to optionally tear it down
-const origClose = closeWindow;
-closeWindow = id => {
-  origClose(id);
-  if (id === "snes") {
-    // remove the iframe entirely so next open is fresh
-    const win = document.getElementById("snes");
-    const iframe = win.querySelector("iframe");
-    if (iframe) iframe.remove();
-  }
-};
-
 }
 
 // Toggle maximize / restore
@@ -166,10 +142,7 @@ function toggleMaximizeWindow(id) {
       height: win.style.height
     };
     win.classList.add("maximized");
-    win.style.top = "0";
-    win.style.left = "0";
-    win.style.width = "100%";
-    win.style.height = "100%";
+    Object.assign(win.style, { top: "0", left: "0", width: "100%", height: "100%" });
     const icon = document.getElementById(`taskbar-icon-${id}`);
     if (icon) icon.remove();
   } else {
@@ -179,7 +152,7 @@ function toggleMaximizeWindow(id) {
   }
 }
 
-// Update clock in the taskbar
+// Clock in the taskbar
 function updateClock() {
   const clock = document.getElementById("clock");
   if (clock) clock.textContent = new Date().toLocaleTimeString();
@@ -189,7 +162,7 @@ updateClock();
 
 // Toggle Start Menu
 const startButton = document.getElementById("start-button");
-const startMenu = document.getElementById("start-menu");
+const startMenu   = document.getElementById("start-menu");
 startButton.addEventListener("click", () => {
   startMenu.style.display = startMenu.style.display === "flex" ? "none" : "flex";
 });
@@ -197,9 +170,9 @@ startButton.addEventListener("click", () => {
 // ─── BOOT SCREEN ─────────────────────────────────────────────────────────
 window.addEventListener("load", () => {
   const bootScreen = document.getElementById("bootScreen");
-  const logEl = document.getElementById("boot-log");
-  const progress = document.getElementById("progress-bar");
-  const messages = [
+  const logEl      = document.getElementById("boot-log");
+  const progress   = document.getElementById("progress-bar");
+  const messages   = [
     "[ OK ] Initializing hardware...",
     "[ OK ] Loading kernel modules...",
     "[ OK ] Mounting filesystems...",
@@ -213,16 +186,14 @@ window.addEventListener("load", () => {
   const typer = setInterval(() => {
     logEl.textContent += messages[idx] + "\n";
     logEl.scrollTop = logEl.scrollHeight;
-    progress.style.width = `${((idx + 1) / total) * 100}%`;
+    progress.style.width = `${((idx + 1)/total)*100}%`;
     idx++;
     if (idx === total) {
       clearInterval(typer);
       setTimeout(() => {
         bootScreen.style.transition = "opacity 0.8s";
         bootScreen.style.opacity = "0";
-        setTimeout(() => {
-          bootScreen.style.display = "none";
-        }, 800);
+        setTimeout(() => { bootScreen.style.display = "none"; }, 800);
       }, 500);
     }
   }, interval);
@@ -230,7 +201,7 @@ window.addEventListener("load", () => {
 
 // ─── PROJECT LAUNCH SPLASH ────────────────────────────────────────────────
 function launchProject(element, name) {
-  const splash = document.getElementById("project-splash");
+  const splash     = document.getElementById("project-splash");
   const splashName = document.getElementById("splash-name");
   if (splash && splashName) {
     splashName.textContent = name;
@@ -244,7 +215,7 @@ function closeSplash() {
 
 // ─── WINDOW HEADER DRAG & BUTTONS ────────────────────────────────────────
 document.querySelectorAll(".popup-window").forEach(win => {
-  const id = win.id;
+  const id     = win.id;
   const header = win.querySelector(".window-header");
   const btnMin = header.querySelector(".minimize");
   const btnMax = header.querySelector(".maximize");
@@ -264,13 +235,13 @@ document.querySelectorAll(".popup-window").forEach(win => {
   document.addEventListener("mousemove", e => {
     if (isDragging) {
       win.style.left = `${e.clientX - offsetX}px`;
-      win.style.top = `${e.clientY - offsetY}px`;
+      win.style.top  = `${e.clientY - offsetY}px`;
     }
   });
   document.addEventListener("mouseup", () => { isDragging = false; });
 });
 
-// ─── DESKTOP ICONS (double-click + drag-group) ───────────────────────────
+// ─── DESKTOP ICONS (dbl-click + drag-group) ─────────────────────────────
 function initDesktopIcons() {
   document.querySelectorAll(".desktop-icon").forEach(icon => {
     icon.addEventListener("dblclick", () => {
@@ -280,7 +251,7 @@ function initDesktopIcons() {
     icon.addEventListener("mousedown", e => {
       e.preventDefault();
       const parentRect = icon.parentElement.getBoundingClientRect();
-      const clickRect = icon.getBoundingClientRect();
+      const clickRect  = icon.getBoundingClientRect();
 
       let group;
       if (icon.classList.contains("selected")) {
@@ -298,21 +269,21 @@ function initDesktopIcons() {
       const groupData = group.map(ic => {
         const r = ic.getBoundingClientRect();
         const startLeft = r.left - parentRect.left;
-        const startTop = r.top - parentRect.top;
+        const startTop  = r.top  - parentRect.top;
         ic.style.left = startLeft + "px";
-        ic.style.top = startTop + "px";
+        ic.style.top  = startTop  + "px";
         ic.style.zIndex = getNextZIndex();
         return { icon: ic, startLeft, startTop };
       });
 
       function onMouseMove(e) {
         const newLeft = e.clientX - shiftX - parentRect.left;
-        const newTop = e.clientY - shiftY - parentRect.top;
+        const newTop  = e.clientY - shiftY - parentRect.top;
         const dx = newLeft - groupData[0].startLeft;
         const dy = newTop - groupData[0].startTop;
         groupData.forEach(({ icon, startLeft, startTop }) => {
           icon.style.left = startLeft + dx + "px";
-          icon.style.top = startTop + dy + "px";
+          icon.style.top  = startTop  + dy + "px";
         });
       }
 
@@ -330,41 +301,41 @@ window.addEventListener("load", initDesktopIcons);
 // ─── STARFIELD BACKGROUND ────────────────────────────────────────────────
 function initStarfield() {
   const canvas = document.getElementById("background-canvas");
-  const ctx = canvas.getContext("2d");
+  const ctx    = canvas.getContext("2d");
 
   function resize() {
-    canvas.width = window.innerWidth;
+    canvas.width  = window.innerWidth;
     canvas.height = window.innerHeight;
   }
   window.addEventListener("resize", resize);
   resize();
 
   const numStars = 300;
-  const stars = Array.from({ length: numStars }, () => ({
-    x: Math.random() * canvas.width,
-    y: Math.random() * canvas.height,
-    z: Math.random() * canvas.width,
+  const stars = Array.from({length:numStars}, () => ({
+    x: Math.random()*canvas.width,
+    y: Math.random()*canvas.height,
+    z: Math.random()*canvas.width,
     o: Math.random()
   }));
 
   (function animate() {
-    ctx.fillStyle = "rgba(0, 0, 0, 0.4)";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = 'rgba(0,0,0,0.4)';
+    ctx.fillRect(0,0,canvas.width,canvas.height);
     for (let star of stars) {
       star.z -= 2;
       if (star.z <= 0) {
         star.z = canvas.width;
-        star.x = Math.random() * canvas.width;
-        star.y = Math.random() * canvas.height;
+        star.x = Math.random()*canvas.width;
+        star.y = Math.random()*canvas.height;
       }
-      const k = 128.0 / star.z;
-      const px = (star.x - canvas.width / 2) * k + canvas.width / 2;
-      const py = (star.y - canvas.height / 2) * k + canvas.height / 2;
-      const size = Math.max(0, (1 - star.z / canvas.width) * 3);
+      const k = 128.0/star.z;
+      const px = (star.x - canvas.width/2)*k + canvas.width/2;
+      const py = (star.y - canvas.height/2)*k + canvas.height/2;
+      const size = Math.max(0, (1-star.z/canvas.width)*3);
       ctx.beginPath();
       ctx.globalAlpha = star.o;
-      ctx.fillStyle = "#fff";
-      ctx.arc(px, py, size, 0, Math.PI * 2);
+      ctx.fillStyle = '#fff';
+      ctx.arc(px, py, size, 0, Math.PI*2);
       ctx.fill();
     }
     ctx.globalAlpha = 1;
@@ -373,19 +344,19 @@ function initStarfield() {
 }
 window.addEventListener("load", initStarfield);
 
-// ─── CLICK-AND-DRAG MULTI-SELECT ─────────────────────────────────────────
+// ─── CLICK-AND-DRAG MULTI-SELECT ────────────────────────────────────────
 let selStartX, selStartY, selDiv;
 function onSelectStart(e) {
-  if (e.target.closest(".desktop-icon, .popup-window, #start-bar, #start-menu")) return;
+  if (e.target.closest('.desktop-icon, .popup-window, #start-bar, #start-menu')) return;
   selStartX = e.clientX; selStartY = e.clientY;
-  selDiv = document.createElement("div");
-  selDiv.id = "selection-rect";
+  selDiv = document.createElement('div');
+  selDiv.id = 'selection-rect';
   selDiv.style.left = `${selStartX}px`;
-  selDiv.style.top = `${selStartY}px`;
-  selDiv.style.width = selDiv.style.height = "0px";
+  selDiv.style.top  = `${selStartY}px`;
+  selDiv.style.width = selDiv.style.height = '0px';
   document.body.appendChild(selDiv);
-  document.addEventListener("mousemove", onSelectMove);
-  document.addEventListener("mouseup", onSelectEnd, { once: true });
+  document.addEventListener('mousemove', onSelectMove);
+  document.addEventListener('mouseup', onSelectEnd, { once:true });
   e.preventDefault();
 }
 function onSelectMove(e) {
@@ -394,43 +365,52 @@ function onSelectMove(e) {
         w = Math.abs(e.clientX - selStartX),
         h = Math.abs(e.clientY - selStartY);
   selDiv.style.left = `${x}px`;
-  selDiv.style.top = `${y}px`;
-  selDiv.style.width = `${w}px`;
+  selDiv.style.top  = `${y}px`;
+  selDiv.style.width  = `${w}px`;
   selDiv.style.height = `${h}px`;
   const box = selDiv.getBoundingClientRect();
-  document.querySelectorAll(".desktop-icon").forEach(icon => {
+  document.querySelectorAll('.desktop-icon').forEach(icon => {
     const r = icon.getBoundingClientRect();
-    const inside =
-      r.left >= box.left &&
-      r.right <= box.right &&
-      r.top >= box.top &&
+    const inside = 
+      r.left   >= box.left &&
+      r.right  <= box.right &&
+      r.top    >= box.top &&
       r.bottom <= box.bottom;
-    icon.classList.toggle("selected", inside);
+    icon.classList.toggle('selected', inside);
   });
 }
 function onSelectEnd() {
   if (selDiv) selDiv.remove();
   selDiv = null;
-  document.removeEventListener("mousemove", onSelectMove);
+  document.removeEventListener('mousemove', onSelectMove);
 }
-window.addEventListener("mousedown", onSelectStart);
+window.addEventListener('mousedown', onSelectStart);
 
 // ─── NOTES.EXE LOGIC ─────────────────────────────────────────────────────
-const notesArea = document.getElementById("notes-area");
-window.addEventListener("load", () => {
-  const saved = localStorage.getItem("desktopNotes");
+const notesArea = document.getElementById('notes-area');
+window.addEventListener('load', () => {
+  const saved = localStorage.getItem('desktopNotes');
   if (saved) notesArea.value = saved;
 });
-notesArea.addEventListener("blur", () => {
-  localStorage.setItem("desktopNotes", notesArea.value);
+notesArea.addEventListener('blur', () => {
+  localStorage.setItem('desktopNotes', notesArea.value);
 });
 
 // ─── NATURE.EXE (Gallery) LOGIC ────────────────────────────────────────
 const natureImages = [
-  /* your list of URLs */
+  'https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/Galloway%20Geese%20at%20Sunset.png?v=1746411517025',
+  'https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/A%20Sedge%20of%20Sandhill%20on%20the%20Green.png?v=1746411505927',
+  'https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/GoldenHourGeese.png?v=1746411283749',
+  'https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/bombilate%20vicissitude.png?v=1746411262153',
+  'https://cdn.glitch.me/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/SB1012.png?v=1746413539089',
+  'https://cdn.glitch.me/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/Calm%20Reeds.png?v=1746413471050',
+  'https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/LeafTrail.png?v=1746413486576',
+  'https://cdn.glitch.me/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/HawkTrail.png?v=1746413521889',
+  'https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/TrailMix108.png?v=1746413545072',
+  'https://cdn.glitch.me/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/ToadInTheHole.png?v=1746413566459'
 ];
 let natureIndex = 0;
-const natureImgEl = document.getElementById("nature-img");
+const natureImgEl = document.getElementById('nature-img');
 function preloadImages(urls) {
   urls.forEach(url => new Image().src = url);
 }
@@ -440,20 +420,22 @@ function showNatureImage(idx) {
 }
 function prevNature() { showNatureImage(natureIndex - 1); }
 function nextNature() { showNatureImage(natureIndex + 1); }
-window.addEventListener("load", () => {
+window.addEventListener('load', () => {
   preloadImages(natureImages);
   showNatureImage(0);
 });
 
 // ─── MUSIC.EXE LOGIC ─────────────────────────────────────────────────────
 const tracks = [
-  /* your track list { title, url } */
+  { title: "Morning Synth", url: "https://cdn.glitch.global/.../morning-synth.mp3" },
+  { title: "Lo-Fi Beats",   url: "https://cdn.glitch.global/.../lofi-beats.mp3"  },
+  { title: "Techno Pulse",  url: "https://cdn.glitch.global/.../techno-pulse.mp3" }
 ];
 let trackIndex = 0;
 const player = document.getElementById("music-player");
-const nowEl = document.getElementById("now-playing");
+const nowEl  = document.getElementById("now-playing");
 const listEl = document.getElementById("playlist");
-tracks.forEach((t, i) => {
+tracks.forEach((t,i) => {
   const li = document.createElement("li");
   li.textContent = t.title;
   li.style.cursor = "pointer";
@@ -469,14 +451,77 @@ function playTrack(i) {
 function nextTrack() { playTrack(trackIndex + 1); }
 function prevTrack() { playTrack(trackIndex - 1); }
 function togglePlay() {
-  if (player.paused) player.play();
-  else player.pause();
+  player.paused ? player.play() : player.pause();
   updateUI();
 }
 function updateUI() {
   nowEl.textContent = (player.paused ? "❚❚" : "▶") + " " + tracks[trackIndex].title;
-  Array.from(listEl.children).forEach((li, i) => {
-    li.style.color = i === trackIndex ? "var(--neon-green)" : "white";
+  Array.from(listEl.children).forEach((li,i)=> {
+    li.style.color = i===trackIndex ? "var(--neon-green)" : "white";
   });
 }
 player.addEventListener("ended", nextTrack);
+
+// ─── SNAKE.EXE LOGIC ─────────────────────────────────────────────────────
+let snakeInterval;
+function startSnake() {
+  const canvas = document.getElementById('snake-canvas'),
+        ctx    = canvas.getContext('2d'),
+        grid   = 20;
+  let snake = [{x:9,y:9}], vx=1, vy=0, apple = {x:5,y:5}, count=0;
+
+  function placeApple() {
+    apple = {
+      x: Math.floor(Math.random()*(canvas.width/grid)),
+      y: Math.floor(Math.random()*(canvas.height/grid))
+    };
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key==='ArrowUp'    && vy!==1) { vx=0; vy=-1; }
+    if (e.key==='ArrowDown'  && vy!==-1){ vx=0; vy=1; }
+    if (e.key==='ArrowLeft'  && vx!==1) { vx=-1; vy=0; }
+    if (e.key==='ArrowRight' && vx!==-1){ vx=1; vy=0; }
+  });
+
+  function loop() {
+    if (++count<4) return; count=0;
+    const head = { x:snake[0].x+vx, y:snake[0].y+vy };
+    snake.unshift(head);
+    if (head.x===apple.x && head.y===apple.y) {
+      placeApple();
+    } else snake.pop();
+
+    // collision?
+    if (
+      head.x<0 || head.y<0 ||
+      head.x>=canvas.width/grid || head.y>=canvas.height/grid ||
+      snake.slice(1).some(s=>s.x===head.x && s.y===head.y)
+    ) {
+      clearInterval(snakeInterval);
+      return alert('Game Over! Score: '+(snake.length-1));
+    }
+
+    // draw
+    ctx.fillStyle='black'; ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle='red'; ctx.fillRect(apple.x*grid, apple.y*grid, grid-2, grid-2);
+    ctx.fillStyle='lime';
+    snake.forEach(seg => ctx.fillRect(seg.x*grid, seg.y*grid, grid-2, grid-2));
+  }
+
+  placeApple();
+  snakeInterval = setInterval(loop, 1000/15);
+}
+
+// integrate snake start/stop with window open/close
+const origOpen = openWindow;
+openWindow = id => {
+  origOpen(id);
+  if (id==='snake' && !snakeInterval) startSnake();
+  if (id!=='snake' && snakeInterval) {
+    clearInterval(snakeInterval);
+    snakeInterval = null;
+  }
+};
+
+// end of script.js

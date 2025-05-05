@@ -28,20 +28,20 @@
     #emu { flex: 1; }
   </style>
 
-  <!-- 1️⃣ Include EmulatorJS from a CDN -->
+  <!-- EmulatorJS core -->
   <script src="https://cdn.jsdelivr.net/npm/emulatorjs@1.9.3/dist/emu.min.js"></script>
 </head>
 <body>
-  <!-- 2️⃣ Game-selector bar -->
+  <!-- Game selector bar -->
   <div id="menu"></div>
-  <!-- 3️⃣ Canvas/container for SNES core -->
+  <!-- SNES canvas/container -->
   <div id="emu"></div>
 
   <script>
-    // 4️⃣ Your SNES ROMs go here:
+    // Your SNES ROM catalog
     const games = {
       "New Horizons (USA)": "https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/New%20Horizons%20(USA).sfc?v=1746467603953",
-      "Shadowrun"    : "https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/Shadowrun%20(USA).sfc?v=1746468888283",
+      "Shadowrun (USA)"     : "https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/Shadowrun%20(USA).sfc?v=1746468888283"
       // ← add more "Label": "URL" entries here
     };
 
@@ -49,7 +49,7 @@
     const emuEl  = document.getElementById("emu");
     let instance = null;
 
-    // build a button for each game
+    // Build a button for each ROM
     Object.entries(games).forEach(([label, url]) => {
       const btn = document.createElement("button");
       btn.textContent = label;
@@ -57,9 +57,9 @@
       menuEl.appendChild(btn);
     });
 
-    // instantiate or re-instantiate the emulator
+    // (Re)instantiate the emulator with a given ROM
     function launchROM(romUrl) {
-      emuEl.innerHTML = "";  // kill previous instance
+      emuEl.innerHTML = "";  // clear previous
       instance = new EmulatorJS({
         element: emuEl,
         system:  "snes",
@@ -69,7 +69,7 @@
       });
     }
 
-    // when the page first loads, auto-launch the first game
+    // Auto-launch first game on load
     window.addEventListener("DOMContentLoaded", () => {
       const first = Object.values(games)[0];
       if (first) launchROM(first);
