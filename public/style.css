@@ -275,6 +275,41 @@ body {
   cursor: pointer;
   font-size: 0.8rem;
 }
+/*─────────────────────────────────────────────────────────────────────────────
+  NEON START BAR & BUTTON
+─────────────────────────────────────────────────────────────────────────────*/
+#start-bar {
+  background: black;
+  border-top: 2px solid var(--neon-purple);
+  box-shadow: 0 -2px 12px var(--neon-purple);
+  height: 36px;                   /* slightly taller for visual weight */
+  padding: 0 1rem;
+  display: flex;
+  align-items: center;
+  z-index: 500;
+}
+
+#start-button {
+  font-family: var(--font-press-start);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  background: transparent;
+  border: 2px solid var(--neon-purple);
+  border-radius: 4px;
+  padding: 0.2rem 0.8rem;
+  color: var(--neon-purple);
+  box-shadow: 0 0 8px var(--neon-purple);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+#start-button:hover {
+  background: var(--neon-purple);
+  color: black;
+  box-shadow: 0 0 12px var(--neon-purple);
+
+}
+
 #clock {
   margin-left: auto;
   font-size: 0.8rem;
@@ -310,4 +345,34 @@ body {
   top: 0; left: 0;
   width: 100vw; height: 100vh;
   z-index: -1;
+}
+/*─────────────────────────────────────────────────────────────────────────────
+  MAKE EMBEDDED IFRAMES FILL THEIR POPUP WINDOWS
+─────────────────────────────────────────────────────────────────────────────*/
+.popup-window {
+  /* ensure positioning context */
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* your existing header stays its normal height… */
+.popup-window .window-header {
+  flex: 0 0 auto;
+}
+
+/* …and the content area fills the rest of the window: */
+.popup-window .window-content {
+  flex: 1 1 auto;    /* grow to fill whatever’s left */
+  padding: 0;        /* remove any default padding */
+  overflow: hidden;  /* hide scrollbars on the container */
+}
+
+/* now the iframe itself also stretches perfectly: */
+.popup-window .window-content iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;    /* avoids weird inline‐iframe gaps */
 }
