@@ -29,12 +29,7 @@
       <h1>Game Over</h1>
       <p id="final-score">Your score: 0</p>
       <div id="score-entry">
-        <input
-          id="name-input"
-          type="text"
-          placeholder="Your Name (7 chars)"
-          maxlength="7"
-        />
+        <input id="name-input" type="text" placeholder="Your Name (7 chars)" maxlength="7"/>
         <button id="submit-score">Submit Score</button>
       </div>
       <ol id="high-scores-list"></ol>
@@ -47,7 +42,7 @@
     <canvas id="snake-canvas"></canvas>
   </div>
 
-  <!-- HUD (outside play‐field) -->
+  <!-- HUD (outside the playfield) -->
   <div id="snake-ui">
     <span id="snake-score">Score: 0</span> |
     <span id="snake-level">Level: 1</span> |
@@ -58,7 +53,7 @@
   <!-- MUTE TOGGLE -->
   <button id="mute-button">🔊</button>
 
-  <!-- TOUCH CONTROLS -->
+  <!-- TOUCH CONTROLS (outside the playfield) -->
   <div id="touch-controls">
     <button data-dir="up">▲</button>
     <button data-dir="left">◀</button>
@@ -66,21 +61,11 @@
     <button data-dir="right">▶</button>
   </div>
 
-  <!-- AUDIO SOURCES -->
+  <!-- MUSIC -->
   <audio
     id="snake-music"
     src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3"
     loop
-    preload="auto"
-  ></audio>
-  <audio
-    id="eat-sound"
-    src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/power-up-type-1-230548.mp3?v=1746542171704"
-    preload="auto"
-  ></audio>
-  <audio
-    id="power-up-sound"
-    src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/coin-upaif-14631.mp3?v=1746542174524"
     preload="auto"
   ></audio>
 
