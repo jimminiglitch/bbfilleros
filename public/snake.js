@@ -97,7 +97,7 @@ window.addEventListener('load', () => {
   }
 
   // ─── Game state ─────────────────────────────────────────────────────────────
-  const GRID = 15;
+  const GRID = 17.5;
   let cols, rows;
   let snake, dx, dy, apple;
   let baseSpeed, speed, score, level, best;
@@ -267,7 +267,7 @@ window.addEventListener('load', () => {
     drawStars();
 
     // trails (more subtle)
-    const S = GRID-3, O = 1.5;
+    const S = GRID-2, O = 1;
     trail.forEach((pt, idx)=>{
       const age = Date.now() - pt.t;
       const a   = Math.max(0,1 - age/1000)*0.2;  // half the intensity

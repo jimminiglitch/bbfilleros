@@ -1,75 +1,80 @@
 <!-- snake.html -->
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>SPACEWORM.EXE</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>SPACEWORM.EXE</title>
 
-  <!-- Google Fonts -->
-  <link
-    href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap"
-    rel="stylesheet"
-  />
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap"
+      rel="stylesheet"
+    />
 
-  <!-- Main Stylesheet -->
-  <link rel="stylesheet" href="snake.css" />
-</head>
-<body>
-  <!-- START OVERLAY -->
-  <div id="start-overlay" class="overlay">
-    <div class="overlay-content">
-      <h1>SPACEWORM.EXE</h1>
-      <button id="snake-play-button">CLICK TO START</button>
-    </div>
-  </div>
-
-  <!-- GAME OVER OVERLAY -->
-  <div id="game-over-overlay" class="overlay hidden">
-    <div class="overlay-content">
-      <h1>Game Over</h1>
-      <p id="final-score">Your score: 0</p>
-      <div id="score-entry">
-        <input id="name-input" type="text" placeholder="Your Name (7 chars)" maxlength="7"/>
-        <button id="submit-score">Submit Score</button>
+    <!-- Main Stylesheet -->
+    <link rel="stylesheet" href="snake.css" />
+  </head>
+  <body>
+    <!-- START OVERLAY -->
+    <div id="start-overlay" class="overlay">
+      <div class="overlay-content">
+        <h1>SPACEWORM.EXE</h1>
+        <button id="snake-play-button">CLICK TO START</button>
       </div>
-      <ol id="high-scores-list"></ol>
-      <button id="play-again-button">Play Again</button>
     </div>
-  </div>
 
-  <!-- GAME FIELD -->
-  <div id="game-field">
-    <canvas id="snake-canvas"></canvas>
-  </div>
-
-  <!-- HUD -->
-  <div id="snake-ui">
-    <span id="snake-score">Score: 0</span> |
-    <span id="snake-level">Level: 1</span> |
-    <span id="snake-best">Best: 0</span> |
-    <span id="snake-status">Running</span>
-  </div>
-
-  <!-- MUTE BUTTON -->
-  <button id="mute-button">🔊</button>
-
-  <!-- JOYSTICK -->
-  <div id="joystick">
-    <div id="joystick-base">
-      <div id="joystick-stick"></div>
+    <!-- GAME OVER OVERLAY -->
+    <div id="game-over-overlay" class="overlay hidden">
+      <div class="overlay-content">
+        <h1>Game Over</h1>
+        <p id="final-score">Your score: 0</p>
+        <div id="score-entry">
+          <input
+            id="name-input"
+            type="text"
+            placeholder="Your Name (7 chars)"
+            maxlength="7"
+          />
+          <button id="submit-score">Submit Score</button>
+        </div>
+        <ol id="high-scores-list"></ol>
+        <button id="play-again-button">Play Again</button>
+      </div>
     </div>
-  </div>
 
-  <!-- MUSIC -->
-  <audio
-    id="snake-music"
-    src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3"
-    loop
-    preload="auto"
-  ></audio>
+    <!-- GAME FIELD -->
+    <div id="game-field">
+      <canvas id="snake-canvas"></canvas>
+    </div>
 
-  <!-- Main Script -->
-  <script src="snake.js"></script>
-</body>
+    <!-- HUD -->
+    <div id="snake-ui">
+      <span id="snake-score">Score: 0</span> |
+      <span id="snake-level">Level: 1</span> |
+      <span id="snake-best">Best: 0</span> |
+      <span id="snake-status">Running</span>
+    </div>
+
+    <!-- MUTE BUTTON -->
+    <button id="mute-button">🔊</button>
+
+    <!-- JOYSTICK -->
+    <div id="joystick">
+      <div id="joystick-base">
+        <div id="joystick-stick"></div>
+      </div>
+    </div>
+
+    <!-- MUSIC -->
+    <audio
+      id="snake-music"
+      src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3"
+      loop
+      preload="auto"
+    ></audio>
+
+    <!-- Main Script -->
+    <script src="snake.js"></script>
+  </body>
 </html>
