@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>PSYCHEDELIC FROGGER</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
+    <style>
+      body, html {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(45deg, #000000, #1a1a1a, #000000);
+        overflow: hidden;
+        position: relative;
+      }
+      #game-container {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 800px;
+        height: 600px;
+        background: rgba(0, 0, 0, 0.8);
+        border: 2px solid var(--neon-cyan);
+        box-shadow: 0 0 20px var(--neon-cyan);
+      }
+      #game-canvas {
+        width: 100%;
+        height: 100%;
+      }
+      #game-ui {
+        position: absolute;
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-family: "Press Start 2P", monospace;
+        font-size: 0.8rem;
+        color: var(--neon-cyan);
+        text-align: center;
+        text-shadow: 0 0 10px var(--neon-cyan);
+      }
+      #start-screen {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-family: "Press Start 2P", monospace;
+        font-size: 1.2rem;
+        color: var(--neon-yellow);
+        text-align: center;
+        text-shadow: 0 0 10px var(--neon-yellow);
+      }
+      .score {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        font-family: "Press Start 2P", monospace;
+        font-size: 0.8rem;
+        color: var(--neon-cyan);
+        text-shadow: 0 0 10px var(--neon-cyan);
+      }
+      .lives {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-family: "Press Start 2P", monospace;
+        font-size: 0.8rem;
+        color: var(--neon-cyan);
+        text-shadow: 0 0 10px var(--neon-cyan);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="game-container">
+      <canvas id="game-canvas"></canvas>
+      <div id="game-ui">
+        <span class="score">Score: 0</span>
+        <span class="lives">Lives: 3</span>
+      </div>
+      <div id="start-screen">
+        <h1>PSYCHEDELIC FROGGER</h1>
+        <p>Press SPACE to Start</p>
+      </div>
+    </div>
+    <audio id="background-music" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" loop preload="auto"></audio>
+    <audio id="jump-sound" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" preload="auto"></audio>
+    <audio id="hit-sound" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" preload="auto"></audio>
+    <script src="frogger.js"></script>
+  </body>
+</html>
