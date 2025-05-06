@@ -30,7 +30,6 @@ html, body {
   overflow: hidden;
   font-family: 'Press Start 2P', monospace;
 }
-
 .hidden {
   display: none !important;
 }
@@ -47,29 +46,24 @@ html, body {
   justify-content: center;
   z-index: 100;
 }
-
 .overlay-content {
   text-align: center;
   color: white;
 }
-
 .overlay-content h1 {
   margin-bottom: 1rem;
   font-size: 2rem;
   color: var(--neon-cyan);
   text-shadow: 0 0 8px var(--neon-cyan);
 }
-
 .menu-group {
   margin-bottom: 1rem;
 }
-
 .menu-group p {
   margin-bottom: 0.5rem;
   color: var(--neon-pink);
   text-shadow: 0 0 6px var(--neon-pink);
 }
-
 #difficulty-menu button,
 #theme-menu button,
 #snake-play-button,
@@ -86,14 +80,12 @@ html, body {
   transition: transform 0.2s, border-color 0.2s;
   text-shadow: 0 0 6px var(--neon-yellow);
 }
-
 #difficulty-menu button.selected,
 #theme-menu button.selected {
   border-color: var(--neon-cyan);
   color: var(--neon-cyan);
   text-shadow: 0 0 8px var(--neon-cyan);
 }
-
 #snake-play-button:hover,
 #retry-button:hover,
 #difficulty-menu button:hover,
@@ -112,7 +104,6 @@ html, body {
   display: block;
   z-index: 1;
 }
-
 #snake-ui {
   position: absolute;
   top: 12px;
@@ -126,7 +117,6 @@ html, body {
   font-size: 0.8rem;
   text-shadow: 0 0 6px var(--neon-cyan);
 }
-
 #snake-ui span {
   margin-right: 12px;
 }
@@ -149,7 +139,6 @@ html, body {
   text-shadow: 0 0 6px var(--neon-pink);
   transition: transform 0.2s, border-color 0.2s;
 }
-
 #mute-button:hover {
   transform: scale(1.1);
   border-color: var(--neon-cyan);
@@ -168,7 +157,6 @@ html, body {
   display: flex;
   gap: 8px;
 }
-
 #touch-controls button {
   font-size: 1.5rem;
   padding: 8px;
@@ -180,7 +168,6 @@ html, body {
   cursor: pointer;
   transition: transform 0.2s, border-color 0.2s;
 }
-
 #touch-controls button:hover {
   transform: scale(1.1);
   border-color: var(--neon-cyan);

@@ -1,6 +1,7 @@
+//─────────────────────────────────────────────────────────────────────────────
 // snake.js
-
-document.addEventListener('DOMContentLoaded', () => {
+//─────────────────────────────────────────────────────────────────────────────
+window.addEventListener('load', () => {
   // ──────────────────────────────────────────────────────────────────────────
   // Element refs
   // ──────────────────────────────────────────────────────────────────────────
@@ -9,22 +10,18 @@ document.addEventListener('DOMContentLoaded', () => {
   const playButton        = document.getElementById('snake-play-button');
   const retryButton       = document.getElementById('retry-button');
   const finalScoreDisplay = document.getElementById('final-score');
-
   const difficultyMenu    = document.getElementById('difficulty-menu');
   const themeMenu         = document.getElementById('theme-menu');
   const muteButton        = document.getElementById('mute-button');
   const touchControls     = document.getElementById('touch-controls');
-
   const canvas            = document.getElementById('snake-canvas');
   const ctx               = canvas.getContext('2d');
-
   const ui = {
     score:  document.getElementById('snake-score'),
     level:  document.getElementById('snake-level'),
     best:   document.getElementById('snake-best'),
     status: document.getElementById('snake-status'),
   };
-
   const music        = document.getElementById('snake-music');
   const eatSound     = document.getElementById('eat-sound');
   const powerUpSound = document.getElementById('power-up-sound');
@@ -35,10 +32,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const GRID = 20;
   let cols, rows;
   let snake, dx, dy, apple;
-  let speed, score, level, best, paused, gameOver, started, hueOffset;
-  let powerUps, particles, screenShake;
-  let frameAcc = 0, lastTime = 0;       // <<–– added
-  let selectedSpeed = 5;               // default difficulty
+  let speed, score, level, best;
+  let paused, gameOver, started, hueOffset, screenShake;
+  let powerUps, particles;
+  let frameAcc = 0, lastTime = 0;
+  let selectedSpeed = 5, selectedTheme = 'cyberpunk';
 
   const POWER_UPS = {
     SPEED:      { color: 'cyan',    effect: 'speed',      duration: 5000, value: 2 },
@@ -47,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   // ──────────────────────────────────────────────────────────────────────────
-  // Utility functions
+  // Helpers
   // ──────────────────────────────────────────────────────────────────────────
   function placeApple() {
     do {
@@ -62,9 +60,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function createPowerUp() {
-    const keys = Object.keys(POWER_UPS);
-    const type = keys[Math.floor(Math.random() * keys.length)];
-    const def  = POWER_UPS[type];
+    const types = Object.keys(POWER_UPS);
+    const type  = types[Math.floor(Math.random() * types.length)];
+    const def   = POWER_UPS[type];
     powerUps.push({
       x: Math.floor(Math.random() * cols),
       y: Math.floor(Math.random() * rows),
@@ -77,9 +75,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function createParticle(x, y, color) {
     particles.push({
-      x: x * GRID + GRID/2,
-      y: y * GRID + GRID/2,
-      size: Math.random()*4+2,
+      x: x*GRID + GRID/2,
+      y: y*GRID + GRID/2,
+      size: Math.random()*4 + 2,
       vx: (Math.random()-0.5)*2,
       vy: (Math.random()-0.5)*2,
       color,
@@ -88,10 +86,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function updateParticles() {
-    for (let i = particles.length-1; i>=0; i--) {
+    for (let i = particles.length - 1; i >= 0; i--) {
       const p = particles[i];
       p.x += p.vx; p.y += p.vy; p.alpha -= 0.02;
-      if (p.alpha <= 0) particles.splice(i,1);
+      if (p.alpha <= 0) particles.splice(i, 1);
     }
   }
 
@@ -104,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
         break;
       case 'grow':
         for (let i=0; i<def.value; i++) {
-          const tail = snake[snake.length-1];
+          const tail = snake[snake.length - 1];
           snake.push({ x: tail.x, y: tail.y });
         }
         createParticle(snake[0].x, snake[0].y, def.color);
@@ -118,49 +116,47 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ──────────────────────────────────────────────────────────────────────────
-  // Core game functions
+  // Update & Draw
   // ──────────────────────────────────────────────────────────────────────────
   function update(delta) {
     if (!started || paused || gameOver) return;
     frameAcc += delta;
-    const interval = 1000 / (speed + level*0.5);
+    const interval = 1000 / (speed + level * 0.5);
     if (frameAcc < interval) return;
     frameAcc = 0;
 
     // expire power-ups
     powerUps = powerUps.filter(pu => Date.now() - pu.start < pu.duration);
-
-    // spawn randomly
     if (Math.random() < 0.01) createPowerUp();
 
     // move head
     const head = { x: snake[0].x + dx, y: snake[0].y + dy };
     snake.unshift(head);
 
-    // power-up collisions
-    powerUps.forEach((pu,i) => {
-      if (head.x===pu.x && head.y===pu.y) {
+    // power-up collision
+    powerUps.forEach((pu, i) => {
+      if (head.x === pu.x && head.y === pu.y) {
         powerUpSound.play();
         applyPowerUp(pu);
-        powerUps.splice(i,1);
+        powerUps.splice(i, 1);
       }
     });
 
     // apple collision
-    if (head.x===apple.x && head.y===apple.y) {
+    if (head.x === apple.x && head.y === apple.y) {
       eatSound.play();
       score += 10;
       ui.score.textContent = `Score: ${score}`;
-      if (score>best) {
+      if (score > best) {
         best = score;
-        localStorage.setItem('snakeBest',best);
+        localStorage.setItem('snakeBest', best);
         ui.best.textContent = `Best: ${best}`;
       }
-      for (let i=0; i<12; i++) createParticle(apple.x,apple.y,'magenta');
+      for (let i=0; i<12; i++) createParticle(apple.x, apple.y, 'magenta');
       if (score % 50 === 0) {
         level++;
         ui.level.textContent = `Level: ${level}`;
-        for (let i=0; i<12; i++) createParticle(head.x,head.y,'cyan');
+        for (let i=0; i<12; i++) createParticle(head.x, head.y, 'cyan');
       }
       placeApple();
     } else {
@@ -170,15 +166,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // collision
     if (!snake.invincible) {
       if (
-        head.x<0||head.y<0||
-        head.x>=cols||head.y>=rows||
-        snake.slice(1).some(s=>s.x===head.x&&s.y===head.y)
+        head.x < 0 || head.y < 0 ||
+        head.x >= cols || head.y >= rows ||
+        snake.slice(1).some(s => s.x === head.x && s.y === head.y)
       ) {
         gameOver = true;
         ui.status.textContent = 'Game Over';
         finalScoreDisplay.textContent = `Your score: ${score}`;
         showGameOver();
-        for (let i=0; i<20; i++) createParticle(head.x,head.y,'red');
+        for (let i=0; i<20; i++) createParticle(head.x, head.y, 'red');
       }
     }
   }
@@ -189,15 +185,15 @@ document.addEventListener('DOMContentLoaded', () => {
     ctx.translate(screenShake, screenShake);
 
     // background
-    const g = ctx.createLinearGradient(0,0,canvas.width,canvas.height);
-    g.addColorStop(0,'rgba(0,0,0,0.9)');
-    g.addColorStop(0.5,'rgba(255,0,255,0.1)');
-    g.addColorStop(1,'rgba(0,0,0,0.9)');
-    ctx.fillStyle = g;
+    const grad = ctx.createLinearGradient(0,0,canvas.width,canvas.height);
+    grad.addColorStop(0,'rgba(0,0,0,0.9)');
+    grad.addColorStop(0.5,'rgba(255,0,255,0.1)');
+    grad.addColorStop(1,'rgba(0,0,0,0.9)');
+    ctx.fillStyle = grad;
     ctx.fillRect(0,0,canvas.width,canvas.height);
 
     // particles
-    particles.forEach(p=>{
+    particles.forEach(p => {
       ctx.globalAlpha = p.alpha;
       ctx.fillStyle   = p.color;
       ctx.beginPath();
@@ -207,7 +203,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ctx.globalAlpha = 1;
 
     // power-ups
-    powerUps.forEach(pu=>{
+    powerUps.forEach(pu => {
       ctx.fillStyle = pu.color;
       ctx.fillRect(pu.x*GRID,pu.y*GRID,GRID-2,GRID-2);
       ctx.fillStyle = 'black';
@@ -221,7 +217,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ctx.fillRect(apple.x*GRID,apple.y*GRID,GRID-2,GRID-2);
 
     // snake
-    snake.forEach((seg,i)=>{
+    snake.forEach((seg,i) => {
       const hue = (hueOffset + i*10 + level*20) % 360;
       ctx.fillStyle = `hsl(${hue},100%,50%)`;
       ctx.fillRect(seg.x*GRID,seg.y*GRID,GRID-2,GRID-2);
@@ -250,21 +246,24 @@ document.addEventListener('DOMContentLoaded', () => {
     rows = Math.floor(canvas.height/GRID);
     snake = [{ x: Math.floor(cols/2), y: Math.floor(rows/2) }];
     dx = 1; dy = 0;
-    powerUps = []; particles = [];
-    score = 0; level = 1; speed = selectedSpeed; 
-    gameOver = false; paused = false; started = false;
+    speed = selectedSpeed;
+    score = 0; level = 1;
+    paused = false; gameOver = false; started = false;
     hueOffset = 0; screenShake = 0;
-    ui.score.textContent = `Score: 0`;
-    ui.level.textContent = `Level: 1`;
-    ui.best.textContent  = `Best: ${best}`;
-    ui.status.textContent= 'Running';
+    powerUps = []; particles = [];
+    ui.score.textContent  = `Score: 0`;
+    ui.level.textContent  = `Level: 1`;
+    ui.best.textContent   = `Best: ${best}`;
+    ui.status.textContent = 'Running';
+    startOverlay.classList.remove('hidden');
+    gameOverOverlay.classList.add('hidden');
     placeApple();
   }
 
   function startGame() {
-    // pause parent audios
+    // pause parent audio
     if (window.parent && window.parent.document) {
-      window.parent.document.querySelectorAll('audio').forEach(a=>{
+      window.parent.document.querySelectorAll('audio').forEach(a => {
         if (a.id !== 'snake-music') a.pause();
       });
     }
@@ -272,8 +271,7 @@ document.addEventListener('DOMContentLoaded', () => {
     startOverlay.classList.add('hidden');
     music.muted = false;
     music.play().catch(()=>{});
-    playButton.blur();
-    window.requestAnimationFrame(loop);
+    requestAnimationFrame(loop);
   }
 
   function showGameOver() {
@@ -283,7 +281,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ──────────────────────────────────────────────────────────────────────────
   // Event bindings
   // ──────────────────────────────────────────────────────────────────────────
-  // Canvas resize
+  // Resize canvas
   function resize() {
     canvas.width  = canvas.clientWidth;
     canvas.height = canvas.clientHeight;
@@ -292,7 +290,6 @@ document.addEventListener('DOMContentLoaded', () => {
   resize();
 
   // Difficulty selector
-  let selectedSpeed = 5;
   difficultyMenu.querySelectorAll('button').forEach(btn => {
     btn.addEventListener('click', () => {
       difficultyMenu.querySelector('.selected').classList.remove('selected');
@@ -301,7 +298,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Theme selector (adds class on body)
+  // Theme selector
   themeMenu.querySelectorAll('button').forEach(btn => {
     btn.addEventListener('click', () => {
       themeMenu.querySelector('.selected').classList.remove('selected');
@@ -321,47 +318,45 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Retry button & R key
   retryButton.addEventListener('click', () => {
-    gameOverOverlay.classList.add('hidden');
     resetGame();
     startGame();
   });
   window.addEventListener('keydown', e => {
     if (gameOver && (e.key === 'r' || e.key === 'R')) {
-      gameOverOverlay.classList.add('hidden');
       resetGame();
       startGame();
     }
   });
 
-  // Touch arrows
+  // Touch controls
   touchControls.querySelectorAll('button').forEach(btn => {
     btn.addEventListener('touchstart', () => {
       const dir = btn.dataset.dir;
       if (dir === 'up'    && dy === 0) { dx=0; dy=-1; }
-      if (dir === 'down'  && dy === 0) { dx=0; dy=1;  }
-      if (dir === 'left'  && dx === 0) { dx=-1;dy=0;  }
-      if (dir === 'right' && dx === 0) { dx=1; dy=0;  }
+      if (dir === 'down'  && dy === 0) { dx=0; dy=1; }
+      if (dir === 'left'  && dx === 0) { dx=-1;dy=0; }
+      if (dir === 'right' && dx === 0) { dx=1; dy=0; }
     });
   });
 
-  // Arrow keys & space to pause
+  // Keyboard controls
   window.addEventListener('keydown', e => {
     if (!started) return;
     if (e.key === ' ') {
       paused = !paused;
       ui.status.textContent = paused ? 'Paused' : 'Running';
+      return;
     }
     if (paused || gameOver) return;
-    if (e.key === 'ArrowUp'    && dy === 0) { dx=0; dy=-1; }
-    if (e.key === 'ArrowDown'  && dy === 0) { dx=0; dy=1;  }
-    if (e.key === 'ArrowLeft'  && dx === 0) { dx=-1;dy=0;  }
-    if (e.key === 'ArrowRight' && dx === 0) { dx=1; dy=0;  }
+    if      (e.key === 'ArrowUp'    && dy === 0) { dx=0;  dy=-1; }
+    else if (e.key === 'ArrowDown'  && dy === 0) { dx=0;  dy=1;  }
+    else if (e.key === 'ArrowLeft'  && dx === 0) { dx=-1; dy=0;  }
+    else if (e.key === 'ArrowRight' && dx === 0) { dx=1;  dy=0;  }
   });
 
-  // Initialize best
+  // Initialize best score
   best = Number(localStorage.getItem('snakeBest') || '0');
-  ui.best.textContent = `Best: ${best}`;
 
-  // Start fresh
+  // Kick off
   resetGame();
 });

@@ -2,74 +2,80 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>SNAKE.EXE</title>
+
+  <!-- Google Fonts -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap"
+    rel="stylesheet"
+  />
+
   <!-- Main Stylesheet -->
   <link rel="stylesheet" href="snake.css" />
-  <!-- Pixel Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
 </head>
-<body>
-  <!-- START / DIFFICULTY & THEME OVERLAY -->
+<body class="theme-cyberpunk">
+  <!-- START OVERLAY -->
   <div id="start-overlay" class="overlay">
     <div class="overlay-content">
-      <h1>SNAKE.EXE</h1>
-      <div class="controls">
-        <label for="difficulty">Difficulty:</label>
-        <select id="difficulty">
-          <option value="3">Slow</option>
-          <option value="5" selected>Normal</option>
-          <option value="8">Fast</option>
-        </select>
+      <h1>Snake.EXE</h1>
+      <div class="menu-group">
+        <p>Select difficulty:</p>
+        <div id="difficulty-menu">
+          <button data-speed="3">Slow</button>
+          <button data-speed="5" class="selected">Normal</button>
+          <button data-speed="8">Fast</button>
+        </div>
       </div>
-      <div class="controls">
-        <label for="theme-select">Theme:</label>
-        <select id="theme-select">
-          <option value="default">Cyberpunk</option>
-          <option value="green">Retro Green</option>
-          <option value="vaporwave">Vaporwave</option>
-        </select>
+      <div class="menu-group">
+        <p>Select theme:</p>
+        <div id="theme-menu">
+          <button data-theme="cyberpunk" class="selected">Cyberpunk</button>
+          <button data-theme="green">Green</button>
+          <button data-theme="vaporwave">Vaporwave</button>
+        </div>
       </div>
-      <button id="start-button">START GAME</button>
+      <button id="snake-play-button">CLICK TO START</button>
     </div>
   </div>
 
   <!-- GAME OVER OVERLAY -->
-  <div id="gameover-overlay" class="overlay hidden">
+  <div id="game-over-overlay" class="overlay hidden">
     <div class="overlay-content">
-      <h1>GAME OVER</h1>
-      <button id="restart-button">RESTART (R)</button>
+      <h1>Game Over</h1>
+      <p id="final-score">Your score: 0</p>
+      <button id="retry-button">Press R to Retry</button>
     </div>
   </div>
 
-  <!-- MAIN GAME CANVAS -->
+  <!-- GAME CANVAS -->
   <canvas id="snake-canvas"></canvas>
 
   <!-- HUD -->
   <div id="snake-ui">
-    <span id="snake-score">Score: 0</span>
-    <span id="snake-level">Level: 1</span>
-    <span id="snake-best">Best: 0</span>
+    <span id="snake-score">Score: 0</span> |
+    <span id="snake-level">Level: 1</span> |
+    <span id="snake-best">Best: 0</span> |
     <span id="snake-status">Running</span>
   </div>
 
-  <!-- POWER-UP ICONS -->
-  <div id="power-ups"></div>
+  <!-- MUTE TOGGLE -->
+  <button id="mute-button">🔊</button>
 
-  <!-- PROGRESS BAR -->
-  <div id="progress-container">
-    <div id="progress-bar"></div>
+  <!-- TOUCH CONTROLS -->
+  <div id="touch-controls">
+    <button data-dir="up">▲</button>
+    <button data-dir="left">◀</button>
+    <button data-dir="down">▼</button>
+    <button data-dir="right">▶</button>
   </div>
 
-  <!-- MUTE/UNMUTE -->
-  <button id="mute-button" class="control-btn">🔊</button>
+  <!-- AUDIO -->
+  <audio id="snake-music" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3" loop preload="auto"></audio>
+  <audio id="eat-sound"   src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/blip.mp3?v=1746368158788" preload="auto"></audio>
+  <audio id="power-up-sound" src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/hover.mp3?v=1746405427792" preload="auto"></audio>
 
-  <!-- SOUNDS -->
-  <audio id="snake-music" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" loop preload="auto"></audio>
-  <audio id="eat-sound" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" preload="auto"></audio>
-  <audio id="power-up-sound" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" preload="auto"></audio>
-
-  <!-- GAME LOGIC -->
+  <!-- Main Script -->
   <script src="snake.js"></script>
 </body>
 </html>
