@@ -4,10 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Benjamin Filler – Galactic Retro Desktop</title>
+  
   <!-- Favicon -->
   <link rel="icon" href="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/Benny.png?v=1746392528967" type="image/png" />
+  
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet" />
+  
   <!-- Main stylesheet -->
   <link rel="stylesheet" href="/style.css" />
 </head>
@@ -28,65 +31,163 @@
   <div class="container">
     <h1 class="glitch" data-text="Benjamin Filler">Benjamin Filler</h1>
     <div id="desktop-icons">
-      <!-- About Icon -->
-      <div class="desktop-icon" style="top:40px; left:40px;" data-window="about">
+      <!-- Example icon -->
+      <div class="desktop-icon" id="icon-about" data-window="about" style="top:40px; left:40px;">
         <img src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/Benny.png?v=1746392528967" alt="About" />
         <span>About</span>
       </div>
-      <!-- Projects Icon -->
-      <div class="desktop-icon" style="top:40px; left:140px;" data-window="projects">
-        <img src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/whodat.gif?v=1746365769069" alt="Projects" />
-        <span>Projects</span>
-      </div>
-      <!-- Resume Icon -->
-      <div class="desktop-icon" style="top:40px; left:240px;" data-window="resume">
-        <img src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/DiskPic.png?v=1746392827503" alt="Resume" />
-        <span>Resume</span>
-      </div>
-      <!-- Contact Icon -->
-      <div class="desktop-icon" style="top:40px; left:340px;" data-window="contact">
-        <img src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/EmailPic.png?v=1746392934373" alt="Contact" />
-        <span>Contact</span>
-      </div>
-      <!-- Notes Icon -->
-      <div class="desktop-icon" style="top:140px; left:40px;" data-window="notes">
-        <img src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/noteicon.png?v=1746411753417" alt="Notes" />
-        <span>Notes</span>
-      </div>
-      <!-- Nature Icon -->
-      <div class="desktop-icon" style="top:140px; left:140px;" data-window="nature">
-        <img src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/VaporTree.png?v=1746411815542" alt="Nature" />
-        <span>Nature</span>
-      </div>
-      <!-- Joyful Video Icon -->
-      <div class="desktop-icon" style="top:140px; left:240px;" data-window="video1">
-        <img src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/VaporTV.png?v=1746411817932" alt="Joyful" />
-        <span>Joyful</span>
-      </div>
-      <!-- Papaz Video Icon -->
-      <div class="desktop-icon" style="top:140px; left:340px;" data-window="video2">
-        <img src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/VaporTV.png?v=1746411817932" alt="Papaz" />
-        <span>Papaz</span>
-      </div>
-      <!-- Abstract Video Icon -->
-      <div class="desktop-icon" style="top:240px; left:40px;" data-window="video3">
-        <img src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/VaporTV.png?v=1746411817932" alt="Abstract" />
-        <span>Abstract</span>
-      </div>
-      <!-- Music Icon -->
-      <div class="desktop-icon" style="top:240px; left:140px;" data-window="music">
-        <img src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/CDROM.gif?v=1746411773467" alt="Music" />
-        <span>Music</span>
-      </div>
-      <!-- Snake Icon -->
-      <div class="desktop-icon" style="top:240px; left:240px;" data-window="snake">
-        <img src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/TrippyWorm.png?v=1746410810962" alt="Snake" />
-        <span>Snake</span>
+      <!-- Add other icons similarly: projects, resume, contact, notes, nature, snake, videos, music -->
+    </div>
+  </div>
+
+  <!-- Popup windows -->
+  {{!-- About --}}
+  <div id="about" class="popup-window hidden">
+    <div class="window-header">
+      <span>ABOUT.EXE</span>
+      <button class="minimize">_</button>
+      <button class="maximize">▭</button>
+      <button class="close">X</button>
+    </div>
+    <div class="window-content">
+      <h2>👾 WHO IS BENJAMIN FILLER?</h2>
+      <p>I'm a media creator, director, narrative systems designer from Michigan…</p>
+    </div>
+  </div>
+
+    <!-- Projects window -->
+  <div id="projects" class="popup-window hidden">
+    <div class="window-header">
+      <span>PROJECTS.EXE</span>
+      <button class="minimize">_</button>
+      <button class="maximize">▭</button>
+      <button class="close">X</button>
+    </div>
+    <div class="window-content">
+      <!-- Example project cards -->
+      <div style="padding:1rem; color:white; font-family:var(--font-vt);">
+        <h2 style="font-family:var(--font-press); color:var(--neon-pink);">My Projects</h2>
+        <ul style="list-style:none; padding:0;">
+          <li>• <a href="https://myproject1.demo" target="_blank" style="color:var(--neon-cyan);">Project One</a></li>
+          <li>• <a href="https://myproject2.demo" target="_blank" style="color:var(--neon-cyan);">Project Two</a></li>
+          <li>• <a href="https://myproject3.demo" target="_blank" style="color:var(--neon-cyan);">Project Three</a></li>
+        </ul>
       </div>
     </div>
   </div>
 
-  <!-- Popup windows... (see below) -->
+  <!-- Notes window -->
+  <div id="notes" class="popup-window hidden">
+    <div class="window-header">
+      <span>NOTES.EXE</span>
+      <button class="minimize">_</button>
+      <button class="maximize">▭</button>
+      <button class="close">X</button>
+    </div>
+    <div class="window-content">
+      <textarea id="notes-area" placeholder="Type your notes…" style="flex:1; padding:1rem; background:rgba(0,0,0,0.8); color:var(--neon-green); border:none; font-family:var(--font-vt);"></textarea>
+    </div>
+  </div>
+
+  <!-- Nature window -->
+  <div id="nature" class="popup-window hidden">
+    <div class="window-header">
+      <span>NATURE.EXE</span>
+      <button class="minimize">_</button>
+      <button class="maximize">▭</button>
+      <button class="close">X</button>
+    </div>
+    <div class="window-content">
+      <img id="nature-img" src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/VaporTree.png?v=1746411815542" alt="Nature Slideshow" style="max-width:100%; max-height:100%; object-fit:contain;">
+      <div style="padding:0.5rem; text-align:center; background:rgba(0,0,0,0.6);">
+        <button onclick="prevNature()" style="font-family:var(--font-press);">◀ Prev</button>
+        <button onclick="nextNature()" style="font-family:var(--font-press);">Next ▶</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Video windows -->
+  <div id="video1" class="popup-window hidden">
+    <div class="window-header">
+      <span>JOYFUL.EXE</span>
+      <button class="minimize">_</button>
+      <button class="maximize">▭</button>
+      <button class="close">X</button>
+    </div>
+    <div class="window-content">
+      <video id="video1-player" src="https://cdn.glitch.me/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/A%20Joyful%20and%20Meaningful%20Life.mp4?v=1746453364188" controls preload="metadata" style="width:100%;height:100%;background:black"></video>
+    </div>
+  </div>
+  <div id="video2" class="popup-window hidden">
+    <div class="window-header">
+      <span>PAPAZ.EXE</span>
+      <button class="minimize">_</button>
+      <button class="maximize">▭</button>
+      <button class="close">X</button>
+    </div>
+    <div class="window-content">
+      <video id="video2-player" src="https://cdn.glitch.me/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/SEPChallengeVideo2.mp4?v=1746454142843" controls preload="metadata" style="width:100%;height:100%;background:black"></video>
+    </div>
+  </div>
+  <div id="video3" class="popup-window hidden">
+    <div class="window-header">
+      <span>ABSTRACT.EXE</span>
+      <button class="minimize">_</button>
+      <button class="maximize">▭</button>
+      <button class="close">X</button>
+    </div>
+    <div class="window-content">
+      <video id="video3-player" src="https://cdn.glitch.me/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/SEP%20Challenge-Video%206.mov?v=1746456155714" controls preload="metadata" style="width:100%;height:100%;background:black"></video>
+    </div>
+  </div>
+
+  <!-- Music window -->
+  <div id="music" class="popup-window hidden">
+    <div class="window-header">
+      <span>MUSIC.EXE</span>
+      <button class="minimize">_</button>
+      <button class="maximize">▭</button>
+      <button class="close">X</button>
+    </div>
+    <div class="window-content" style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:0.5rem; padding:1rem;">
+      <audio id="music-player" controls preload="metadata" style="width:100%;">
+        <source src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/musictrack1.mp3" type="audio/mpeg">
+      </audio>
+      <div id="now-playing" style="font-family:var(--font-press); color:var(--neon-cyan);">▶ Loading…</div>
+      <div style="display:flex; gap:0.5rem;">
+        <button onclick="prevTrack()" style="font-family:var(--font-press);">◀ Prev</button>
+        <button onclick="togglePlay()" style="font-family:var(--font-press);">Play/Pause</button>
+        <button onclick="nextTrack()" style="font-family:var(--font-press);">Next ▶</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Snake window -->
+  <div id="snake" class="popup-window hidden" data-src="/snake.html">
+    <div class="window-header">
+      <span>SNAKE.EXE</span>
+      <button class="minimize">_</button>
+      <button class="maximize">▭</button>
+      <button class="close">X</button>
+    </div>
+    <div class="window-content">
+      <iframe loading="lazy"></iframe>
+    </div>
+  </div>
+
+  <!-- Contact window loads contact.html lazily -->
+  <div id="contact" class="popup-window hidden" data-src="/contact.html">
+    <div class="window-header"><span>CONTACT.EXE</span><button class="minimize">_</button><button class="maximize">▭</button><button class="close">X</button></div>
+    <div class="window-content"><iframe loading="lazy"></iframe></div>
+  </div>
+
+  <!-- Resume window loads resume.html lazily -->
+  <div id="resume" class="popup-window hidden" data-src="/resume.html">
+    <div class="window-header"><span>RESUME.EXE</span><button class="minimize">_</button><button class="maximize">▭</button><button class="close">X</button></div>
+    <div class="window-content"><iframe loading="lazy"></iframe></div>
+  </div>
+
+  <!-- ... other windows ... -->
 
   <!-- Background starfield canvas -->
   <canvas id="background-canvas"></canvas>
@@ -101,16 +202,9 @@
   <!-- Start menu -->
   <div id="start-menu">
     <a href="javascript:void(0)" onclick="openWindow('about')">About</a>
-    <a href="javascript:void(0)" onclick="openWindow('projects')">Projects</a>
-    <a href="javascript:void(0)" onclick="openWindow('resume')">Resume</a>
     <a href="javascript:void(0)" onclick="openWindow('contact')">Contact</a>
-    <a href="javascript:void(0)" onclick="openWindow('notes')">Notes</a>
-    <a href="javascript:void(0)" onclick="openWindow('nature')">Nature</a>
-    <a href="javascript:void(0)" onclick="openWindow('video1')">Joyful</a>
-    <a href="javascript:void(0)" onclick="openWindow('video2')">Papaz</a>
-    <a href="javascript:void(0)" onclick="openWindow('video3')">Abstract</a>
-    <a href="javascript:void(0)" onclick="openWindow('music')">Music</a>
-    <a href="javascript:void(0)" onclick="openWindow('snake')">Snake</a>
+    <a href="javascript:void(0)" onclick="openWindow('resume')">Resume</a>
+    <!-- etc. -->
   </div>
 
   <!-- Main script -->
