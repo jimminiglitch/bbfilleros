@@ -226,3 +226,466 @@ body {
 }
 
 .window-content {
+  padding: 16px;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  position: relative;
+}
+
+/* Gallery */
+.gallery {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.gallery img {
+  max-width: 100%;
+  max-height: 400px;
+  object-fit: contain;
+}
+
+.gallery-controls {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+}
+
+.gallery-controls button {
+  padding: 8px 16px;
+  background: rgba(var(--neon-cyan), 0.1);
+  border: none;
+  color: rgb(var(--neon-cyan));
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.gallery-controls button:hover {
+  background: rgba(var(--neon-cyan), 0.2);
+}
+
+/* Music Player */
+#music-tracks {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.track {
+  padding: 8px;
+  background: rgba(var(--neon-cyan), 0.1);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.track:hover {
+  background: rgba(var(--neon-cyan), 0.2);
+}
+
+/* Terminal */
+.terminal-output {
+  height: 200px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+
+.terminal-prompt {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.terminal-prompt input {
+  flex-grow: 1;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgb(var(--neon-cyan));
+  color: rgb(var(--neon-cyan));
+  padding: 4px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 12px;
+}
+
+.terminal-prompt input:focus {
+  outline: none;
+}
+
+.terminal-command {
+  color: rgb(var(--neon-blue));
+}
+
+.terminal-output {
+  color: rgb(var(--neon-cyan));
+}
+
+/* File Explorer */
+.explorer-path {
+  margin-bottom: 10px;
+  color: rgb(var(--neon-blue));
+}
+
+.explorer-content {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.file-item {
+  padding: 8px;
+  background: rgba(var(--neon-cyan), 0.1);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.file-item:hover {
+  background: rgba(var(--neon-cyan), 0.2);
+}
+
+.file-item.folder {
+  color: rgb(var(--neon-blue));
+}
+
+.file-item.folder.expanded::after {
+  content: "▼";
+  margin-left: 5px;
+}
+
+/* Clipboard Manager */
+#clipboard-content {
+  width: 100%;
+  height: 200px;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgb(var(--neon-cyan));
+  color: rgb(var(--neon-cyan));
+  padding: 8px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 12px;
+  resize: vertical;
+}
+
+/* Weather Widget */
+#weather-widget {
+  text-align: center;
+}
+
+.weather-temp {
+  font-size: 48px;
+  margin-bottom: 10px;
+}
+
+.weather-condition {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.weather-location {
+  font-size: 16px;
+  color: rgb(var(--neon-blue));
+}
+
+/* Window Stack */
+.window-stack {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.9);
+  border: 2px solid rgb(var(--neon-cyan));
+  border-radius: 8px;
+  padding: 8px;
+  z-index: 1000;
+}
+
+.window-stack-item {
+  padding: 4px 8px;
+  margin: 2px 0;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.window-stack-item:hover {
+  background: rgba(var(--neon-cyan), 0.1);
+}
+
+/* Screensaver */
+.screensaver {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #000;
+  display: none;
+  z-index: 2000;
+}
+
+.screensaver.active {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.screensaver-content {
+  text-align: center;
+  color: rgb(var(--neon-cyan));
+}
+
+.screensaver-artwork img {
+  max-width: 100%;
+  max-height: 400px;
+  object-fit: contain;
+  margin-bottom: 20px;
+}
+
+.screensaver-text h2 {
+  font-size: 48px;
+  margin-bottom: 10px;
+}
+
+/* Selection Box */
+#selection-rect {
+  position: fixed;
+  border: 2px solid rgb(var(--neon-cyan));
+  background: rgba(var(--neon-cyan), 0.1);
+  pointer-events: none;
+  z-index: 1000;
+}
+
+/* Animations */
+@keyframes blink {
+  0% { opacity: 1; }
+  50% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Window Animations */
+.popup-window {
+  animation: fade 0.3s ease-in-out;
+}
+
+.popup-window.maximized {
+  animation: maximize 0.3s ease-in-out;
+}
+
+@keyframes maximize {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.05);
+  }
+}
+
+/* Window Stack Hover */
+.window-stack-item:hover {
+  transform: translateX(5px);
+  transition: transform 0.2s;
+}
+
+/* Notification Styles */
+.notification {
+  position: fixed;
+  bottom: 60px;
+  right: 20px;
+  padding: 12px 24px;
+  background: rgba(0, 0, 0, 0.9);
+  border: 2px solid rgb(var(--neon-cyan));
+  border-radius: 8px;
+  color: rgb(var(--neon-cyan));
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 2000;
+  animation: slideIn 0.3s ease-out;
+}
+
+.notification.error {
+  border-color: rgb(var(--neon-pink));
+  color: rgb(var(--neon-pink));
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Drag and Drop */
+.draggable {
+  cursor: move;
+}
+
+.dragging {
+  opacity: 0.5;
+}
+
+.dropzone {
+  border: 2px dashed rgb(var(--neon-cyan));
+  border-radius: 4px;
+  padding: 16px;
+  margin: 10px 0;
+}
+
+.dropzone.hover {
+  background: rgba(var(--neon-cyan), 0.1);
+}
+
+/* Taskbar Icons */
+.taskbar-icon {
+  padding: 8px 16px;
+  margin: 0 5px;
+  background: rgba(var(--neon-cyan), 0.1);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.taskbar-icon:hover {
+  background: rgba(var(--neon-cyan), 0.2);
+}
+
+/* Window Controls */
+.minimize {
+  background: rgba(var(--neon-blue), 0.1);
+}
+
+.maximize {
+  background: rgba(var(--neon-pink), 0.1);
+}
+
+.close {
+  background: rgba(var(--neon-cyan), 0.1);
+}
+
+/* Window States */
+.popup-window.minimized {
+  width: 200px !important;
+  height: 100px !important;
+  opacity: 0.7;
+}
+
+.popup-window.maximized {
+  width: calc(100% - 40px) !important;
+  height: calc(100% - 40px) !important;
+  top: 20px !important;
+  left: 20px !important;
+}
+
+/* Window Snapping */
+.popup-window.snapped {
+  border-color: rgb(var(--neon-pink));
+}
+
+/* Window Stack */
+.window-stack {
+  animation: slideIn 0.3s ease-out;
+}
+
+/* Screensaver Fade */
+.screensaver {
+  animation: fade 0.8s ease-in-out;
+}
+
+/* Starfield Background */
+#background-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+/* Particle Effects */
+.particle-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Ripple Effects */
+.ripple-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Scanlines */
+.scanlines {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 3;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    transparent 0,
+    transparent 1px,
+    rgba(169, 161, 255, 0.1) 1px,
+    rgba(169, 161, 255, 0.1) 2px
+  );
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  #start-bar {
+    height: 60px;
+  }
+
+  .desktop-icons {
+    gap: 20px;
+  }
+
+  .desktop-icon img {
+    width: 36px;
+    height: 36px;
+  }
+
+  .desktop-icon span {
+    font-size: 10px;
+  }
+
+  #start-menu {
+    width: 250px;
+  }
+
+  .window-content {
+    padding: 12px;
+  }
+
+  .window-header {
+    padding: 6px;
+  }
+
+  .window-header button {
+    width: 16px;
+    height: 16px;
+  }
+
+  .taskbar-icon {
+    padding: 6px 12px;
+  }
+}

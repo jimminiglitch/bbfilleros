@@ -162,11 +162,13 @@ document.getElementById("start-button")
   });
 
 // 4) BOOT SEQUENCE
-function runBootSequence() {
+async function runBootSequence() {
   return new Promise(resolve => {
     const bootScreen = document.getElementById("bootScreen");
     const logEl = document.getElementById("boot-log");
     const progress = document.getElementById("progress-bar");
+    
+    // Add boot messages
     const msgs = [
       "[ OK ] Initializing hardware...",
       "[ OK ] Loading kernel modules...",
@@ -175,25 +177,32 @@ function runBootSequence() {
       "[ OK ] CyberDeck ready.",
       "[ DONE ] Boot complete."
     ];
+    
     let idx = 0;
     const total = msgs.length;
-    const delay = 400;
+    const delay = 400; // Adjust delay as needed
 
+    // Add messages with delay
     const typer = setInterval(() => {
-      logEl.textContent += msgs[idx] + "\n";
-      logEl.scrollTop = logEl.scrollHeight;
-      progress.style.width = `${((idx + 1) / total) * 100}%`;
-      idx++;
-      if (idx === total) {
+      if (idx < msgs.length) {
+        logEl.textContent += msgs[idx] + "\n";
+        logEl.scrollTop = logEl.scrollHeight;
+        progress.style.width = `${((idx + 1) / total) * 100}%`;
+        idx++;
+      } else {
         clearInterval(typer);
+        
+        // Add a small delay before hiding
         setTimeout(() => {
           bootScreen.style.transition = "opacity 0.8s";
           bootScreen.style.opacity = "0";
+          
+          // Wait for transition
           setTimeout(() => {
             bootScreen.style.display = "none";
             resolve();
           }, 800);
-        }, 500);
+        }, 1000); // Add a small delay before hiding
       }
     }, delay);
   });
