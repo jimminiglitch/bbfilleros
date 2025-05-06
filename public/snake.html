@@ -1,3 +1,4 @@
+<!-- snake.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -37,12 +38,12 @@
     </div>
   </div>
 
-  <!-- GAME FIELD (with neon border) -->
+  <!-- GAME FIELD -->
   <div id="game-field">
     <canvas id="snake-canvas"></canvas>
   </div>
 
-  <!-- HUD (outside the playfield) -->
+  <!-- HUD -->
   <div id="snake-ui">
     <span id="snake-score">Score: 0</span> |
     <span id="snake-level">Level: 1</span> |
@@ -50,15 +51,14 @@
     <span id="snake-status">Running</span>
   </div>
 
-  <!-- MUTE TOGGLE -->
+  <!-- MUTE BUTTON -->
   <button id="mute-button">🔊</button>
 
-  <!-- TOUCH CONTROLS (outside the playfield) -->
-  <div id="touch-controls">
-    <button data-dir="up">▲</button>
-    <button data-dir="left">◀</button>
-    <button data-dir="down">▼</button>
-    <button data-dir="right">▶</button>
+  <!-- JOYSTICK -->
+  <div id="joystick">
+    <div id="joystick-base">
+      <div id="joystick-stick"></div>
+    </div>
   </div>
 
   <!-- MUSIC -->
