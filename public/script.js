@@ -376,3 +376,38 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 window.addEventListener("load", initWindowControls);
 window.addEventListener("mousedown", onSelectStart);
+function openWindow(id) {
+  const win = document.getElementById(id);
+  if (!win) return;
+
+  // 1) Hide start menu & deactivate other windows
+  document.getElementById("start-menu").style.display = "none";
+  document.querySelectorAll(".popup-window").forEach(w => w.classList.remove("active"));
+
+  // 2) Lazy-load any <iframe data-src> in this window
+  win.querySelectorAll("iframe[data-src]").forEach(iframe => {
+    if (!iframe.src) {
+      iframe.src = iframe.dataset.src;
+      // optionally auto-start TOADER.EXE game:
+      iframe.onload = () => iframe.contentWindow.postMessage({ type: 'START_GAME' }, '*');
+    }
+  });
+
+  // 3) Lazy-load any <video data-src> in this window
+  win.querySelectorAll("video[data-src]").forEach(v => {
+    if (!v.src) {
+      v.src = v.dataset.src;
+      v.load();
+      v.play().catch(() => {});
+    }
+  });
+
+  // 4) Show & focus
+  win.classList.remove("hidden");
+  win.classList.add("active");
+  win.style.display = "flex";
+  win.style.zIndex  = getNextZIndex();
+
+  // 5) Restore previous bounds + 6) clamp to viewport…
+  /* your existing clamp code here */
+}
