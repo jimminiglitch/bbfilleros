@@ -92,11 +92,13 @@ window.addEventListener('load', () => {
 
   const HIGH_SCORES_KEY = 'snakeHighScores';
   const MAX_HIGH_SCORES = 7;
-  const POWER_UPS = {
-    SPEED:      { color:'cyan',    effect:'speed',      duration:5000, value:2 },
-    GROW:       { color:'magenta', effect:'grow',       duration:3000, value:3 },
-    INVINCIBLE: { color:'yellow',  effect:'invincible', duration:5000, value:0 }
-  };
+ // modify your POWER_UPS table:
+const POWER_UPS = {
+  SPEED:      { color:'cyan',    effect:'speed',      duration:5000, value:2,  points: 50 },
+  GROW:       { color:'magenta', effect:'grow',       duration:3000, value:3,  points: 8 },
+  INVINCIBLE: { color:'yellow',  effect:'invincible', duration:5000, value:0,  points:10 }
+};
+
 
   // ─── Resize & Init ─────────────────────────────────────────────────────────
   function resize() {
@@ -337,8 +339,10 @@ window.addEventListener('load', () => {
     muteButton.textContent = music.muted?'🔇':'🔊';
   });
 
-  // initialize
-  best = Number(localStorage.getItem('snakeBest')||'0');
+ // pull the sorted list, then grab the top score (or 0 if empty)
+const hs = loadHighScores();
+best = hs.length ? hs[0].score : 0;
   displayHighScores();
+  ui.best.textContent = `Best: ${best}`;
   resetGame();
 });
