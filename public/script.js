@@ -34,26 +34,36 @@ function openWindow(id) {
     }
   });
 
-  // 3) Lazy-load any <video data-src> in this window
+  // 3) If this is the Toader window, postMessage START_GAME
+  if (id === "toader") {
+    const iframe = win.querySelector("iframe");
+    if (iframe) {
+      iframe.onload = () => {
+        iframe.contentWindow.postMessage({ type: "START_GAME" }, "*");
+      };
+    }
+  }
+
+  // 4) Lazy-load any <video data-src> in this window
   win.querySelectorAll("video[data-src]").forEach(v => {
     if (!v.src) {
       v.src = v.dataset.src;
       v.load();
-      v.play().catch(() => { /* may require a user gesture */ });
+      v.play().catch(() => { /* may require user gesture */ });
     }
   });
 
-  // 4) Show & focus
+  // 5) Show & focus
   win.classList.remove("hidden");
   win.classList.add("active");
   win.style.display = "flex";
   win.style.zIndex  = getNextZIndex();
 
-  // 5) Restore previous bounds
+  // 6) Restore previous bounds
   const stored = windowStates[id];
   if (stored) Object.assign(win.style, stored);
 
-  // 6) Clamp window to viewport
+  // 7) Clamp window to viewport
   const rect   = win.getBoundingClientRect();
   const margin = 20;
   const vw     = window.innerWidth;
@@ -192,11 +202,11 @@ function runBootSequence() {
   });
 }
 
-// 5) DESKTOP ICONS (double-click to open + drag-group)
+// 5) DESKTOP ICONS (single-click to open + drag-group)
 function initDesktopIcons() {
   document.querySelectorAll(".desktop-icon").forEach(icon => {
-    // only double-click opens now
-    icon.addEventListener("dblclick", () => openWindow(icon.dataset.window));
+    // open on single click
+    icon.addEventListener("click", () => openWindow(icon.dataset.window));
 
     // drag-group start
     icon.addEventListener("mousedown", e => {
@@ -303,19 +313,26 @@ function initStarfield() {
     z: Math.random()*canvas.width,
     o: Math.random()
   }));
-  ;(function animate(){
+  (function animate(){
     ctx.fillStyle = 'rgba(0,0,0,0.4)';
     ctx.fillRect(0,0,canvas.width,canvas.height);
     for (let s of stars) {
       s.z -= 2;
-      if (s.z <= 0) { s.z = canvas.width; s.x = Math.random()*canvas.width; s.y = Math.random()*canvas.height; s.o = Math.random(); }
+      if (s.z <= 0) {
+        s.z = canvas.width;
+        s.x = Math.random()*canvas.width;
+        s.y = Math.random()*canvas.height;
+        s.o = Math.random();
+      }
       const k  = 128.0 / s.z;
       const px = (s.x - canvas.width/2)*k + canvas.width/2;
       const py = (s.y - canvas.height/2)*k + canvas.height/2;
       const sz = Math.max(0, (1 - s.z/canvas.width)*3);
       ctx.globalAlpha = s.o;
       ctx.fillStyle   = '#fff';
-      ctx.beginPath(); ctx.arc(px,py,sz,0,Math.PI*2); ctx.fill();
+      ctx.beginPath();
+      ctx.arc(px,py,sz,0,Math.PI*2);
+      ctx.fill();
     }
     ctx.globalAlpha = 1;
     requestAnimationFrame(animate);
@@ -355,8 +372,6 @@ document.addEventListener("DOMContentLoaded", () => {
   runBootSequence().then(() => {
     initDesktopIcons();
     initStarfield();
-    initNatureGallery();
-    initArtworkGallery();
   });
 });
 window.addEventListener("load", initWindowControls);
