@@ -55,14 +55,12 @@
           />
           <span>About</span>
         </div>
-        <div class="desktop-icon" id="icon-projects" data-window="projects">
-          <img
-            src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/whodat.gif?v=1746365769069"
-            alt="Projects"
-            loading="lazy"
-          />
-          <span>Projects</span>
-        </div>
+          <div class="desktop-icon" id="icon-artwork" data-window="artwork">
+        <img
+          src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/whodat.gif?v=1746365769069"
+          alt="Artwork"
+        />
+        <span>Artwork</span>
         <div class="desktop-icon" id="icon-resume" data-window="resume">
           <img
             src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/DiskPic.png?v=1746392827503"
@@ -168,48 +166,6 @@
       </div>
     </div>
 
-    <!-- PROJECTS.EXE -->
-    <div id="projects" class="popup-window hidden">
-      <div class="window-header">
-        <span>PROJECTS.EXE</span>
-        <button class="minimize">_</button>
-        <button class="maximize">▭</button>
-        <button class="close">X</button>
-      </div>
-      <div class="window-content">
-        <div class="project-card" data-name="Fedora Diaries.exe">
-          <h3>The Fedora Diaries</h3>
-          <p>
-            Immersive escape room with soundscape, set design, and software
-            integration.
-          </p>
-        </div>
-        <div class="project-card" data-name="R3D3CH0.sys">
-          <h3>R3D3CH0</h3>
-          <p>
-            Cyberpunk short story reimagined as ArcGIS map and mobile
-            experience.
-          </p>
-        </div>
-        <div class="project-card" data-name="ClydeCup2024.mov">
-          <h3>The Illustrious Clyde Cup</h3>
-          <p>
-            Mini-golf doc. Screened at Greater Farmington Film Festival (2024).
-          </p>
-        </div>
-        <div class="project-card" data-name="BirdingWithBrian.avi">
-          <h3>Birding With Brian</h3>
-          <p>Experimental documentary — festival circuit 2024-25.</p>
-        </div>
-
-        <div id="project-splash" class="hidden">
-          <h2>🔷 Launching...</h2>
-          <p>Executing program: <span id="splash-name"></span></p>
-          <button class="close-splash">↩ Return to Library</button>
-        </div>
-      </div>
-    </div>
-
     <!-- RESUME.EXE -->
     <div id="resume" class="popup-window hidden">
       <div class="window-header">
@@ -268,6 +224,22 @@
         </div>
       </div>
     </div>
+    
+      <div id="artwork" class="popup-window hidden">
+    <div class="window-header">
+      <span>ARTWORK.EXE</span>
+      <button class="minimize">_</button>
+      <button class="maximize">▭</button>
+      <button class="close">X</button>
+    </div>
+    <div class="window-content">
+      <img id="artwork-img" data-src="" alt="Digital Artwork Gallery" />
+      <div class="gallery-controls">
+        <button>◀ Prev</button>
+        <button>Next ▶</button>
+      </div>
+    </div>
+  </div>
 
     <!-- VIDEO1.EXE -->
     <div id="video1" class="popup-window hidden">
