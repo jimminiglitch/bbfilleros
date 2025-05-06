@@ -201,6 +201,111 @@ function initDesktopIcons() {
     // …
   });
 }
+// ─── DESKTOP ICONS (double-click + drag-group) ───────────────────────────
+function initDesktopIcons() {
+  document.querySelectorAll(".desktop-icon").forEach(icon => {
+    icon.addEventListener("dblclick", () => {
+      openWindow(icon.dataset.window);
+      playBlip();
+    });
+    icon.addEventListener("mousedown", e => {
+      e.preventDefault();
+      const parentRect = icon.parentElement.getBoundingClientRect();
+      const clickRect  = icon.getBoundingClientRect();
+
+      let group;
+      if (icon.classList.contains("selected")) {
+        group = Array.from(document.querySelectorAll(".desktop-icon.selected"));
+      } else {
+        document.querySelectorAll(".desktop-icon.selected")
+          .forEach(ic => ic.classList.remove("selected"));
+        icon.classList.add("selected");
+        group = [icon];
+      }
+
+      const shiftX = e.clientX - clickRect.left;
+      const shiftY = e.clientY - clickRect.top;
+
+      const groupData = group.map(ic => {
+        const r = ic.getBoundingClientRect();
+        const startLeft = r.left - parentRect.left;
+        const startTop  = r.top  - parentRect.top;
+        ic.style.left = startLeft + "px";
+        ic.style.top  = startTop  + "px";
+        ic.style.zIndex = getNextZIndex();
+        return { icon: ic, startLeft, startTop };
+      });
+
+      function onMouseMove(e) {
+        const newLeft = e.clientX - shiftX - parentRect.left;
+        const newTop  = e.clientY - shiftY - parentRect.top;
+        const dx = newLeft - groupData[0].startLeft;
+        const dy = newTop - groupData[0].startTop;
+        groupData.forEach(({ icon, startLeft, startTop }) => {
+          icon.style.left = startLeft + dx + "px";
+          icon.style.top  = startTop  + dy + "px";
+        });
+      }
+
+      document.addEventListener("mousemove", onMouseMove);
+      document.addEventListener("mouseup", function onUp() {
+        document.removeEventListener("mousemove", onMouseMove);
+        document.removeEventListener("mouseup", onUp);
+      }, { once: true });
+    });
+    icon.ondragstart = () => false;
+  });
+}
+
+// ─── CLICK‐AND‐DRAG MULTI‐SELECT ─────────────────────────────────────────
+let selStartX, selStartY, selDiv;
+
+function onSelectStart(e) {
+  if (e.target.closest(".desktop-icon, .popup-window, #start-bar, #start-menu")) {
+    return;
+  }
+  selStartX = e.clientX;
+  selStartY = e.clientY;
+  selDiv = document.createElement("div");
+  selDiv.id = "selection-rect";
+  selDiv.style.left = `${selStartX}px`;
+  selDiv.style.top  = `${selStartY}px`;
+  selDiv.style.width = selDiv.style.height = "0px";
+  document.body.appendChild(selDiv);
+
+  document.addEventListener("mousemove", onSelectMove);
+  document.addEventListener("mouseup",   onSelectEnd, { once: true });
+  e.preventDefault();
+}
+
+function onSelectMove(e) {
+  const x = Math.min(e.clientX, selStartX),
+        y = Math.min(e.clientY, selStartY),
+        w = Math.abs(e.clientX - selStartX),
+        h = Math.abs(e.clientY - selStartY);
+  selDiv.style.left   = `${x}px`;
+  selDiv.style.top    = `${y}px`;
+  selDiv.style.width  = `${w}px`;
+  selDiv.style.height = `${h}px`;
+
+  const box = selDiv.getBoundingClientRect();
+  document.querySelectorAll(".desktop-icon").forEach(icon => {
+    const r = icon.getBoundingClientRect();
+    const inside = (
+      r.left   >= box.left &&
+      r.right  <= box.right &&
+      r.top    >= box.top &&
+      r.bottom <= box.bottom
+    );
+    icon.classList.toggle("selected", inside);
+  });
+}
+
+function onSelectEnd() {
+  if (selDiv) selDiv.remove();
+  selDiv = null;
+  document.removeEventListener("mousemove", onSelectMove);
+}
 
 // ———————————————————————————————————————————————————————————————————————
 // 6) STARFIELD BACKGROUND
@@ -249,12 +354,40 @@ function initStarfield() {
   })();
 }
 
-// ———————————————————————————————————————————————————————————————————————
-// 7) SELECT-BOX, NOTES, NATURE, PROJECT SPLASH, MUSIC, VIDEOS, ETC.
-//    (leave your existing handlers in place…)
-// ———————————————————————————————————————————————————————————————————————
+// ─── WINDOW HEADER DRAG & BUTTONS ────────────────────────────────────────
+function initWindowControls() {
+  document.querySelectorAll(".popup-window").forEach(win => {
+    const id     = win.id;
+    const header = win.querySelector(".window-header");
+    const btnMin = header.querySelector(".minimize");
+    const btnMax = header.querySelector(".maximize");
+    const btnCls = header.querySelector(".close");
 
-// [ ... your existing code for multi-select, notes, nature, projects, music, videos … ]
+    // hook up the three buttons
+    if (btnMin) btnMin.addEventListener("click", () => minimizeWindow(id));
+    if (btnMax) btnMax.addEventListener("click", () => toggleMaximizeWindow(id));
+    if (btnCls) btnCls.addEventListener("click", () => closeWindow(id));
+
+    // allow dragging by header
+    let isDragging = false, offsetX = 0, offsetY = 0;
+    header.addEventListener("mousedown", e => {
+      isDragging = true;
+      offsetX    = e.clientX - win.offsetLeft;
+      offsetY    = e.clientY - win.offsetTop;
+      win.style.zIndex = getNextZIndex();
+    });
+    document.addEventListener("mousemove", e => {
+      if (isDragging) {
+        win.style.left = `${e.clientX - offsetX}px`;
+        win.style.top  = `${e.clientY - offsetY}px`;
+      }
+    });
+    document.addEventListener("mouseup", () => {
+      isDragging = false;
+    });
+  });
+}
+
 
 // ———————————————————————————————————————————————————————————————————————
 // 8) KICK IT OFF
@@ -266,3 +399,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // any other on-ready setup you had under window.load…
   });
 });
+window.addEventListener("load", initWindowControls);
+window.addEventListener("load", initDesktopIcons);
+window.addEventListener("mousedown", onSelectStart);
+
