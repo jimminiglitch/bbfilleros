@@ -484,3 +484,67 @@ document.addEventListener("DOMContentLoaded", () => {
 
 window.addEventListener("load", initWindowControls);
 window.addEventListener("mousedown", onSelectStart);
+
+// Add this to your existing script.js
+
+// Window Animations
+function animateWindowOpen(windowId) {
+  const win = document.getElementById(windowId);
+  if (!win) return;
+  
+  // Create particles
+  for (let i = 0; i < 5; i++) {
+    const particle = document.createElement('div');
+    particle.className = 'particle';
+    particle.style.left = Math.random() * 100 + '%';
+    particle.style.top = Math.random() * 100 + '%';
+    particle.style.width = particle.style.height = Math.random() * 5 + 2 + 'px';
+    document.body.appendChild(particle);
+    setTimeout(() => particle.remove(), 500);
+  }
+  
+  // Add ripple effect
+  const ripple = document.createElement('div');
+  ripple.className = 'ripple';
+  ripple.style.left = win.offsetLeft + win.offsetWidth/2 + 'px';
+  ripple.style.top = win.offsetTop + win.offsetHeight/2 + 'px';
+  document.body.appendChild(ripple);
+  setTimeout(() => ripple.remove(), 500);
+}
+
+// Modify openWindow function to use animation
+function openWindow(id) {
+  // ... existing code ...
+  win.classList.remove("hidden");
+  win.classList.add("active");
+  win.style.display = "flex";
+  win.style.zIndex = getNextZIndex();
+  
+  // Add animation
+  animateWindowOpen(id);
+  
+  // ... rest of existing code ...
+}
+
+// Add window snapping
+function snapWindowToEdge(win) {
+  const rect = win.getBoundingClientRect();
+  const margin = 10;
+  
+  // Snap to edges
+  if (rect.left < margin) win.style.left = margin + 'px';
+  if (rect.right > window.innerWidth - margin) 
+    win.style.left = window.innerWidth - win.offsetWidth - margin + 'px';
+  if (rect.top < margin) win.style.top = margin + 'px';
+  if (rect.bottom > window.innerHeight - margin) 
+    win.style.top = window.innerHeight - win.offsetHeight - margin + 'px';
+}
+
+// Add to window drag handler
+document.addEventListener("mousemove", e => {
+  if (isDragging) {
+    win.style.left = `${e.clientX - offsetX}px`;
+    win.style.top = `${e.clientY - offsetY}px`;
+    snapWindowToEdge(win);
+  }
+});
