@@ -139,6 +139,7 @@ body {
 #icon-video2   { top: 300px; left: 140px; }
 #icon-video3   { top: 300px; left: 240px; }
 #icon-music    { top: 400px; left:  40px; }
+#icon-snake    { top: 400px; left: 140px; }
 
 /* Selected state */
 .desktop-icon.selected {

@@ -124,8 +124,8 @@ startButton.onclick = () => {
   startMenu.style.display = startMenu.style.display === "flex" ? "none" : "flex";
 };
 
-// Boot screen typing
-window.addEventListener("load", () => {
+// run as soon as the DOM exists, before heavy assets finish loading
+ window.addEventListener("DOMContentLoaded", () => {
   const boot = document.getElementById("bootScreen");
   const log  = document.getElementById("boot-log");
   const bar  = document.getElementById("progress-bar");
