@@ -1,19 +1,16 @@
-/*─────────────────────────────────────────────────────────────────────────────
-  snake.css – full stylesheet for SPACEWORM.EXE (updated)
-─────────────────────────────────────────────────────────────────────────────*/
+/* snake.css – full stylesheet for SPACEWORM.EXE */
 
 /*─────────────────────────────────────────────────────────────────────────────
   PAGE RESET & BACKGROUND
 ─────────────────────────────────────────────────────────────────────────────*/
-html,
-body {
+html, body {
   width: 100%;
   height: 100%;
   margin: 0;
   padding: 0;
-  background: rgba(0, 0, 0, 0.6); /* translucent black so stars show */
+  background: rgba(0, 0, 0, 0.6); /* translucent black so canvas stars show */
   overflow: hidden;
-  font-family: "Press Start 2P", monospace;
+  font-family: 'Press Start 2P', monospace;
 }
 
 /*─────────────────────────────────────────────────────────────────────────────
@@ -79,39 +76,28 @@ body {
 ─────────────────────────────────────────────────────────────────────────────*/
 #game-field {
   position: absolute;
-  top: 60px; /* leave space for HUD above */
-  bottom: 60px; /* leave space for controls below */
+  top: 60px;    /* leaves room above for HUD */
+  bottom: 60px; /* leaves room below for joystick */
   left: 20px;
   right: 20px;
   background: transparent;
   z-index: 1;
 }
-/* static “barber-pole” rainbow border */
 #game-field::before {
   content: "";
   position: absolute;
-  top: -4px;
-  left: -4px;
-  right: -4px;
-  bottom: -4px;
+  top: -4px; left: -4px; right: -4px; bottom: -4px;
   border: 4px solid transparent;
   border-image: conic-gradient(
-      red,
-      orange,
-      yellow,
-      green,
-      cyan,
-      blue,
-      magenta,
-      red
-    )
-    1;
+    red, orange, yellow, green,
+    cyan, blue, magenta, red
+  ) 1;
   pointer-events: none;
   z-index: 2;
 }
 
 /*─────────────────────────────────────────────────────────────────────────────
-  GAME CANVAS
+  CANVAS (transparent so starfield shows)
 ─────────────────────────────────────────────────────────────────────────────*/
 #snake-canvas {
   width: 100%;
@@ -121,14 +107,14 @@ body {
 }
 
 /*─────────────────────────────────────────────────────────────────────────────
-  HUD (Score / Level / Best / Status)
+  HUD (outside the game-field, at top of viewport)
 ─────────────────────────────────────────────────────────────────────────────*/
 #snake-ui {
   position: absolute;
-  top: 20px; /* above the frame */
+  top: 20px;                /* 20px from top of window */
   left: 50%;
   transform: translateX(-50%);
-  z-index: 2;
+  z-index: 10;              /* above everything */
   background: rgba(0, 0, 0, 0.4);
   padding: 6px 10px;
   border: 1px solid #00f0ff;
@@ -142,13 +128,13 @@ body {
 }
 
 /*─────────────────────────────────────────────────────────────────────────────
-  MUTE BUTTON
+  MUTE BUTTON (top-right of viewport)
 ─────────────────────────────────────────────────────────────────────────────*/
 #mute-button {
   position: absolute;
   top: 20px;
   right: 30px;
-  z-index: 2;
+  z-index: 10;
   font-size: 1.2rem;
   padding: 4px;
   background: rgba(0, 0, 0, 0.4);
@@ -166,14 +152,14 @@ body {
 }
 
 /*─────────────────────────────────────────────────────────────────────────────
-  JOYSTICK
+  JOYSTICK (outside the game-field, bottom of viewport)
 ─────────────────────────────────────────────────────────────────────────────*/
 #joystick {
   position: absolute;
-  bottom: 30px;
+  bottom: 20px;             /* 20px from bottom of window */
   left: 50%;
   transform: translateX(-50%);
-  z-index: 2;
+  z-index: 10;
   touch-action: none;
 }
 #joystick-base {
