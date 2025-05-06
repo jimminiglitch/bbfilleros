@@ -56,7 +56,7 @@ window.addEventListener('load', () => {
 
   // ─── Starfield ──────────────────────────────────────────────────────────────
   let stars = [];
-  const STAR_COUNT = 200;
+  const STAR_COUNT = 175;
   function initStars() {
     stars = Array.from({ length: STAR_COUNT }, () => ({
       x: Math.random()*canvas.width,
@@ -67,7 +67,7 @@ window.addEventListener('load', () => {
   }
   function drawStars() {
     // slight motion-blur
-    ctx.fillStyle = 'rgba(0,0,0,0.2)';
+    ctx.fillStyle = 'rgba(0,0,0,1)';
     ctx.fillRect(0,0,canvas.width,canvas.height);
 
     for (let s of stars) {
@@ -97,7 +97,7 @@ window.addEventListener('load', () => {
   }
 
   // ─── Game state ─────────────────────────────────────────────────────────────
-  const GRID = 20;
+  const GRID = 15;
   let cols, rows;
   let snake, dx, dy, apple;
   let baseSpeed, speed, score, level, best;
@@ -112,7 +112,7 @@ window.addEventListener('load', () => {
     GROW:       { color:'magenta', effect:'grow',       duration:3000, value:3,  pts:8  },
     INVINCIBLE: { color:'yellow',  effect:'invincible', duration:5000, value:0,  pts:10 }
   };
-  const MAX_TRAIL = 15;  // half as long
+  const MAX_TRAIL = .5;  
 
   // ─── High-score helpers ────────────────────────────────────────────────────
   function loadHS() {
@@ -188,7 +188,7 @@ window.addEventListener('load', () => {
     }
     switch(d.effect){
       case 'speed':
-        speed = baseSpeed*2;
+        speed = baseSpeed*1.5;
         createParticle(snake[0].x, snake[0].y, d.color);
         break;
       case 'grow':
@@ -267,7 +267,7 @@ window.addEventListener('load', () => {
     drawStars();
 
     // trails (more subtle)
-    const S = GRID-6, O = 3;
+    const S = GRID-3, O = 1.5;
     trail.forEach((pt, idx)=>{
       const age = Date.now() - pt.t;
       const a   = Math.max(0,1 - age/1000)*0.2;  // half the intensity
