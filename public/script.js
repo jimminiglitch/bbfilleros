@@ -1,6 +1,8 @@
 //────────────────────────────────────────
-// 1) BLIP (ignored if no <audio id="blip">)
+//   Main Script (public/script.js)
 //────────────────────────────────────────
+
+// 1) BLIP (ignored if no <audio id="blip"> present)
 function playBlip() {
   const blip = document.getElementById("blip");
   if (blip) {
@@ -9,11 +11,11 @@ function playBlip() {
   }
 }
 
-//────────────────────────────────────────
-// 2) OPEN / MINIMIZE / CLOSE / MAXIMIZE & TASKBAR ICONS
-//────────────────────────────────────────
+// 2) WINDOW MANAGEMENT
 let currentZIndex = 10;
 const windowStates = {};
+const windowAnimations = new WindowAnimations();
+const windowSnapping = new WindowSnapping();
 
 function getNextZIndex() {
   return ++currentZIndex;
@@ -23,21 +25,63 @@ function openWindow(id) {
   const win = document.getElementById(id);
   if (!win) return;
 
-  // Hide start menu
-  const startMenu = document.getElementById("start-menu");
-  if (startMenu) startMenu.style.display = "none";
+  // Hide start menu & deactivate other windows
+  document.getElementById("start-menu").style.display = "none";
+  document.querySelectorAll(".popup-window").forEach(w => w.classList.remove("active"));
 
-  // Lazy-load [data-src]
-  win.querySelectorAll("[data-src]").forEach(el => {
-    if (!el.src) el.src = el.dataset.src;
+  // Lazy-load Snake iframe
+  if (id === "snake") {
+    const iframe = win.querySelector("iframe[data-src]");
+    if (iframe && !iframe.src) iframe.src = iframe.dataset.src;
+  }
+
+  // Lazy-load any <video data-src> in this window
+  win.querySelectorAll("video[data-src]").forEach(v => {
+    if (!v.src) {
+      v.src = v.dataset.src;
+      v.load();
+      v.play().catch(() => { /* autoplay may require a gesture */ });
+    }
   });
 
   // Show & focus
   win.classList.remove("hidden");
+  win.classList.add("active");
   win.style.display = "flex";
   win.style.zIndex = getNextZIndex();
 
-  // Add taskbar icon
+  // Add window to animation system
+  windowAnimations.addWindow(win);
+
+  // Restore previous bounds
+  const stored = windowStates[id];
+  if (stored) Object.assign(win.style, stored);
+
+  // Clamp window to viewport
+  const rect = win.getBoundingClientRect();
+  const margin = 20;
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  let newW = rect.width,
+      newH = rect.height,
+      newLeft = rect.left,
+      newTop = rect.top;
+
+  if (rect.width > vw - margin * 2) newW = vw - margin * 2;
+  if (rect.height > vh - margin * 2) newH = vh - margin * 2;
+  if (rect.left < margin) newLeft = margin;
+  if (rect.top < margin) newTop = margin;
+  if (rect.right > vw - margin) newLeft = vw - margin - newW;
+  if (rect.bottom > vh - margin) newTop = vh - margin - newH;
+
+  Object.assign(win.style, {
+    width: `${newW}px`,
+    height: `${newH}px`,
+    left: `${newLeft}px`,
+    top: `${newTop}px`
+  });
+
+  // Create taskbar icon
   createTaskbarIcon(id);
 }
 
@@ -48,11 +92,7 @@ function createTaskbarIcon(id) {
   btn.className = "taskbar-icon";
   btn.textContent = id.toUpperCase();
   btn.addEventListener("click", () => {
-    const win = document.getElementById(id);
-    if (win) {
-      const wasHidden = win.classList.toggle("hidden");
-      if (!wasHidden) win.style.zIndex = getNextZIndex();
-    }
+    openWindow(id);
     btn.remove();
   });
   document.getElementById("taskbar-icons").appendChild(btn);
@@ -62,16 +102,19 @@ function minimizeWindow(id) {
   const win = document.getElementById(id);
   if (!win) return;
   win.classList.add("hidden");
+  win.style.display = "none";
+  createTaskbarIcon(id);
 }
 
 function closeWindow(id) {
   const win = document.getElementById(id);
-  if (!win) return;
-  // Pause any playing video
-  const vid = win.querySelector("video");
-  if (vid) { vid.pause(); vid.currentTime = 0; }
-  win.classList.add("hidden");
-  // Remove its taskbar icon
+  if (win) {
+    // pause any <video> inside
+    const vid = win.querySelector("video");
+    if (vid) { vid.pause(); vid.currentTime = 0; }
+    win.classList.add("hidden");
+    win.style.display = "none";
+  }
   const icon = document.getElementById(`taskbar-icon-${id}`);
   if (icon) icon.remove();
 }
@@ -80,6 +123,7 @@ function toggleMaximizeWindow(id) {
   const win = document.getElementById(id);
   if (!win) return;
   if (!win.classList.contains("maximized")) {
+    // store previous bounds
     windowStates[id] = {
       top: win.style.top,
       left: win.style.left,
@@ -93,15 +137,17 @@ function toggleMaximizeWindow(id) {
       width: "100%",
       height: "100%"
     });
+    const ic = document.getElementById(`taskbar-icon-${id}`);
+    if (ic) ic.remove();
   } else {
+    // restore
+    const s = windowStates[id];
+    if (s) Object.assign(win.style, s);
     win.classList.remove("maximized");
-    Object.assign(win.style, windowStates[id]);
   }
 }
 
-//────────────────────────────────────────
 // 3) CLOCK & START MENU TOGGLE
-//────────────────────────────────────────
 function updateClock() {
   const clk = document.getElementById("clock");
   if (clk) clk.textContent = new Date().toLocaleTimeString();
@@ -109,23 +155,13 @@ function updateClock() {
 setInterval(updateClock, 1000);
 updateClock();
 
-document.getElementById("start-button").addEventListener("click", () => {
-  const m = document.getElementById("start-menu");
-  if (m) m.style.display = m.style.display === "flex" ? "none" : "flex";
-});
+document.getElementById("start-button")
+  .addEventListener("click", () => {
+    const m = document.getElementById("start-menu");
+    m.style.display = (m.style.display === "flex" ? "none" : "flex");
+  });
 
-// Close start menu on outside click
-window.addEventListener("click", e => {
-  const sb = document.getElementById("start-button");
-  const sm = document.getElementById("start-menu");
-  if (sm && !sb.contains(e.target) && !sm.contains(e.target)) {
-    sm.style.display = "none";
-  }
-});
-
-//────────────────────────────────────────
 // 4) BOOT SEQUENCE
-//────────────────────────────────────────
 function runBootSequence() {
   return new Promise(resolve => {
     const bootScreen = document.getElementById("bootScreen");
@@ -139,427 +175,894 @@ function runBootSequence() {
       "[ OK ] CyberDeck ready.",
       "[ DONE ] Boot complete."
     ];
-    let idx = 0, total = msgs.length;
+    let idx = 0;
+    const total = msgs.length;
+    const delay = 400;
+
     const typer = setInterval(() => {
       logEl.textContent += msgs[idx] + "\n";
-      progress.style.width = `${((idx + 1)/total)*100}%`;
+      logEl.scrollTop = logEl.scrollHeight;
+      progress.style.width = `${((idx + 1) / total) * 100}%`;
       idx++;
       if (idx === total) {
         clearInterval(typer);
         setTimeout(() => {
           bootScreen.style.transition = "opacity 0.8s";
           bootScreen.style.opacity = "0";
-          setTimeout(() => { bootScreen.style.display = "none"; resolve(); }, 800);
+          setTimeout(() => {
+            bootScreen.style.display = "none";
+            resolve();
+          }, 800);
         }, 500);
       }
-    }, 400);
+    }, delay);
   });
 }
 
-//────────────────────────────────────────
-// 5) DESKTOP ICONS: dblclick + drag-group
-//────────────────────────────────────────
+// 5) DESKTOP ICONS
 function initDesktopIcons() {
   document.querySelectorAll(".desktop-icon").forEach(icon => {
-    // Double-click to open window
+    // Double-click to open
     icon.addEventListener("dblclick", () => openWindow(icon.dataset.window));
 
-    // Drag selection + group drag
+    // Drag-group start
     icon.addEventListener("mousedown", e => {
       e.preventDefault();
       const parentRect = icon.parentElement.getBoundingClientRect();
       const clickRect = icon.getBoundingClientRect();
-      let group = icon.classList.contains("selected")
-        ? Array.from(document.querySelectorAll(".desktop-icon.selected"))
-        : ( () => {
-            document.querySelectorAll(".desktop-icon.selected").forEach(ic => ic.classList.remove("selected"));
-            icon.classList.add("selected");
-            return [icon];
-          })();
 
-      const shiftX = e.clientX - clickRect.left;
-      const shiftY = e.clientY - clickRect.top;
-      const groupData = group.map(ic => {
-        const r = ic.getBoundingClientRect();
-        const start = { left: r.left-parentRect.left, top: r.top-parentRect.top };
-        ic.style.left = `${start.left}px`;
-        ic.style.top = `${start.top}px`;
-        ic.style.zIndex = getNextZIndex();
-        return { icon: ic, start };
-      });
-
-      function onMove(ev) {
-        const dx = ev.clientX - shiftX - parentRect.left - groupData[0].start.left;
-        const dy = ev.clientY - shiftY - parentRect.top  - groupData[0].start.top;
-        groupData.forEach(({ icon, start }) => {
-          icon.style.left = `${start.left + dx}px`;
-          icon.style.top  = `${start.top  + dy}px`;
-        });
-      }
-
-      document.addEventListener("mousemove", onMove);
-      document.addEventListener("mouseup", () => document.removeEventListener("mousemove", onMove), { once: true });
-    });
-
-    icon.ondragstart = () => false;
-  });
-}
-
-//────────────────────────────────────────
-// 6) MULTI-SELECT BOX
-//────────────────────────────────────────
-let selDiv, selStartX, selStartY;
-function onSelectStart(e) {
-  if (e.target.closest(".desktop-icon, .popup-window, #start-bar, #start-menu")) return;
-  selStartX = e.clientX; selStartY = e.clientY;
-  selDiv = document.createElement("div");
-  selDiv.id = "selection-rect";
-  document.body.appendChild(selDiv);
-  selDiv.style.left = `${selStartX}px`;
-  selDiv.style.top  = `${selStartY}px`;
-
-  function onMove(ev) {
-    const x = Math.min(ev.clientX, selStartX);
-    const y = Math.min(ev.clientY, selStartY);
-    const w = Math.abs(ev.clientX - selStartX);
-    const h = Math.abs(ev.clientY - selStartY);
-    selDiv.style.left = `${x}px`;
-    selDiv.style.top  = `${y}px`;
-    selDiv.style.width  = `${w}px`;
-    selDiv.style.height = `${h}px`;
-    const box = selDiv.getBoundingClientRect();
-    document.querySelectorAll(".desktop-icon").forEach(ic => {
-      const r = ic.getBoundingClientRect();
-      ic.classList.toggle("selected",
-        r.left>=box.left && r.right<=box.right && r.top>=box.top && r.bottom<=box.bottom
-      );
-    });
-  }
-
-  function onEnd() {
-    selDiv.remove(); selDiv = null;
-    document.removeEventListener("mousemove", onMove);
-  }
-
-  document.addEventListener("mousemove", onMove);
-  document.addEventListener("mouseup", onEnd, { once: true });
-}
-
-//────────────────────────────────────────
-// 7) STARFIELD BACKGROUND
-//────────────────────────────────────────
-function initStarfield() {
-  const canvas = document.getElementById("background-canvas");
-  const ctx = canvas.getContext("2d");
-  function resize() { canvas.width=window.innerWidth; canvas.height=window.innerHeight; }
-  window.addEventListener("resize", resize); resize();
-
-  const stars = Array.from({length:300}, () => ({
-    x:Math.random()*canvas.width, y:Math.random()*canvas.height,
-    z:Math.random()*canvas.width, o:Math.random()
-  }));
-
-  (function loop() {
-    ctx.fillStyle='rgba(0,0,0,0.4)'; ctx.fillRect(0,0,canvas.width,canvas.height);
-    stars.forEach(s => {
-      s.z -= 2;
-      if(s.z<=0) { s.z=canvas.width; s.x=Math.random()*canvas.width; s.y=Math.random()*canvas.height; }
-      const k=128/s.z, px=(s.x-canvas.width/2)*k+canvas.width/2, py=(s.y-canvas.height/2)*k+canvas.height/2;
-      const sz=Math.max(0,(1-s.z/canvas.width)*3);
-      ctx.globalAlpha=s.o; ctx.fillStyle='#fff';
-      ctx.beginPath(); ctx.arc(px,py,sz,0,2*Math.PI); ctx.fill();
-    });
-    ctx.globalAlpha=1; requestAnimationFrame(loop);
-  })();
-}
-
-//────────────────────────────────────────
-// 8) WINDOW HEADER DRAG & BUTTONS
-//────────────────────────────────────────
-function initWindowControls() {
-  document.querySelectorAll(".popup-window").forEach(win => {
-    const header = win.querySelector(".window-header");
-    const btnMin = win.querySelector(".minimize");
-    const btnMax = win.querySelector(".maximize");
-    const btnCls = win.querySelector(".close");
-    const id = win.id;
-
-    btnMin && btnMin.addEventListener("click", () => minimizeWindow(id));
-    btnMax && btnMax.addEventListener("click", () => toggleMaximizeWindow(id));
-    btnCls && btnCls.addEventListener("click", () => closeWindow(id));
-
-    let dragging=false, dx=0, dy=0;
-    header.addEventListener("mousedown", e => {
-      dragging=true;
-      dx = e.clientX-win.offsetLeft;
-      dy = e.clientY-win.offsetTop;
-      win.style.zIndex = getNextZIndex();
-    });
-    document.addEventListener("mousemove", e => {
-      if(dragging) {
-        win.style.left = `${e.clientX-dx}px`;
-        win.style.top  = `${e.clientY-dy}px`;
-      }
-    });
-    document.addEventListener("mouseup", () => dragging=false);
-  });
-}
-
-//────────────────────────────────────────
-// 9) NATURE.EXE GALLERY
-//────────────────────────────────────────
-const natureImages = [
-  "https://cdn.glitch.global/.../Galloway%20Geese%20at%20Sunset.png",
-  "https://cdn.glitch.global/.../A%20Sedge%20of%20Sandhill%20on%20the%20Green.png",
-  "https://cdn.glitch.global/.../GoldenHourGeese.png",
-  "https://cdn.glitch.global/.../bombilate%20vicissitude.png",
-  "https://cdn.glitch.me/.../SB1012.png",
-  "https://cdn.glitch.me/.../Calm%20Reeds.png",
-  "https://cdn.glitch.global/.../LeafTrail.png",
-  "https://cdn.glitch.me/.../HawkTrail.png",
-  "https://cdn.glitch.global/.../TrailMix108.png",
-  "https://cdn.glitch.me/.../ToadInTheHole.png"
-];
-let natureIndex = 0;
-function showNatureImage(i) {
-  natureIndex = (i + natureImages.length) % natureImages.length;
-  document.getElementById("nature-img").src = natureImages[natureIndex];
-}
-function initNatureGallery() {
-  natureImages.forEach(u=>new Image().src=u);
-  showNatureImage(0);
-  document.getElementById("prevNature").onclick = ()=> showNatureImage(natureIndex-1);
-  document.getElementById("nextNature").onclick = ()=> showNatureImage(natureIndex+1);
-}
-
-//────────────────────────────────────────
-// 10) ARTWORK.EXE GALLERY
-//────────────────────────────────────────
-const artworkImages = [
-  "https://cdn.glitch.global/.../whodat.gif",
-  "https://cdn.glitch.global/.../octavia.jpg",
-  "https://cdn.glitch.global/.../MilesSwings2025.jpg",
-  "https://cdn.glitch.global/.../Leetridoid.jpg",
-  "https://cdn.glitch.global/.../decay%20psych.png"
-];
-let artworkIndex = 0;
-function showArtworkImage(i) {
-  artworkIndex = (i + artworkImages.length) % artworkImages.length;
-  document.getElementById("artwork-img").src = artworkImages[artworkIndex];
-}
-function initArtworkGallery() {
-  artworkImages.forEach(u=>new Image().src=u);
-  showArtworkImage(0);
-  const btns = document.querySelectorAll("#artwork .gallery-controls button");
-  btns[0].onclick = () => showArtworkImage(artworkIndex-1);
-  btns[1].onclick = () => showArtworkImage(artworkIndex+1);
-}
-
-//────────────────────────────────────────
-// 11) TERMINAL
-//────────────────────────────────────────
-const terminalCommands = {
-  help:    "Available: help, about, projects, resume, contact, clear, exit",
-  about:   "Benjamin Filler – Media Creator & Narrative Designer",
-  projects: "Open PROJECTS.EXE",
-  resume:  "Open RESUME.EXE",
-  contact: "Open CONTACT.EXE",
-  clear:   null,
-  exit:    null
-};
-function initTerminal() {
-  const input  = document.getElementById("terminal-input");
-  const output = document.getElementById("terminal-output");
-  input.addEventListener("keypress", e => {
-    if (e.key === "Enter") {
-      const cmd = input.value.trim().toLowerCase();
-      output.innerHTML += `<div><span>$</span> ${cmd}</div>`;
-      if (cmd === "clear") {
-        output.innerHTML = "";
-      } else if (["about","projects","resume","contact"].includes(cmd)) {
-        openWindow(cmd);
-      } else if (cmd === "exit") {
-        closeWindow("terminal");
+      // Build your drag-group: if this icon was already selected, drag ALL selected;
+      // otherwise clear selection & only drag this one.
+      let group;
+      if (icon.classList.contains("selected")) {
+        group = Array.from(document.querySelectorAll(".desktop-icon.selected"));
       } else {
-        const resp = terminalCommands[cmd];
-        output.innerHTML += `<div>${resp===null?"":(resp||"Unknown command")}</div>`;
-      }
-      input.value = "";
-      output.scrollTop = output.scrollHeight;
-    }
+        document.querySelectorAll(".desktop-icon.selected")
+          .forEach(ic => ic.classList.remove("selected"));
+        icon.classList.add("selected");
+        group = [icon];
+        // 6) MUSIC PLAYER
+function initMusicPlayer() {
+  const musicPlayer = document.createElement('div');
+  musicPlayer.className = 'music-player popup-window';
+  musicPlayer.innerHTML = `
+    <div class="window-header">
+      <span>MUSIC.PLAYER</span>
+      <button class="minimize">_</button>
+      <button class="maximize">▭</button>
+      <button class="close">X</button>
+    </div>
+    <div class="window-content">
+      <audio id="music-audio" controls>
+        <source src="[https://your-music-file.mp3](https://your-music-file.mp3)" type="audio/mpeg">
+      </audio>
+      <div id="music-tracks">
+        <div class="track" data-src="[https://track1.mp3](https://track1.mp3)">Track 1</div>
+        <div class="track" data-src="[https://track2.mp3](https://track2.mp3)">Track 2</div>
+        <div class="track" data-src="[https://track3.mp3](https://track3.mp3)">Track 3</div>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(musicPlayer);
+  
+  const audio = document.getElementById('music-audio');
+  const tracks = document.querySelectorAll('.track');
+  
+  tracks.forEach(track => {
+    track.addEventListener('click', () => {
+      audio.src = track.dataset.src;
+      audio.play();
+    });
   });
 }
 
-//────────────────────────────────────────
-// 12) WEATHER WIDGET (requires API key)
-//────────────────────────────────────────
+// 7) WEATHER WIDGET
 async function updateWeather() {
   try {
-    const res = await fetch(
-      "https://api.openweathermap.org/data/2.5/weather?q=Birmingham&appid=YOUR_API_KEY&units=imperial"
-    );
-    const data = await res.json();
-    const w = document.getElementById("weather-widget");
-    if (w) {
-      w.innerHTML = `
+    const response = await fetch('https://api.openweathermap.org/data/2.5/weather?q=Birmingham&appid=YOUR_API_KEY&units=imperial');
+    const data = await response.json();
+    
+    const weatherWidget = document.getElementById('weather-widget');
+    if (weatherWidget) {
+      weatherWidget.innerHTML = `
         <div class="weather-temp">${Math.round(data.main.temp)}°F</div>
-        <div class="weather-cond">${data.weather[0].description}</div>
+        <div class="weather-condition">${data.weather[0].description}</div>
+        <div class="weather-location">Birmingham, MI</div>
       `;
     }
-  } catch (err) {
-    console.error("Weather fetch error:", err);
+  } catch (error) {
+    console.error('Error fetching weather:', error);
   }
 }
 
-//────────────────────────────────────────
-// 13) SCREENSAVER
-//────────────────────────────────────────
-let screensaverTimeout, screensaverActive=false;
+// 8) SCREENSAVER
+let screensaverTimeout;
+let isScreensaverActive = false;
+
 function startScreensaver() {
-  if (screensaverActive) return;
-  const ss = document.createElement("div");
-  ss.id="screensaver"; ss.className="screensaver active";
-  ss.innerHTML=`<div class="screensaver-content"><img src="/icons/whodat.gif" alt="Screensaver"></div>`;
-  document.body.appendChild(ss);
-  screensaverActive=true;
+  if (isScreensaverActive) return;
+  
+  const screensaver = document.createElement('div');
+  screensaver.className = 'screensaver active';
+  screensaver.innerHTML = `
+    <div class="screensaver-content">
+      <div class="screensaver-artwork">
+        <img src="[https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/whodat.gif"](https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/whodat.gif") alt="Artwork">
+      </div>
+      <div class="screensaver-text">
+        <h2>Benjamin Filler</h2>
+        <p>Cyber Deck Active</p>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(screensaver);
+  
+  isScreensaverActive = true;
 }
+
 function stopScreensaver() {
-  const ss = document.getElementById("screensaver");
-  if (ss) ss.remove();
-  screensaverActive=false;
-}
-function initScreensaverListeners() {
-  function reset() {
-    clearTimeout(screensaverTimeout);
-    stopScreensaver();
-    screensaverTimeout = setTimeout(startScreensaver, 300000);
+  const screensaver = document.querySelector('.screensaver');
+  if (screensaver) {
+    screensaver.remove();
+    isScreensaverActive = false;
   }
-  document.addEventListener("mousemove", reset);
-  document.addEventListener("keypress", reset);
-  reset();
 }
 
-//────────────────────────────────────────
-// 14) MUSIC PLAYER
-//────────────────────────────────────────
-function initMusicPlayer() {
-  const mp = document.getElementById("music-player");
-  const playlist = ["track1.mp3","track2.mp3","track3.mp3"];
-  let idx=0;
-  function loadTrack(i) {
-    mp.src = playlist[i]; mp.play();
-    document.getElementById("now-playing").textContent=`▶ ${playlist[i]}`;
-  }
-  document.getElementById("prevTrack").onclick = ()=> loadTrack((--idx+playlist.length)%playlist.length);
-  document.getElementById("nextTrack").onclick = ()=> loadTrack((++idx)%playlist.length);
-  document.getElementById("togglePlay").onclick = ()=> mp.paused?mp.play():mp.pause();
-  playlist.forEach(t=>{/*prefetch*/});
-}
+// Listen for activity
+document.addEventListener('mousemove', () => {
+  clearTimeout(screensaverTimeout);
+  stopScreensaver();
+  screensaverTimeout = setTimeout(startScreensaver, 300000); // 5 minutes
+});
 
-//────────────────────────────────────────
-// 15) FILE EXPLORER
-//────────────────────────────────────────
-function initFileExplorer() {
-  const explorer = document.createElement("div");
-  explorer.id="file-explorer"; explorer.className="popup-window hidden";
-  explorer.innerHTML=`
+document.addEventListener('keypress', () => {
+  clearTimeout(screensaverTimeout);
+  stopScreensaver();
+  screensaverTimeout = setTimeout(startScreensaver, 300000);
+});
+
+// 9) CLIPBOARD MANAGER
+function initClipboardManager() {
+  const clipboard = document.createElement('div');
+  clipboard.className = 'clipboard-manager popup-window';
+  clipboard.innerHTML = `
     <div class="window-header">
-      <span>FILE EXPLORER</span>
-      <button class="close" onclick="closeWindow('file-explorer')">X</button>
+      <span>CLIPBOARD.MANAGER</span>
+      <button class="minimize">_</button>
+      <button class="maximize">▭</button>
+      <button class="close">X</button>
     </div>
     <div class="window-content">
-      <div>C:\\Portfolio\\</div>
-      <ul>
-        <li>about.txt</li><li>resume.pdf</li><li>contact.html</li>
-      </ul>
-    </div>`;
+      <textarea id="clipboard-content" placeholder="Clipboard history..."></textarea>
+    </div>
+  `;
+  
+  document.body.appendChild(clipboard);
+  
+  // Listen for copy/paste
+  document.addEventListener('copy', (e) => {
+    const text = e.clipboardData.getData('text');
+    const content = document.getElementById('clipboard-content');
+    if (content) {
+      content.value += `\n${new Date().toLocaleString()}: ${text}`;
+    }
+  });
+}
+
+// 10) FILE EXPLORER
+function initFileExplorer() {
+  const explorer = document.createElement('div');
+  explorer.className = 'file-explorer popup-window';
+  explorer.innerHTML = `
+    <div class="window-header">
+      <span>FILE.EXPLORER</span>
+      <button class="minimize">_</button>
+      <button class="maximize">▭</button>
+      <button class="close">X</button>
+    </div>
+    <div class="window-content">
+      <div class="explorer-path">C:\Portfolio\</div>
+      <div class="explorer-content">
+        <div class="file-item folder" data-path="projects">Projects</div>
+        <div class="file-item" data-path="resume.pdf">Resume</div>
+        <div class="file-item" data-path="contact.html">Contact</div>
+        <div class="file-item folder" data-path="artwork">Artwork</div>
+      </div>
+    </div>
+  `;
+  
   document.body.appendChild(explorer);
-}
-
-//────────────────────────────────────────
-// 16) NOTIFICATIONS
-//────────────────────────────────────────
-function createNotification(msg,type="info") {
-  const n = document.createElement("div");
-  n.className=`notification ${type}`;
-  n.textContent=msg;
-  document.body.appendChild(n);
-  setTimeout(()=>n.remove(),3000);
-}
-
-//────────────────────────────────────────
-// 17) WINDOW STACK PANEL
-//────────────────────────────────────────
-function initWindowStack() {
-  const panel = document.createElement("div");
-  panel.id="window-stack"; document.body.appendChild(panel);
-  document.addEventListener("click",()=>{
-    panel.innerHTML="";
-    document.querySelectorAll(".popup-window:not(.hidden)").forEach(win=>{
-      const item=document.createElement("div");
-      item.textContent=win.querySelector(".window-header span").innerText;
-      item.onclick=()=> openWindow(win.id);
-      panel.appendChild(item);
+  
+  const files = document.querySelectorAll('.file-item');
+  
+  files.forEach(file => {
+    file.addEventListener('click', () => {
+      if (file.classList.contains('folder')) {
+        // Toggle folder view
+        file.classList.toggle('expanded');
+      } else {
+        // Open file
+        const path = file.dataset.path;
+        if (path) {
+          window.open(path, '_blank');
+        }
+      }
     });
   });
 }
 
-//────────────────────────────────────────
-// 18) KEYBOARD SHORTCUTS
-//────────────────────────────────────────
-document.addEventListener("keydown", e=>{
-  if(e.altKey&&e.key==="Tab"){
-    const wins=Array.from(document.querySelectorAll(".popup-window:not(.hidden)"));
-    const idx=wins.findIndex(w=>w.classList.contains("active"));
-    wins[idx]?.classList.remove("active");
-    wins[(idx+1)%wins.length]?.classList.add("active");
-  }
-  if(e.ctrlKey&&e.key==="w"){
-    const active=document.querySelector(".popup-window.active:not(.hidden)");
-    if(active) closeWindow(active.id);
-  }
-  if(e.ctrlKey&&e.key==="n") openWindow("about");
-});
-
-//────────────────────────────────────────
-// 19) CLIPBOARD MANAGER
-//────────────────────────────────────────
-function initClipboardManager() {
-  const clip = document.createElement("div");
-  clip.id="clipboard-manager"; clip.className="popup-window hidden";
-  clip.innerHTML=`
+// 11) TERMINAL
+function initTerminal() {
+  const terminal = document.createElement('div');
+  terminal.className = 'terminal popup-window';
+  terminal.innerHTML = `
     <div class="window-header">
-      <span>CLIPBOARD MANAGER</span>
-      <button class="close" onclick="closeWindow('clipboard-manager')">X</button>
+      <span>TERMINAL.EXE</span>
+      <button class="minimize">_</button>
+      <button class="maximize">▭</button>
+      <button class="close">X</button>
     </div>
     <div class="window-content">
-      <textarea id="clipboard-history" readonly></textarea>
-    </div>`;
-  document.body.appendChild(clip);
-  document.addEventListener("copy", e=>{
-    const text=e.clipboardData.getData("text/plain");
-    const hist=document.getElementById("clipboard-history");
-    hist.value+=text+"\n";
-  });
-}
-
-//────────────────────────────────────────
-// 20) INITIALIZATION
-//────────────────────────────────────────
-document.addEventListener("DOMContentLoaded", ()=>{
-  runBootSequence().then(()=>{
+      <div class="terminal-output" id="terminal-output"></div>
+      <div class="terminal-prompt">
+        <span class="user">benjamin@cyberdeck</span>
+        <span class="path">~</span>
+        <span class="prompt">$</span>
+        <input type="text" id="terminal-input" autocomplete="off">
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(terminal);
+  
+  const commands = {
+    'help': 'Available commands: help, about, projects, contact, exit',
+    'about': 'Benjamin Filler - Media Creator & Narrative Designer',
+    'projects': 'View projects in PROJECTS.EXE',
+    'contact': 'Contact info in CONTACT.EXE',
+    'exit': 'Closing terminal...'
+  };
+  
+  const input = document.getElementById('terminal-input');
+  const output = document.getElementById('terminal-output');
+  
+  input.addEventListener('keypress', (e) => {
+    // Initialize everything on DOMContentLoaded
+document.addEventListener("DOMContentLoaded", () => {
+  // Run boot sequence
+  runBootSequence().then(() => {
+    // Initialize all components
     initDesktopIcons();
     initStarfield();
     initNatureGallery();
     initArtworkGallery();
-    initTerminal();
-    updateWeather();
-    initScreensaverListeners();
     initMusicPlayer();
-    initFileExplorer();
-    initWindowStack();
+    initWeatherWidget();
+    initScreensaver();
     initClipboardManager();
+    initFileExplorer();
+    initTerminal();
+    
+    // Initialize window controls
+    initWindowControls();
+    
+    // Initialize selection box
+    initSelectionBox();
   });
 });
-window.addEventListener("load", initWindowControls);
-window.addEventListener("mousedown", onSelectStart);
+
+// Initialize window controls
+function initWindowControls() {
+  document.querySelectorAll(".popup-window").forEach(win => {
+    const id = win.id;
+    const header = win.querySelector(".window-header");
+    const btnMin = header.querySelector(".minimize");
+    const btnMax = header.querySelector(".maximize");
+    const btnCls = header.querySelector(".close");
+
+    if (btnMin) btnMin.addEventListener("click", () => minimizeWindow(id));
+    if (btnMax) btnMax.addEventListener("click", () => toggleMaximizeWindow(id));
+    if (btnCls) btnCls.addEventListener("click", () => closeWindow(id));
+
+    let isDragging = false, offsetX = 0, offsetY = 0;
+    header.addEventListener("mousedown", e => {
+      isDragging = true;
+      offsetX = e.clientX - win.offsetLeft;
+      offsetY = e.clientY - win.offsetTop;
+      win.style.zIndex = getNextZIndex();
+    });
+    document.addEventListener("mousemove", e => {
+      if (isDragging) {
+        win.style.left = `${e.clientX - offsetX}px`;
+        win.style.top = `${e.clientY - offsetY}px`;
+        windowSnapping.snapWindow(win);
+      }
+    });
+    document.addEventListener("mouseup", () => { isDragging = false; });
+  });
+}
+
+// Initialize selection box
+function initSelectionBox() {
+  let selStartX, selStartY, selDiv;
+
+  function onSelectStart(e) {
+    if (e.target.closest(".desktop-icon, .popup-window, #start-bar, #start-menu")) {
+      return;
+    }
+    selStartX = e.clientX;
+    selStartY = e.clientY;
+    selDiv = document.createElement("div");
+    selDiv.id = "selection-rect";
+    selDiv.style.left = `${selStartX}px`;
+    selDiv.style.top = `${selStartY}px`;
+    selDiv.style.width = "0px";
+    selDiv.style.height = "0px";
+    document.body.appendChild(selDiv);
+
+    document.addEventListener("mousemove", onSelectMove);
+    document.addEventListener("mouseup", onSelectEnd, { once: true });
+    e.preventDefault();
+  }
+
+  function onSelectMove(e) {
+    if (!selDiv) return;
+    const x = Math.min(e.clientX, selStartX),
+          y = Math.min(e.clientY, selStartY),
+          w = Math.abs(e.clientX - selStartX),
+          h = Math.abs(e.clientY - selStartY);
+    selDiv.style.left = `${x}px`;
+    selDiv.style.top = `${y}px`;
+    selDiv.style.width = `${w}px`;
+    selDiv.style.height = `${h}px`;
+
+    const box = selDiv.getBoundingClientRect();
+    document.querySelectorAll(".desktop-icon").forEach(icon => {
+      const r = icon.getBoundingClientRect();
+      const inside = (
+        r.left >= box.left &&
+        r.right <= box.right &&
+        r.top >= box.top &&
+        r.bottom <= box.bottom
+      );
+      icon.classList.toggle("selected", inside);
+    });
+  }
+
+  function onSelectEnd() {
+    if (selDiv) selDiv.remove();
+    selDiv = null;
+  }
+
+  document.addEventListener("mousedown", onSelectStart);
+}
+
+// Initialize Starfield Background
+function initStarfield() {
+  const canvas = document.getElementById("background-canvas");
+  const ctx = canvas.getContext("2d");
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  window.addEventListener("resize", resize);
+  resize();
+
+  const numStars = 300;
+  const stars = Array.from({ length: numStars }, () => ({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    z: Math.random() * canvas.width,
+    o: Math.random()
+  }));
+
+  (function animate() {
+    // fade trails
+    ctx.fillStyle = 'rgba(0,0,0,0.4)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // draw stars
+    for (let s of stars) {
+      s.z -= 2;
+      if (s.z <= 0) {
+        s.z = canvas.width;
+        s.x = Math.random() * canvas.width;
+        s.y = Math.random() * canvas.height;
+      }
+      const k = 128.0 / s.z;
+      const px = (s.x - canvas.width/2) * k + canvas.width/2;
+      const py = (s.y - canvas.height/2) * k + canvas.height/2;
+      const sz = Math.max(0, (1 - s.z / canvas.width) * 3);
+
+      ctx.globalAlpha = s.o;
+      ctx.fillStyle = '#fff';
+      ctx.beginPath();
+      ctx.arc(px, py, sz, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+
+    requestAnimationFrame(animate);
+  })();
+}
+
+// Initialize Nature Gallery
+function initNatureGallery() {
+  const images = [
+    '[https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/Galloway%20Geese%20at%20Sunset.png',](https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/Galloway%20Geese%20at%20Sunset.png',)
+    // ... add all your nature images
+  ];
+
+  let index = 0;
+  const img = document.getElementById('nature-img');
+
+  function showImage(i) {
+    index = (i + images.length) % images.length;
+    img.src = images[index];
+  }
+
+  document.getElementById('prevNature').addEventListener('click', () => showImage(index - 1));
+  document.getElementById('nextNature').addEventListener('click', () => showImage(index + 1));
+}
+
+// Initialize Artwork Gallery
+function initArtworkGallery() {
+  const images = [
+    '[https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/whodat.gif',](https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/whodat.gif',)
+    // ... add all your artwork images
+  ];
+
+  let index = 0;
+  const img = document.getElementById('artwork-img');
+
+  function showImage(i) {
+    index = (i + images.length) % images.length;
+    img.src = images[index];
+  }
+
+  document.querySelector('#artwork .gallery-controls button:first-child')
+    .addEventListener('click', () => showImage(index - 1));
+  document.querySelector('#artwork .gallery-controls button:last-child')
+    .addEventListener('click', () => showImage(index + 1));
+}
+
+// Initialize Weather Widget
+function initWeatherWidget() {
+  updateWeather();
+  setInterval(updateWeather, 3600000); // Update every hour
+}
+
+// Initialize Screensaver
+function initScreensaver() {
+  screensaverTimeout = setTimeout(startScreensaver, 300000); // 5 minutes
+}
+
+// Keyboard Shortcuts
+document.addEventListener('keydown', (e) => {
+  // Alt + Tab for window switching
+  if (e.altKey && e.key === 'Tab') {
+    const windows = Array.from(document.querySelectorAll('.popup-window:not(.hidden)'));
+    const currentIndex = windows.findIndex(win => win.classList.contains('active'));
+    const nextIndex = (currentIndex + 1) % windows.length;
+    
+    if (currentIndex !== -1) {
+      windows[currentIndex].classList.remove('active');
+    }
+    windows[nextIndex].classList.add('active');
+  }
+  
+  // Ctrl + W to close window
+  // Keyboard Shortcuts
+document.addEventListener('keydown', (e) => {
+  // Alt + Tab for window switching
+  if (e.altKey && e.key === 'Tab') {
+    const windows = Array.from(document.querySelectorAll('.popup-window:not(.hidden)'));
+    const currentIndex = windows.findIndex(win => win.classList.contains('active'));
+    const nextIndex = (currentIndex + 1) % windows.length;
+    
+    if (currentIndex !== -1) {
+      windows[currentIndex].classList.remove('active');
+    }
+    windows[nextIndex].classList.add('active');
+  }
+  
+  // Ctrl + W to close window
+  if (e.ctrlKey && e.key === 'w') {
+    const activeWin = document.querySelector('.popup-window.active:not(.hidden)');
+    if (activeWin) {
+      closeWindow(activeWin.id);
+    }
+  }
+  
+  // Ctrl + N to open new window
+  if (e.ctrlKey && e.key === 'n') {
+    openWindow('about'); // Default to About window
+  }
+  
+  // Ctrl + Shift + T to open terminal
+  if (e.ctrlKey && e.shiftKey && e.key === 't') {
+    openWindow('terminal');
+  }
+  
+  // Ctrl + Shift + E to open explorer
+  if (e.ctrlKey && e.shiftKey && e.key === 'e') {
+    openWindow('explorer');
+  }
+  
+  // Ctrl + Shift + M to open music player
+  if (e.ctrlKey && e.shiftKey && e.key === 'm') {
+    openWindow('music');
+  }
+  
+  // Ctrl + Shift + C to open clipboard manager
+  if (e.ctrlKey && e.shiftKey && e.key === 'c') {
+    openWindow('clipboard');
+  }
+});
+
+// Window Stack View
+function initWindowStack() {
+  const stack = document.createElement('div');
+  stack.className = 'window-stack';
+  
+  document.body.appendChild(stack);
+  
+  // Update stack when windows open/close
+  function updateStack() {
+    const windows = document.querySelectorAll('.popup-window:not(.hidden)');
+    stack.innerHTML = '';
+    
+    windows.forEach(win => {
+      const item = document.createElement('div');
+      item.className = 'window-stack-item';
+      item.textContent = win.querySelector('.window-header span').textContent;
+      item.addEventListener('click', () => {
+        win.classList.add('active');
+        win.classList.remove('hidden');
+        win.style.display = 'flex';
+      });
+      stack.appendChild(item);
+    });
+  }
+  
+  // Listen for window state changes
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('.minimize, .maximize, .close')) {
+      setTimeout(updateStack, 100);
+    }
+  });
+}
+
+// System Notifications
+function createNotification(message, type = 'info') {
+  const notification = document.createElement('div');
+  notification.className = `notification ${type}`;
+  notification.innerHTML = `
+    <span class="notification-icon">${type === 'info' ? 'ℹ️' : '⚠️'}</span>
+    <span class="notification-message">${message}</span>
+  `;
+  
+  document.body.appendChild(notification);
+  
+  // Auto-hide after 3 seconds
+  setTimeout(() => {
+    notification.style.opacity = '0';
+    setTimeout(() => notification.remove(), 300);
+  }, 3000);
+}
+
+// Drag and Drop
+function initDragAndDrop() {
+  const draggables = document.querySelectorAll('.draggable');
+  
+  draggables.forEach(item => {
+    item.addEventListener('dragstart', (e) => {
+      e.dataTransfer.setData('text/plain', item.id);
+      item.classList.add('dragging');
+    });
+    
+    item.addEventListener('dragend', () => {
+      item.classList.remove('dragging');
+    });
+  });
+  
+  const dropzones = document.querySelectorAll('.dropzone');
+  
+  dropzones.forEach(zone => {
+    zone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      zone.classList.add('hover');
+    });
+    
+    zone.addEventListener('dragleave', () => {
+      zone.classList.remove('hover');
+    });
+    
+    zone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      zone.classList.remove('hover');
+      const id = e.dataTransfer.getData('text/plain');
+      const draggable = document.getElementById(id);
+      if (draggable) {
+        zone.appendChild(draggable);
+        createNotification('File moved successfully', 'info');
+      }
+    });
+  });
+}
+
+// Final Initialization
+document.addEventListener('DOMContentLoaded', () => {
+  // Initialize all components
+  initDesktopIcons();
+  initStarfield();
+  initNatureGallery();
+  initArtworkGallery();
+  initMusicPlayer();
+  initWeatherWidget();
+  initScreensaver();
+  initClipboardManager();
+  initFileExplorer();
+  initTerminal();
+  initWindowControls();
+  initSelectionBox();
+  initWindowStack();
+  initDragAndDrop();
+  
+  // Run boot sequence
+  runBootSequence().then(() => {
+    createNotification('Cyber Deck Initialized', 'info');
+  });
+});
+
+// Clean up on unload
+window.addEventListener('beforeunload', () => {
+  // Save window positions
+  const windows = document.querySelectorAll('.popup-window');
+  windows.forEach(win => {
+    const id = win.id;
+    const bounds = {
+      top: win.style.top,
+      left: win.style.left,
+      width: win.style.width,
+      height: win.style.height
+    };
+    windowStates[id] = bounds;
+  });
+  
+  // Save clipboard content
+  const clipboard = document.getElementById('clipboard-content');
+  if (clipboard) {
+    localStorage.setItem('clipboardContent', clipboard.value);
+  }
+});
+
+// Restore saved state
+window.addEventListener('load', () => {
+  // Restore window positions
+  Object.entries(windowStates).forEach(([id, bounds]) => {
+    const win = document.getElementById(id);
+    if (win) {
+      Object.assign(win.style, bounds);
+    }
+  });
+  
+  // Restore clipboard content
+  const savedClipboard = localStorage.getItem('clipboardContent');
+  if (savedClipboard) {
+    const clipboard = document.getElementById('clipboard-content');
+    if (clipboard) {
+      clipboard.value = savedClipboard;
+    }
+  }
+});
+  // Terminal Commands
+const terminalCommands = {
+  'help': 'Available commands: help, about, projects, contact, exit',
+  'about': 'Benjamin Filler - Media Creator & Narrative Designer',
+  'projects': 'View projects in PROJECTS.EXE',
+  'contact': 'Contact info in CONTACT.EXE',
+  'exit': 'Closing terminal...'
+};
+
+// Initialize terminal
+function initTerminal() {
+  const input = document.getElementById('terminal-input');
+  const output = document.getElementById('terminal-output');
+  
+  input.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      const command = input.value.trim().toLowerCase();
+      const response = terminalCommands[command] || 'Command not found';
+      
+      output.innerHTML += `
+        <div class="terminal-command">${input.value}</div>
+        <div class="terminal-output">${response}</div>
+      `;
+      
+      input.value = '';
+      input.scrollIntoView();
+    }
+  });
+}
+
+// Initialize File Explorer
+function initFileExplorer() {
+  const explorer = document.createElement('div');
+  explorer.className = 'file-explorer popup-window';
+  explorer.innerHTML = `
+    <div class="window-header">
+      <span>FILE.EXPLORER</span>
+      <button class="minimize">_</button>
+      <button class="maximize">▭</button>
+      <button class="close">X</button>
+    </div>
+    <div class="window-content">
+      <div class="explorer-path">C:\Portfolio\</div>
+      <div class="explorer-content">
+        <div class="file-item folder" data-path="projects">Projects</div>
+        <div class="file-item" data-path="resume.pdf">Resume</div>
+        <div class="file-item" data-path="contact.html">Contact</div>
+        <div class="file-item folder" data-path="artwork">Artwork</div>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(explorer);
+  
+  const files = document.querySelectorAll('.file-item');
+  
+  files.forEach(file => {
+    file.addEventListener('click', () => {
+      if (file.classList.contains('folder')) {
+        // Toggle folder view
+        file.classList.toggle('expanded');
+      } else {
+        // Open file
+        const path = file.dataset.path;
+        if (path) {
+          window.open(path, '_blank');
+        }
+      }
+    });
+  });
+}
+
+// Initialize Clipboard Manager
+function initClipboardManager() {
+  const clipboard = document.createElement('div');
+  clipboard.className = 'clipboard-manager popup-window';
+  clipboard.innerHTML = `
+    <div class="window-header">
+      <span>CLIPBOARD.MANAGER</span>
+      <button class="minimize">_</button>
+      <button class="maximize">▭</button>
+      <button class="close">X</button>
+    </div>
+    <div class="window-content">
+      <textarea id="clipboard-content" placeholder="Clipboard history..."></textarea>
+    </div>
+  `;
+  
+  document.body.appendChild(clipboard);
+  
+  // Load saved clipboard content
+  const savedContent = localStorage.getItem('clipboardContent');
+  if (savedContent) {
+    document.getElementById('clipboard-content').value = savedContent;
+  }
+  
+  // Listen for copy/paste
+  document.addEventListener('copy', (e) => {
+    const text = e.clipboardData.getData('text');
+    const content = document.getElementById('clipboard-content');
+    if (content) {
+      content.value += `\n${new Date().toLocaleString()}: ${text}`;
+      localStorage.setItem('clipboardContent', content.value);
+    }
+  });
+}
+
+// Initialize Music Player
+function initMusicPlayer() {
+  const musicPlayer = document.createElement('div');
+  musicPlayer.className = 'music-player popup-window';
+  musicPlayer.innerHTML = `
+    <div class="window-header">
+      <span>MUSIC.PLAYER</span>
+      <button class="minimize">_</button>
+      <button class="maximize">▭</button>
+      <button class="close">X</button>
+    </div>
+    <div class="window-content">
+      <audio id="music-audio" controls>
+        <source src="[https://your-music-file.mp3](https://your-music-file.mp3)" type="audio/mpeg">
+      </audio>
+      <div id="music-tracks">
+        <div class="track" data-src="[https://track1.mp3](https://track1.mp3)">Track 1</div>
+        <div class="track" data-src="[https://track2.mp3](https://track2.mp3)">Track 2</div>
+        <div class="track" data-src="[https://track3.mp3](https://track3.mp3)">Track 3</div>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(musicPlayer);
+  
+  const audio = document.getElementById('music-audio');
+  const tracks = document.querySelectorAll('.track');
+  
+  tracks.forEach(track => {
+    track.addEventListener('click', () => {
+      audio.src = track.dataset.src;
+      audio.play();
+    });
+  });
+}
+
+// Initialize Weather Widget
+async function initWeatherWidget() {
+  try {
+    const response = await fetch('https://api.openweathermap.org/data/2.5/weather?q=Birmingham&appid=YOUR_API_KEY&units=imperial');
+    const data = await response.json();
+    
+    const widget = document.getElementById('weather-widget');
+    if (widget) {
+      widget.innerHTML = `
+        <div class="weather-temp">${Math.round(data.main.temp)}°F</div>
+        <div class="weather-condition">${data.weather[0].description}</div>
+        <div class="weather-location">Birmingham, MI</div>
+      `;
+    }
+  } catch (error) {
+    console.error('Error fetching weather:', error);
+    createNotification('Failed to fetch weather data', 'error');
+  }
+}
+
+// Initialize Screensaver
+function initScreensaver() {
+  let screensaverTimeout;
+  let isScreensaverActive = false;
+
+  function startScreensaver() {
+    if (isScreensaverActive) return;
+    
+    const screensaver = document.createElement('div');
+    screensaver.className = 'screensaver active';
+    screensaver.innerHTML = `
+      <div class="screensaver-content">
+        <div class="screensaver-artwork">
+          <img src="[https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/whodat.gif"](https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/whodat.gif") alt="Artwork">
+        </div>
+        <div class="screensaver-text">
+          <h2>Benjamin Filler</h2>
+          <p>Cyber Deck Active</p>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(screensaver);
+    
+    isScreensaverActive = true;
+  }
+
+  function stopScreensaver() {
+    const screensaver = document.querySelector('.screensaver');
+    if (screensaver) {
+      screensaver.remove();
+      isScreensaverActive = false;
+    }
+  }
+
+  // Listen for activity
+  document.addEventListener('mousemove', () => {
+    clearTimeout(screensaverTimeout);
+    stopScreensaver();
+    screensaverTimeout = setTimeout(startScreensaver, 300000); // 5 minutes
+  });
+
+  document.addEventListener('keypress', () => {
+    clearTimeout(screensaverTimeout);
+    stopScreensaver();
+    screensaverTimeout = setTimeout(startScreensaver, 300000);

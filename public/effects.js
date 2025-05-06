@@ -118,8 +118,8 @@ class WindowAnimations {
       const angle = (i / 20) * Math.PI * 2;
       const distance = Math.random() * 50 + 20;
       particles.createParticle(
-        rect.left + rect.width / 2 + Math.cos(angle) * distance,
-        rect.top + rect.height / 2 + Math.sin(angle) * distance
+        rect.left + rect.width /2 + Math.cos(angle) * distance,
+        rect.top + rect.height/2 + Math.sin(angle) * distance
       );
     }
   }
