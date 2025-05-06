@@ -378,11 +378,58 @@ function initWindowControls() {
   });
 }
 
+// ─── NATURE.EXE (Gallery) ──────────────────────────────────────────────────
+
+// 1) Your Nature image URLs
+const natureImages = [
+  'https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/Galloway%20Geese%20at%20Sunset.png?v=1746411517025',
+  'https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/A%20Sedge%20of%20Sandhill%20on%20the%20Green.png?v=1746411505927',
+  'https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/GoldenHourGeese.png?v=1746411283749',
+  'https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/bombilate%20vicissitude.png?v=1746411262153',
+  'https://cdn.glitch.me/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/SB1012.png?v=1746413539089',
+  'https://cdn.glitch.me/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/Calm%20Reeds.png?v=1746413471050',
+  'https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/LeafTrail.png?v=1746413486576',
+  'https://cdn.glitch.me/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/HawkTrail.png?v=1746413521889',
+  'https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/TrailMix108.png?v=1746413545072',
+  'https://cdn.glitch.me/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/ToadInTheHole.png?v=1746413566459'
+];
+
+let natureIndex = 0;
+const natureImgEl = document.getElementById('nature-img');
+
+// Preload all the images:
+function preloadNature(urls) {
+  urls.forEach(u => {
+    const i = new Image();
+    i.src = u;
+  });
+}
+
+// Show the image at (wrapped) index i:
+function showNatureImage(i) {
+  natureIndex = (i + natureImages.length) % natureImages.length;
+  natureImgEl.src = natureImages[natureIndex];
+}
+
+// Wire up your Prev/Next buttons and kickoff:
+function initNatureGallery() {
+  preloadNature(natureImages);
+  showNatureImage(0);
+
+  // find the two buttons in the nature window:
+  const btns = document.querySelectorAll('#nature .window-content > div button');
+  if (btns.length === 2) {
+    btns[0].onclick = () => showNatureImage(natureIndex - 1);
+    btns[1].onclick = () => showNatureImage(natureIndex + 1);
+  }
+}
+
 // 9) KICK IT OFF
 document.addEventListener("DOMContentLoaded", () => {
   runBootSequence().then(() => {
     initDesktopIcons();
     initStarfield();
+    initNatureGallery();
   });
 });
 window.addEventListener("load", initWindowControls);
