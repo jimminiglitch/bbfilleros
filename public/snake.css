@@ -143,3 +143,17 @@ html, body {
   border-color: #00f0ff;
   color: #00f0ff;
 }
+/* Rainbow animated border */
+@keyframes rainbow-border {
+  0%   { outline-color: hsl(0, 100%, 50%); }
+  25%  { outline-color: hsl(90, 100%, 50%); }
+  50%  { outline-color: hsl(180, 100%, 50%); }
+  75%  { outline-color: hsl(270, 100%, 50%); }
+  100% { outline-color: hsl(360, 100%, 50%); }
+}
+
+#game-field {
+  /* existing styles… */
+  outline: 4px solid #00f0ff;
+  animation: rainbow-border 8s linear infinite;
+}

@@ -95,8 +95,8 @@ window.addEventListener('load', () => {
  // modify your POWER_UPS table:
 const POWER_UPS = {
   SPEED:      { color:'cyan',    effect:'speed',      duration:5000, value:2,  points: 50 },
-  GROW:       { color:'magenta', effect:'grow',       duration:3000, value:3,  points: 8 },
-  INVINCIBLE: { color:'yellow',  effect:'invincible', duration:5000, value:0,  points:10 }
+  GROW:       { color:'magenta', effect:'grow',       duration:3000, value:3,  points: 80 },
+  INVINCIBLE: { color:'yellow',  effect:'invincible', duration:5000, value:0,  points: 100 }
 };
 
 
@@ -156,6 +156,17 @@ const POWER_UPS = {
   }
 
   function applyPowerUp(pu){
+    // before the switch, award points:
+score += POWER_UPS[pu.type].points;
+ui.score.textContent = `Score: ${score}`;
+
+// and if that beats your best, update it:
+if (score > best) {
+  best = score;
+  ui.best.textContent = `Best: ${best}`;
+  // also update storage/high-scores if you like…
+}
+
     const d=POWER_UPS[pu.type];
     switch(d.effect){
       case 'speed':
@@ -346,3 +357,4 @@ best = hs.length ? hs[0].score : 0;
   ui.best.textContent = `Best: ${best}`;
   resetGame();
 });
+
