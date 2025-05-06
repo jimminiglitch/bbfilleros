@@ -1,70 +1,188 @@
-/* ── Full-Window Canvas & UI Overlay ── */
+/*─────────────────────────────────────────────────────────────────────────────
+  VARIABLES & THEMES
+─────────────────────────────────────────────────────────────────────────────*/
+:root {
+  --neon-cyan:   #00f0ff;
+  --neon-pink:   #f3a1ff;
+  --neon-yellow: #fffc00;
+  --neon-green:  #00ff66;
+  --overlay-bg:  rgba(0,0,0,0.85);
+}
+
+body.theme-cyberpunk {
+  --bg-gradient: linear-gradient(45deg, #000000, #1a001a, #000000);
+}
+body.theme-green {
+  --bg-gradient: linear-gradient(45deg, #001a00, #003300, #001a00);
+}
+body.theme-vaporwave {
+  --bg-gradient: linear-gradient(45deg, #330033, #663366, #330033);
+}
+
+/*─────────────────────────────────────────────────────────────────────────────
+  GLOBAL & LAYOUT
+─────────────────────────────────────────────────────────────────────────────*/
 html, body {
   width: 100%;
   height: 100%;
   margin: 0; padding: 0;
+  background: var(--bg-gradient);
   overflow: hidden;
-  position: relative;
-  background: linear-gradient(45deg, #00000, #111111, #000000);
+  font-family: 'Press Start 2P', monospace;
 }
 
+.hidden {
+  display: none !important;
+}
+
+/*─────────────────────────────────────────────────────────────────────────────
+  OVERLAYS
+─────────────────────────────────────────────────────────────────────────────*/
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--overlay-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.overlay-content {
+  text-align: center;
+  color: white;
+}
+
+.overlay-content h1 {
+  margin-bottom: 1rem;
+  font-size: 2rem;
+  color: var(--neon-cyan);
+  text-shadow: 0 0 8px var(--neon-cyan);
+}
+
+.menu-group {
+  margin-bottom: 1rem;
+}
+
+.menu-group p {
+  margin-bottom: 0.5rem;
+  color: var(--neon-pink);
+  text-shadow: 0 0 6px var(--neon-pink);
+}
+
+#difficulty-menu button,
+#theme-menu button,
+#snake-play-button,
+#retry-button {
+  font-family: inherit;
+  font-size: 0.8rem;
+  margin: 0 0.5rem;
+  padding: 0.6rem 1rem;
+  border: 2px solid var(--neon-yellow);
+  border-radius: 4px;
+  background: rgba(0,0,0,0.7);
+  color: var(--neon-yellow);
+  cursor: pointer;
+  transition: transform 0.2s, border-color 0.2s;
+  text-shadow: 0 0 6px var(--neon-yellow);
+}
+
+#difficulty-menu button.selected,
+#theme-menu button.selected {
+  border-color: var(--neon-cyan);
+  color: var(--neon-cyan);
+  text-shadow: 0 0 8px var(--neon-cyan);
+}
+
+#snake-play-button:hover,
+#retry-button:hover,
+#difficulty-menu button:hover,
+#theme-menu button:hover {
+  transform: scale(1.05);
+  border-color: var(--neon-cyan);
+}
+
+/*─────────────────────────────────────────────────────────────────────────────
+  CANVAS & HUD
+─────────────────────────────────────────────────────────────────────────────*/
 #snake-canvas {
   position: absolute;
   top: 0; left: 0;
   width: 100%; height: 100%;
   display: block;
+  z-index: 1;
 }
 
 #snake-ui {
   position: absolute;
   top: 12px;
   left: 12px;
-  font-family: 'Press Start 2P', monospace;
-  font-size: 0.8rem;
-  text-shadow: 0 0 8px var(--neon-cyan);
   z-index: 2;
   background: rgba(0,0,0,0.4);
-  padding: 4px 8px;
+  padding: 6px 10px;
   border: 1px solid var(--neon-cyan);
   border-radius: 4px;
+  color: white;
+  font-size: 0.8rem;
+  text-shadow: 0 0 6px var(--neon-cyan);
 }
 
-#snake-score, #snake-level, #snake-best, #snake-status {
+#snake-ui span {
   margin-right: 12px;
 }
 
-#snake-play-button {
+/*─────────────────────────────────────────────────────────────────────────────
+  MUTE BUTTON
+─────────────────────────────────────────────────────────────────────────────*/
+#mute-button {
   position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%,-50%);
-  font-family: 'Press Start 2P', monospace;
-  font-size: 1rem;
-  padding: 12px 20px;
-  border: 2px solid var(--neon-yellow);
-  border-radius: 4px;
-  background: rgba(0,0,0,0.7);
-  color: var(--neon-yellow);
-  text-shadow: 0 0 8px var(--neon-yellow);
-  cursor: pointer;
+  top: 12px;
+  right: 12px;
   z-index: 2;
+  font-size: 1.2rem;
+  padding: 4px;
+  background: rgba(0,0,0,0.4);
+  border: 1px solid var(--neon-pink);
+  border-radius: 4px;
+  color: var(--neon-pink);
+  cursor: pointer;
+  text-shadow: 0 0 6px var(--neon-pink);
   transition: transform 0.2s, border-color 0.2s;
 }
 
-#snake-play-button:hover {
-  transform: translate(-50%,-50%) scale(1.1);
+#mute-button:hover {
+  transform: scale(1.1);
   border-color: var(--neon-cyan);
+  color: var(--neon-cyan);
 }
 
-/* ── Power-Ups & Particles ── */
-.power-up {
-  font-size: 0.8rem;
-  color: var(--neon-pink);
-  text-shadow: 0 0 6px var(--neon-pink);
-}
-
-.particle {
+/*─────────────────────────────────────────────────────────────────────────────
+  TOUCH CONTROLS
+─────────────────────────────────────────────────────────────────────────────*/
+#touch-controls {
   position: absolute;
-  border-radius: 50%;
-  pointer-events: none;
-  mix-blend-mode: screen;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: flex;
+  gap: 8px;
+}
+
+#touch-controls button {
+  font-size: 1.5rem;
+  padding: 8px;
+  background: rgba(0,0,0,0.4);
+  border: 1px solid var(--neon-green);
+  border-radius: 4px;
+  color: var(--neon-green);
+  text-shadow: 0 0 6px var(--neon-green);
+  cursor: pointer;
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+#touch-controls button:hover {
+  transform: scale(1.1);
+  border-color: var(--neon-cyan);
+  color: var(--neon-cyan);
 }

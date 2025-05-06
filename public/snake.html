@@ -1,45 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>SNAKE.EXE</title>
-    <link rel="stylesheet" href="style.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
-    <style>
-     function startGame() {
-  if (started) return;
-  // Pause any audio in the parent (so only snake-music plays)
-  if (window.parent && window.parent.document) {
-    window.parent.document.querySelectorAll('audio').forEach(a => {
-      if (a.id !== 'snake-music') a.pause();
-    });
-  }
-
-  started = true;
-  playButton.style.display = 'none';
-  music.muted = false;
-  music.play().catch(()=>{});
-  window.requestAnimationFrame(loop);
-}
-
-    </style>
-  </head>
-  <body>
-    <canvas id="snake-canvas"></canvas>
-    <div id="snake-ui">
-      <span id="snake-score">Score: 0</span> |
-      <span id="snake-level">Level: 1</span> |
-      <span id="snake-best">Best: 0</span> |
-      <span id="snake-status">Running</span>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SNAKE.EXE</title>
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="snake.css" />
+  <!-- Pixel Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <!-- START / DIFFICULTY & THEME OVERLAY -->
+  <div id="start-overlay" class="overlay">
+    <div class="overlay-content">
+      <h1>SNAKE.EXE</h1>
+      <div class="controls">
+        <label for="difficulty">Difficulty:</label>
+        <select id="difficulty">
+          <option value="3">Slow</option>
+          <option value="5" selected>Normal</option>
+          <option value="8">Fast</option>
+        </select>
+      </div>
+      <div class="controls">
+        <label for="theme-select">Theme:</label>
+        <select id="theme-select">
+          <option value="default">Cyberpunk</option>
+          <option value="green">Retro Green</option>
+          <option value="vaporwave">Vaporwave</option>
+        </select>
+      </div>
+      <button id="start-button">START GAME</button>
     </div>
-    <button id="snake-play-button">CLICK TO START</button>
-    
-    <!-- Add sound effects -->
-    <audio id="snake-music" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" loop preload="auto"></audio>
-    <audio id="eat-sound" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" preload="auto"></audio>
-    <audio id="power-up-sound" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" preload="auto"></audio>
-    
-    <script src="snake.js"></script>
-  </body>
+  </div>
+
+  <!-- GAME OVER OVERLAY -->
+  <div id="gameover-overlay" class="overlay hidden">
+    <div class="overlay-content">
+      <h1>GAME OVER</h1>
+      <button id="restart-button">RESTART (R)</button>
+    </div>
+  </div>
+
+  <!-- MAIN GAME CANVAS -->
+  <canvas id="snake-canvas"></canvas>
+
+  <!-- HUD -->
+  <div id="snake-ui">
+    <span id="snake-score">Score: 0</span>
+    <span id="snake-level">Level: 1</span>
+    <span id="snake-best">Best: 0</span>
+    <span id="snake-status">Running</span>
+  </div>
+
+  <!-- POWER-UP ICONS -->
+  <div id="power-ups"></div>
+
+  <!-- PROGRESS BAR -->
+  <div id="progress-container">
+    <div id="progress-bar"></div>
+  </div>
+
+  <!-- MUTE/UNMUTE -->
+  <button id="mute-button" class="control-btn">🔊</button>
+
+  <!-- SOUNDS -->
+  <audio id="snake-music" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" loop preload="auto"></audio>
+  <audio id="eat-sound" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" preload="auto"></audio>
+  <audio id="power-up-sound" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" preload="auto"></audio>
+
+  <!-- GAME LOGIC -->
+  <script src="snake.js"></script>
+</body>
 </html>
