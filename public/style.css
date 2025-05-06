@@ -38,6 +38,7 @@ body {
 .boot-content {
   text-align: center;
   color: rgb(var(--neon-cyan));
+  font-family: 'Press Start 2P', monospace;
 }
 
 #boot-logo {
@@ -47,7 +48,6 @@ body {
 }
 
 .boot-log {
-  font-family: 'Press Start 2P', monospace;
   font-size: 14px;
   white-space: pre;
   height: 200px;
@@ -68,6 +68,12 @@ body {
   width: 0%;
   background: rgb(var(--neon-cyan));
   transition: width 0.5s;
+}
+
+@keyframes blink {
+  0% { opacity: 1; }
+  50% { opacity: 0; }
+  100% { opacity: 1; }
 }
 
 /* Desktop */

@@ -160,9 +160,8 @@ document.getElementById("start-button")
     const m = document.getElementById("start-menu");
     m.style.display = (m.style.display === "flex" ? "none" : "flex");
   });
-
 // 4) BOOT SEQUENCE
-async function runBootSequence() {
+function runBootSequence() {
   return new Promise(resolve => {
     const bootScreen = document.getElementById("bootScreen");
     const logEl = document.getElementById("boot-log");
@@ -180,7 +179,7 @@ async function runBootSequence() {
     
     let idx = 0;
     const total = msgs.length;
-    const delay = 400; // Adjust delay as needed
+    const delay = 200; // Adjust delay as needed
 
     // Add messages with delay
     const typer = setInterval(() => {
@@ -766,24 +765,25 @@ document.addEventListener('keydown', (e) => {
 
 // 20) FINAL INITIALIZATION
 document.addEventListener('DOMContentLoaded', () => {
-  // Initialize all components
-  initDesktopIcons();
-  initStarfield();
-  initNatureGallery();
-  initArtworkGallery();
-  initMusicPlayer();
-  initWeatherWidget();
-  initScreensaver();
-  initClipboardManager();
-  initFileExplorer();
-  initTerminal();
-  initWindowControls();
-  initSelectionBox();
-  initWindowStack();
-  initDragAndDrop();
-  
-  // Run boot sequence
+  // Run boot sequence first
   runBootSequence().then(() => {
+    // Initialize everything else after boot
+    initDesktopIcons();
+    initStarfield();
+    initNatureGallery();
+    initArtworkGallery();
+    initMusicPlayer();
+    initWeatherWidget();
+    initScreensaver();
+    initClipboardManager();
+    initFileExplorer();
+    initTerminal();
+    initWindowControls();
+    initSelectionBox();
+    initWindowStack();
+    initDragAndDrop();
+    
+    // Add notification after boot
     createNotification('Cyber Deck Initialized', 'info');
   });
 });
