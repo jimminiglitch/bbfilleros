@@ -1,336 +1,36 @@
-/*─────────────────────────────────────────────────────────────────────────────
-  GLOBAL VARIABLES & RESET
-─────────────────────────────────────────────────────────────────────────────*/
-:root {
-  --font-press-start: 'Press Start 2P', monospace;
-  --font-vt323:       'VT323', monospace;
+/* Shared variables & resets */
+@font-face{font-family:'Press Start 2P';src:url('https://fonts.gstatic.com/s/pressstart2p/v15/e3t4euO8T-267oIAQAu6jDQyK3nVivM.woff2') format('woff2');}
+@font-face{font-family:'VT323';src:url('https://fonts.gstatic.com/s/vt323/v17/pxiKyp0ihIEF2isfFJU.woff2') format('woff2');}
+:root{--font-press:'Press Start 2P',monospace;--font-vt:'VT323',monospace;--neon-purple:#a9a1ff;--neon-pink:#f3a1ff;--neon-cyan:#00f0ff;--neon-green:#00ff66;--neon-yellow:#fffc00;}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{width:100%;height:100%;background:black;color:white;font-family:var(--font-vt);overflow:hidden;}
 
-  --neon-purple:      #a9a1ff;
-  --neon-pink:        #f3a1ff;
-  --neon-cyan:        #00f0ff;
-  --neon-yellow:      #fffc00;
-  --neon-green:       #00ff66;
-}
+/* Scanlines */
+.scanlines{position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(to bottom,rgba(0,0,0,0)0,rgba(0,0,0,0.03)1px) z-index:999;}
 
-* {
-  box-sizing: border-box;
-  margin: 0; padding: 0;
-}
+/* Glitch title */
+.glitch{position:relative;font-family:var(--font-press);font-size:2.5rem;color:var(--neon-cyan);text-align:center;user-select:none;}
+.glitch::before,.glitch::after{content:attr(data-text);position:absolute;left:0;top:0;width:100%;height:100%;overflow:hidden;}
+.glitch::before{animation:glitch-top 2s infinite linear;color:var(--neon-pink);} .glitch::after{animation:glitch-bottom 3s infinite linear;color:var(--neon-purple);} 
+@keyframes glitch-top{0%{clip-path:inset(0 0 90% 0);transform:translate(2px,-2px);}5%{clip-path:inset(0 0 40% 0);transform:translate(-2px,2px);}100%{clip-path:inset(0);transform:translate(0);} }
+@keyframes glitch-bottom{0%{clip-path:inset(85% 0 0 0);transform:translate(-2px,2px);}30%{clip-path:inset(25% 0 0 0);transform:translate(2px,-2px);}100%{clip-path:inset(0);transform:translate(0);} }
 
-html, body {
-  width: 100%; height: 100%;
-}
+/* Windows */
+.popup-window{position:absolute;top:120px;left:120px;width:500px;height:60vh;background:rgba(0,0,0,0.6);border:2px solid var(--neon-purple);backdrop-filter:blur(4px);display:none;flex-direction:column;}
+.popup-window.active{display:flex;} .popup-window.hidden{display:none!important;}
+.window-header{background:rgba(17,17,17,0.8);padding:.5rem;display:flex;align-items:center;cursor:move;color:var(--neon-green);font-family:var(--font-press);}
+.window-header span{flex:1;} .window-header button{background:none;border:none;color:var(--neon-yellow);margin-left:.5rem;font-size:1.2rem;cursor:pointer;}
+.window-content{flex:1;overflow:hidden;padding:1rem;}
 
-body {
-  background: black;
-  color: white;
-  font-family: var(--font-vt323);
-  overflow: hidden;
-  position: relative;
-}
+/* Taskbar & start menu */
+#start-bar{position:fixed;bottom:0;left:0;right:0;height:36px;background:black;border-top:2px solid var(--neon-purple);display:flex;align-items:center;padding:0 1rem;}
+#start-button{font-family:var(--font-press);margin-right:1rem;border:2px solid var(--neon-purple);padding:.2rem .8rem;border-radius:4px;color:var(--neon-purple);cursor:pointer;}
+.taskbar-icon{background:var(--neon-cyan);border:none;color:var(--neon-pink);margin-left:.5rem;padding:.2rem .6rem;cursor:pointer;}
+#clock{margin-left:auto;font-family:var(--font-press);color:var(--neon-green);}
 
-/*─────────────────────────────────────────────────────────────────────────────
-  SCANLINES OVERLAY
-─────────────────────────────────────────────────────────────────────────────*/
-.scanlines {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100vw; height: 100vh;
-  pointer-events: none;
-  background:
-    repeating-linear-gradient(
-      to bottom,
-      rgba(0,0,0,0) 0px,
-      rgba(0,0,0,0.03) 1px,
-      rgba(0,0,0,0) 2px
-    );
-  z-index: 999;
-}
+/* Forms & buttons */
+.email-btn,.btn{font-family:var(--font-press);padding:.75rem 1.5rem;border-radius:.5rem;background:var(--neon-cyan);color:black;text-decoration:none;display:inline-block;}
+.email-btn:hover,.btn:hover{background:var(--neon-green);}
 
-/*─────────────────────────────────────────────────────────────────────────────
-  GLITCH TITLE
-─────────────────────────────────────────────────────────────────────────────*/
-.glitch {
-  position: relative;
-  font-family: var(--font-press-start);
-  font-size: 2.5rem;
-  color: var(--neon-cyan);
-  text-align: center;
-  margin-top: 1.5rem;
-  user-select: none;
-}
-.glitch::before,
-.glitch::after {
-  content: attr(data-text);
-  position: absolute;
-  left: 0; top: 0;
-  width: 100%; height: 100%;
-  overflow: hidden;
-}
-.glitch::before {
-  animation: glitch-top 2s infinite linear;
-  color: var(--neon-pink);
-}
-.glitch::after {
-  animation: glitch-bottom 3s infinite linear;
-  color: var(--neon-purple);
-}
-@keyframes glitch-top {
-  0%   { clip-path: inset(0 0 90% 0); transform: translate(2px, -2px); }
-  5%   { clip-path: inset(0 0 40% 0); transform: translate(-2px, 2px); }
-  10%  { clip-path: inset(0 0 85% 0); transform: translate(2px, 2px); }
-  15%  { clip-path: inset(0 0 20% 0); transform: translate(-2px, -2px); }
-  100% { clip-path: inset(0 0 0 0); transform: translate(0,0); }
-}
-@keyframes glitch-bottom {
-  0%   { clip-path: inset(85% 0 0 0); transform: translate(-2px, 2px); }
-  10%  { clip-path: inset(40% 0 0 0); transform: translate(2px, -2px); }
-  20%  { clip-path: inset(80% 0 0 0); transform: translate(-2px, 2px); }
-  30%  { clip-path: inset(25% 0 0 0); transform: translate(2px, -2px); }
-  100% { clip-path: inset(0 0 0 0); transform: translate(0,0); }
-}
-
-/*─────────────────────────────────────────────────────────────────────────────
-  DESKTOP ICONS
-─────────────────────────────────────────────────────────────────────────────*/
-.container {
-  width: 100%;
-  height: calc(100vh - 36px); /* leave taskbar */
-  position: relative;
-}
-#desktop-icons {
-  position: relative;
-  width: 100%; height: 100%;
-}
-.desktop-icon {
-  position: absolute;
-  width: 80px;
-  cursor: pointer;
-  user-select: none;
-  text-align: center;
-  transition: transform .1s;
-}
-.desktop-icon:hover {
-  transform: scale(1.1);
-}
-.desktop-icon img {
-  width: 64px; height: 64px;
-  display: block;
-  margin: 0 auto;
-  filter: drop-shadow(0 0 6px rgba(0,255,255,0.6));
-}
-.desktop-icon span {
-  margin-top: 4px;
-  font-size: .8rem;
-  color: white;
-  text-shadow: 0 0 4px rgba(0,0,0,0.7);
-}
-.desktop-icon.selected {
-  background: rgba(0,255,255,0.1);
-  border: 2px solid var(--neon-cyan);
-  border-radius: 4px;
-}
-
-/* initial icon positions… (your existing selectors) */
-
-/*─────────────────────────────────────────────────────────────────────────────
-  SELECTION RECTANGLE
-─────────────────────────────────────────────────────────────────────────────*/
-#selection-rect {
-  position: absolute;
-  border: 2px dashed;
-  border-image:
-    linear-gradient(
-      45deg,
-      var(--neon-pink),
-      var(--neon-yellow),
-      var(--neon-green),
-      var(--neon-cyan),
-      var(--neon-purple)
-    ) 1;
-  background: rgba(255,255,255,0.05);
-  pointer-events: none;
-  z-index: 500;
-}
-
-/*─────────────────────────────────────────────────────────────────────────────
-  POPUP WINDOW CHROME (SEMI-TRANSLUCENT)
-─────────────────────────────────────────────────────────────────────────────*/
-.popup-window {
-  position: absolute;
-  top: 120px; left: 120px;
-  width: 500px; height: 60vh;
-  background: rgba(0, 0, 0, 0.6);      /* semi-transparent */
-  border: 2px solid var(--neon-purple);
-  border-radius: .5rem;
-  box-shadow: 0 0 12px var(--neon-pink);
-  display: none;
-  flex-direction: column;
-  overflow: hidden;
-  backdrop-filter: blur(4px);          /* blur behind window */
-}
-.popup-window.active { display: flex; }
-.popup-window.hidden { display: none !important; }
-
-/* HEADER BAR */
-.popup-window .window-header {
-  flex: 0 0 auto;
-  background: rgba(17,17,17,0.8);
-  color: var(--neon-green);
-  font-family: var(--font-press-start);
-  font-size: .8rem;
-  padding: .5rem;
-  display: flex;
-  align-items: center;
-  user-select: none;
-  cursor: move;
-}
-.popup-window .window-header span {
-  flex: 1; /* push buttons right */
-}
-.popup-window .window-header button {
-  background: none;
-  border: none;
-  color: var(--neon-yellow);
-  font-size: 1.2rem;
-  margin-left: .5rem;
-  cursor: pointer;
-  text-shadow: 0 0 4px var(--neon-yellow);
-  transition: color .2s;
-}
-.popup-window .window-header button:hover {
-  color: var(--neon-pink);
-}
-
-/* CONTENT AREA (fills rest) */
-.popup-window .window-content {
-  flex: 1 1 auto;
-  padding: 0;         /* no padding for iframes/canvases */
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-/* IFRAMES & CANVASES fill perfectly */
-.popup-window .window-content iframe,
-.popup-window .window-content canvas {
-  flex: 1;
-  width: 100%; height: 100%;
-  border: none;
-  display: block;
-}
-
-/*─────────────────────────────────────────────────────────────────────────────
-  BOOT SCREEN
-─────────────────────────────────────────────────────────────────────────────*/
-.boot-screen {
-  position: fixed;
-  inset: 0;
-  background: black;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-.boot-log {
-  width: 80%; height: 200px;
-  background: black;
-  color: var(--neon-green);
-  font-family: var(--font-vt323);
-  font-size: .9rem;
-  overflow-y: auto;
-  border: 1px solid var(--neon-green);
-  margin-bottom: 1rem;
-}
-.progress-container {
-  width: 80%; background: #333;
-  height: 8px; border-radius: 4px;
-}
-.progress-bar {
-  width: 0; height: 100%;
-  background: var(--neon-cyan);
-  transition: width .5s ease;
-}
-
-/*─────────────────────────────────────────────────────────────────────────────
-  TASKBAR & START MENU
-─────────────────────────────────────────────────────────────────────────────*/
-#start-bar {
-  position: fixed;
-  bottom: 0; left: 0; right: 0;
-  height: 36px;
-  background: black;
-  border-top: 2px solid var(--neon-purple);
-  box-shadow: 0 -2px 12px var(--neon-purple);
-  display: flex;
-  align-items: center;
-  padding: 0 1rem;
-  z-index: 600;
-}
-#start-button {
-  font-family: var(--font-press-start);
-  font-size: .8rem;
-  color: var(--neon-purple);
-  background: transparent;
-  border: 2px solid var(--neon-purple);
-  border-radius: 4px;
-  padding: .2rem .8rem;
-  box-shadow: 0 0 8px var(--neon-purple);
-  cursor: pointer;
-  transition: background .2s, color .2s;
-}
-#start-button:hover {
-  background: var(--neon-purple);
-  color: black;
-  box-shadow: 0 0 12px var(--neon-purple);
-}
-.taskbar-icon {
-  background: var(--neon-cyan);
-  border: none;
-  color: var(--neon-pink);
-  padding: .2rem .6rem;
-  margin-left: .5rem;
-  font-size: .8rem;
-  cursor: pointer;
-  text-shadow: 0 0 4px var(--neon-pink);
-}
-#clock {
-  margin-left: auto;
-  font-family: var(--font-press-start);
-  color: var(--neon-green);
-  font-size: .8rem;
-}
-
-/* START MENU */
-#start-menu {
-  position: fixed;
-  bottom: 36px; left: 0;
-  background: rgba(0,0,0,0.9);
-  border: 2px solid var(--neon-cyan);
-  display: none;
-  flex-direction: column;
-  font-family: var(--font-press-start);
-  z-index: 650;
-}
-#start-menu a {
-  padding: .5rem 1rem;
-  color: var(--neon-pink);
-  text-decoration: none;
-  font-size: .8rem;
-  transition: background .2s;
-}
-#start-menu a:hover {
-  background: rgba(255,255,255,0.1);
-}
-
-/*─────────────────────────────────────────────────────────────────────────────
-  STARFIELD CANVAS (background)
-─────────────────────────────────────────────────────────────────────────────*/
-#background-canvas {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100vw; height: 100vh;
-  z-index: -1;
-  background: black;
-}
+/* Containers */
+.container{position:relative;width:100%;height:calc(100vh-36px);}  

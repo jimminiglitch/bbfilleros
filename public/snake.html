@@ -1,76 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>SNAKE.EXE</title>
-
-  <!-- Main Stylesheet & Fonts -->
-  <link rel="stylesheet" href="/style.css" />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
-    rel="stylesheet"
-  />
-
+  <link rel="stylesheet" href="/style.css">
   <style>
-    html, body {
-      margin:0; padding:0;
-      width:100%; height:100%;
-      background: transparent;
-      overflow:hidden;
-      position:relative;
-    }
-    #snake-canvas {
-      display:block;
-      width:100%; height:100%;
-      image-rendering: pixelated;
-    }
-    #snake-ui {
-      position:absolute; top:8px; left:50%;
-      transform:translateX(-50%);
-      font-family:'Press Start 2P', monospace;
-      font-size:.8rem;
-      color: var(--neon-cyan);
-      text-shadow: 0 0 8px var(--neon-cyan);
-      pointer-events:none;
-      z-index:10;
-    }
-    #snake-play-button {
-      position:absolute; top:50%; left:50%;
-      transform:translate(-50%,-50%);
-      font-family:'Press Start 2P', monospace;
-      font-size:1rem;
-      color: var(--neon-yellow);
-      background: rgba(0,0,0,0.6);
-      border:2px solid var(--neon-yellow);
-      padding:.8rem 1.2rem;
-      cursor:pointer;
-      z-index:11;
-      text-shadow:0 0 6px var(--neon-yellow);
-      transition: background .2s;
-    }
-    #snake-play-button:hover {
-      background: rgba(0,0,0,0.8);
-    }
+    html,body{margin:0;padding:0;width:100%;height:100%;background:transparent;overflow:hidden;}
+    #snake-canvas{width:100%;height:100%;image-rendering:pixelated;}
+    #snake-ui{position:absolute;top:8px;left:50%;transform:translateX(-50%);font-family:var(--font-press);}
+    #snake-play-button{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);padding:.8rem 1.2rem;border:2px solid var(--neon-yellow);cursor:pointer;}
   </style>
 </head>
 <body>
   <canvas id="snake-canvas"></canvas>
-
-  <div id="snake-ui">
-    <span id="snake-score">Score: 0</span> |
-    <span id="snake-level">Level: 1</span> |
-    <span id="snake-best">Best: 0</span> |
-    <span id="snake-status">Running</span>
-  </div>
-
+  <div id="snake-ui"><span id="snake-score">Score: 0</span></div>
   <button id="snake-play-button">CLICK TO START</button>
-
-  <!-- Photorealistic apple sprite -->
-  <audio id="snake-music"
-         src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3"
-         loop preload="auto"></audio>
-
+  <audio id="snake-music" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" loop preload="auto"></audio>
   <script src="/snake.js"></script>
 </body>
 </html>

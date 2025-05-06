@@ -1,264 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Benjamin Filler - Résumé</title>
-    <style>
-      @font-face {
-        font-family: "Press Start 2P";
-        font-style: normal;
-        font-weight: 400;
-        font-display: swap;
-        src: url("https://fonts.gstatic.com/s/pressstart2p/v15/e3t4euO8T-267oIAQAu6jDQyK3nVivM.woff2")
-          format("woff2");
-      }
-      @font-face {
-        font-family: "VT323";
-        font-style: normal;
-        font-weight: 400;
-        font-display: swap;
-        src: url("https://fonts.gstatic.com/s/vt323/v17/pxiKyp0ihIEF2isfFJU.woff2")
-          format("woff2");
-      }
-      :root {
-        --font-press-start: "Press Start 2P", monospace;
-        --font-vt323: "VT323", monospace;
-        --neon-purple: #a9a1ff;
-        --neon-pink: #f3a1ff;
-        --neon-cyan: #00f0ff;
-        --neon-yellow: #fffc00;
-        --neon-green: #00ff66;
-      }
-      * {
-        box-sizing: border-box;
-      }
-      body {
-        font-family: var(--font-vt323);
-        background-color: black;
-        color: white;
-        margin: 0;
-        padding: 2rem;
-        display: flex;
-        justify-content: center;
-        align-items: flex-start;
-        min-height: 100vh;
-        -webkit-font-smoothing: antialiased;
-        text-rendering: optimizeLegibility;
-      }
-      .container {
-        background: rgba(0, 0, 0, 0.9);
-        border: 2px solid var(--neon-purple);
-        border-radius: 1.5rem;
-        padding: 2rem;
-        box-shadow: 0 0 0px var(--neon-pink);
-        max-width: 960px;
-        width: 100%;
-      }
-      h1,
-      h2 {
-        font-family: var(--font-press-start);
-      }
-      h1 {
-        font-size: 1.8rem;
-        color: var(--neon-cyan);
-        text-align: center;
-        margin-top: 0;
-        text-shadow: 0 0 0px var(--neon-cyan), 0 0 0px var(--neon-cyan);
-      }
-      .top-bar {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 2rem;
-      }
-      .btn {
-        font-family: var(--font-press-start);
-        font-size: 0.7rem;
-        text-decoration: none;
-        padding: 0.5rem 1rem;
-        border-radius: 0.5rem;
-        background-color: var(--neon-cyan);
-        color: black;
-        box-shadow: 0 0 3px var(--neon-pink);
-        transition: background 0.3s;
-      }
-      .btn:hover {
-        background-color: var(--neon-pink);
-      }
-      .section {
-        margin-bottom: 2.5rem;
-      }
-      .section h2 {
-        font-size: 1rem;
-        color: var(--neon-pink);
-        margin-bottom: 1rem;
-        text-shadow: 0 0 10px var(--neon-pink);
-      }
-      .section p,
-      .section li {
-        font-size: 1.2rem;
-        line-height: 1.8;
-        max-width: 125ch;
-      }
-      .section p {
-        margin-bottom: 1.5rem;
-      }
-      .skills-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 1rem;
-      }
-      .neon-label {
-        color: var(--neon-green);
-        font-weight: bold;
-      }
-      ul {
-        padding-left: 1.2rem;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <div class="top-bar">
-  <a
-    href="https://cdn.glitch.global/0ade3230-a4bb-4d2d-98fc-5cab2591127c/Benjamin%20Filler%20Resume%202025.pdf?v=1744722722267"
-    class="btn"
-    target="_blank"
-    rel="noopener noreferrer"
-    style="font-size: 1rem"
-    >&#x2B07; Download PDF</a
-  >
-</div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Résumé</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="top-bar">
+      <a href="https://cdn.glitch.global/0ade3230-a4bb-4d2d-98fc-5cab2591127c/Benjamin%20Filler%20Resume%202025.pdf?v=1744722722267" class="btn" target="_blank">⬇ Download PDF</a>
+    </div>
+    <h1>Benjamin Filler</h1>
+    <p class="contact-line">bbfiller@umich.edu | (248) 212-4644 | Birmingham, MI</p>
 
-
-      <h1>Benjamin Filler</h1>
-      <p
-        style="
-          text-align: center;
-          color: var(--neon-purple);
-          font-size: 1.5rem;
-          margin-bottom: 2.5rem;
-        "
-      >
-        bbfiller@umich.edu&nbsp;&nbsp;|&nbsp;&nbsp;(248)
-        212-4644&nbsp;&nbsp;|&nbsp;&nbsp;Birmingham, MI
+    <section>
+      <h2>Education</h2>
+      <p>
+        <strong>The University of Michigan–Dearborn</strong><br>
+        Bachelor of Arts, Media Production (Minor: Game Studies and Design)<br>
+        Dearborn, MI — Graduation: May 2026
       </p>
+      <p>
+        <strong>Oakland Community College</strong><br>
+        Associate of Arts, Cinematic Arts<br>
+        Royal Oak, MI — Graduation: June 2024
+      </p>
+    </section>
 
-      <div class="section">
-        <h2>Education</h2>
-        <p>
-          <span class="neon-label">The University of Michigan-Dearborn</span
-          ><br />
-          Bachelor of Arts — Media Production<br />
-          Minor: Game Studies and Design<br />
-          Dearborn, MI — Graduation: May 2026
-        </p>
-        <p>
-          <span class="neon-label">Oakland Community College</span><br />
-          Associate of Arts — Cinematic Arts<br />
-          Royal Oak, MI — Graduation: June 2024
-        </p>
-      </div>
+    <section>
+      <h2>Experience</h2>
+      <p>
+        <strong>Oakland Community College</strong><br>
+        Adjunct Instructor, Farmington Hills, MI<br>
+        Jan 2024 – Present<br>
+        Mentor students in cinematic arts and digital video production.
+      </p>
+      <p>
+        <strong>Amigo &amp; Amigo</strong><br>
+        Creative Consultant, Sydney, AU<br>
+        Oct 2019 – Sept 2023<br>
+        Collaborated on large-scale transmedia public installations.
+      </p>
+    </section>
 
-      <div class="section">
-        <h2>Experience</h2>
-        <p>
-          <span class="neon-label">Oakland Community College</span><br />
-          Adjunct Instructor<br />
-          Farmington Hills, MI<br />
-          Jan. 2024 – Present<br />
-          Mentor students in cinematic arts and digital video production.
-        </p>
-        <p>
-          <span class="neon-label">Amigo & Amigo</span><br />
-          Creative Consultant<br />
-          Sydney, AU<br />
-          Oct. 2019 – Sept. 2023<br />
-          Collaborated with international teams on large-scale transmedia
-          public&nbsp;installations.
-        </p>
-      </div>
+    <section>
+      <h2>Projects</h2>
+      <ul>
+        <li><strong>The Fedora Diaries</strong> — Designed set, soundscape, and software for a transmedia escape room.</li>
+        <li><strong>R3D3CH0</strong> — Wrote and implemented interactive story elements in an ArcGIS story map and mobile app.</li>
+        <li><strong>The Illustrious Clyde Cup</strong> — Writer/Director/Editor of documentary feature; screened at Greater Farmington Film Festival (2024).</li>
+        <li><strong>Birding With Brian</strong> — Writer/Director/Editor of documentary; Planet 9 Film Festival (2024), Wolf Tree Film Festival (2025); Award: Best Editing (OCC 2024).</li>
+      </ul>
+    </section>
 
-      <div class="section">
-        <h2>Projects</h2>
-        <p>
-          <span class="neon-label">The Fedora Diaries</span><br />
-          Designed set, soundscape, and software for transmedia escape room.
-        </p>
-        <p>
-          <span class="neon-label">R3D3CH0</span><br />
-          Wrote, designed, and implemented short story and interactive elements
-          into ArcGIS story map,<br />
-          converted to mobile application and web-based browser.
-        </p>
-        <p>
-          <span class="neon-label">The Illustrious Clyde Cup</span><br />
-          Writer, Director, Editor<br />
-          Documentary feature — “Movies from the Mitten,” Greater Farmington
-          Film Festival (2024)
-        </p>
-        <p>
-          <span class="neon-label">Birding With Brian</span><br />
-          Writer, Director, Editor<br />
-          Documentary feature — Planet 9 Film Festival (2024), Wolf Tree Film
-          Festival (2025)<br />
-          Award: Best Editing — OCC Student Film Festival (2024)
-        </p>
-      </div>
-
-      <div class="section">
-        <h2>Skills</h2>
-        <div class="skills-grid">
-          <div>
-            <p class="neon-label">Technical</p>
-            <ul>
-              <li>Camera operation</li>
-              <li>Video editing</li>
-              <li>Visual design</li>
-              <li>Sound design</li>
-              <li>Graphic design</li>
-              <li>Digital illustration</li>
-              <li>Web design</li>
-              <li>Software development</li>
-            </ul>
-          </div>
-          <div>
-            <p class="neon-label">Storytelling</p>
-            <ul>
-              <li>Narrative development</li>
-              <li>Audience engagement</li>
-              <li>Worldbuilding</li>
-              <li>Scriptwriting</li>
-            </ul>
-          </div>
-          <div>
-            <p class="neon-label">Tools</p>
-            <ul>
-              <li>
-                Adobe Creative Suite (Illustrator, Photoshop, Lightroom,
-                Premiere Pro, After Effects)
-              </li>
-              <li>Final Cut Pro</li>
-              <li>DaVinci Resolve</li>
-              <li>Reason, Audacity, Logic</li>
-              <li>ArcGIS Pro</li>
-              <li>Figma</li>
-              <li>Visual Studio Code</li>
-              <li>HTML, Java, CSS, Python, Node.js, Electron</li>
-            </ul>
-          </div>
-          <div>
-            <p class="neon-label">Collaboration</p>
-            <ul>
-              <li>Leadership</li>
-              <li>Communication</li>
-              <li>Creative thinking</li>
-              <li>Teamwork in fast-paced environments</li>
-              <li>Knowledge of intellectual property</li>
-            </ul>
-          </div>
+    <section>
+      <h2>Skills</h2>
+      <div class="skills-grid">
+        <div>
+          <p>Technical</p>
+          <ul>
+            <li>Camera operation</li>
+            <li>Video editing</li>
+            <li>Visual &amp; sound design</li>
+            <li>Web development (HTML/CSS/JavaScript)</li>
+          </ul>
+        </div>
+        <div>
+          <p>Storytelling</p>
+          <ul>
+            <li>Narrative development</li>
+            <li>Scriptwriting</li>
+            <li>Audience engagement</li>
+          </ul>
+        </div>
+        <div>
+          <p>Tools</p>
+          <ul>
+            <li>Adobe Creative Suite</li>
+            <li>Final Cut Pro, DaVinci Resolve</li>
+            <li>Figma, Visual Studio Code</li>
+          </ul>
+        </div>
+        <div>
+          <p>Collaboration</p>
+          <ul>
+            <li>Leadership &amp; mentorship</li>
+            <li>Cross-functional teamwork</li>
+            <li>Transmedia &amo; interactive design</li>
+          </ul>
         </div>
       </div>
-    </div>
-  </body>
+    </section>
+  </div>
+</body>
 </html>
