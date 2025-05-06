@@ -2,9 +2,7 @@
 //   Main Script (public/script.js)
 //────────────────────────────────────────
 
-// ———————————————————————————————————————————————————————————————————————
 // 1) BLIP (ignored if no <audio id="blip"> present)
-// ———————————————————————————————————————————————————————————————————————
 function playBlip() {
   const blip = document.getElementById("blip");
   if (blip) {
@@ -13,9 +11,7 @@ function playBlip() {
   }
 }
 
-// ———————————————————————————————————————————————————————————————————————
 // 2) OPEN / MINIMIZE / CLOSE / MAXIMIZE & TASKBAR ICONS
-// ———————————————————————————————————————————————————————————————————————
 let currentZIndex = 10;
 const windowStates = {};
 
@@ -31,30 +27,28 @@ function openWindow(id) {
   document.getElementById("start-menu").style.display = "none";
   document.querySelectorAll(".popup-window").forEach(w => w.classList.remove("active"));
 
-  // 2) Lazy‐load Snake iframe on first open
+  // 2) Lazy-load Snake iframe
   if (id === "snake") {
     const iframe = win.querySelector("iframe[data-src]");
-    if (iframe && !iframe.src) {
-      iframe.src = iframe.dataset.src;
-    }
+    if (iframe && !iframe.src) iframe.src = iframe.dataset.src;
   }
 
-  // 3) Lazy‐load any <video data-src> in this window
+  // 3) Lazy-load any <video data-src> in this window
   win.querySelectorAll("video[data-src]").forEach(v => {
     if (!v.src) {
       v.src = v.dataset.src;
       v.load();
-      v.play().catch(() => { /* autoplay may require an initial user gesture */ });
+      v.play().catch(() => { /* autoplay may require a gesture */ });
     }
   });
 
-  // 4) Show & focus this window
+  // 4) Show & focus
   win.classList.remove("hidden");
   win.classList.add("active");
   win.style.display = "flex";
-  win.style.zIndex = getNextZIndex();
+  win.style.zIndex  = getNextZIndex();
 
-  // 5) Restore previous position/size if stored
+  // 5) Restore previous bounds
   const stored = windowStates[id];
   if (stored) Object.assign(win.style, stored);
 
@@ -145,9 +139,7 @@ function toggleMaximizeWindow(id) {
   }
 }
 
-// ———————————————————————————————————————————————————————————————————————
 // 3) CLOCK & START MENU TOGGLE
-// ———————————————————————————————————————————————————————————————————————
 function updateClock() {
   const clk = document.getElementById("clock");
   if (clk) clk.textContent = new Date().toLocaleTimeString();
@@ -161,9 +153,7 @@ document.getElementById("start-button")
     m.style.display = (m.style.display === "flex" ? "none" : "flex");
   });
 
-// ———————————————————————————————————————————————————————————————————————
 // 4) BOOT SEQUENCE (run on DOMContentLoaded)
-// ———————————————————————————————————————————————————————————————————————
 function runBootSequence() {
   return new Promise(resolve => {
     const bootScreen = document.getElementById("bootScreen");
@@ -177,9 +167,9 @@ function runBootSequence() {
       "[ OK ] CyberDeck ready.",
       "[ DONE ] Boot complete."
     ];
-    let idx      = 0;
-    const total  = msgs.length;
-    const delay  = 400;
+    let idx     = 0;
+    const total = msgs.length;
+    const delay = 400;
 
     const typer = setInterval(() => {
       logEl.textContent += msgs[idx] + "\n";
@@ -201,34 +191,86 @@ function runBootSequence() {
   });
 }
 
-// ———————————————————————————————————————————————————————————————————————
-// 5) DESKTOP ICONS (dbl-click to open + drag-group kept as before)
-// ———————————————————————————————————————————————————————————————————————
+// 5) DESKTOP ICONS (double-click to open + drag-group)
 function initDesktopIcons() {
   document.querySelectorAll(".desktop-icon").forEach(icon => {
+    // double-click to open
     icon.addEventListener("dblclick", () => openWindow(icon.dataset.window));
-    // …your existing mousedown drag-group code goes here…
+
+    // drag-group start
+    icon.addEventListener("mousedown", e => {
+      e.preventDefault();
+      const parentRect = icon.parentElement.getBoundingClientRect();
+      const clickRect  = icon.getBoundingClientRect();
+
+      // build your selection group
+      let group = icon.classList.contains("selected")
+        ? Array.from(document.querySelectorAll(".desktop-icon.selected"))
+        : (
+            document.querySelectorAll(".desktop-icon.selected")
+              .forEach(ic => ic.classList.remove("selected")),
+            [icon].map(ic => (ic.classList.add("selected"), ic))
+          );
+
+      const shiftX = e.clientX - clickRect.left;
+      const shiftY = e.clientY - clickRect.top;
+
+      const groupData = group.map(ic => {
+        const r = ic.getBoundingClientRect();
+        ic.style.left   = (r.left - parentRect.left) + "px";
+        ic.style.top    = (r.top  - parentRect.top ) + "px";
+        ic.style.zIndex = getNextZIndex();
+        return {
+          icon:      ic,
+          startLeft: r.left - parentRect.left,
+          startTop:  r.top  - parentRect.top
+        };
+      });
+
+      function onMouseMove(e) {
+        const dx = (e.clientX - shiftX - parentRect.left) - groupData[0].startLeft;
+        const dy = (e.clientY - shiftY - parentRect.top)  - groupData[0].startTop;
+        groupData.forEach(({ icon, startLeft, startTop }) => {
+          icon.style.left = startLeft + dx + "px";
+          icon.style.top  = startTop  + dy + "px";
+        });
+      }
+
+      document.addEventListener("mousemove", onMouseMove);
+      document.addEventListener("mouseup", () => {
+        document.removeEventListener("mousemove", onMouseMove);
+      }, { once: true });
+    });
+
+    // disable native drag ghost
+    icon.ondragstart = () => false;
   });
 }
 
-// ———————————————————————————————————————————————————————————————————————
-// CLICK‐AND‐DRAG MULTI‐SELECT
-// ———————————————————————————————————————————————————————————————————————
+// 6) CLICK-AND-DRAG MULTI-SELECT (rainbow selector box)
 let selStartX, selStartY, selDiv;
+
 function onSelectStart(e) {
-  if (e.target.closest(".desktop-icon, .popup-window, #start-bar, #start-menu")) return;
-  selStartX = e.clientX; selStartY = e.clientY;
-  selDiv = document.createElement("div");
+  if (e.target.closest(".desktop-icon, .popup-window, #start-bar, #start-menu")) {
+    return;
+  }
+  selStartX = e.clientX;
+  selStartY = e.clientY;
+  selDiv    = document.createElement("div");
   selDiv.id = "selection-rect";
-  selDiv.style.left = `${selStartX}px`;
-  selDiv.style.top  = `${selStartY}px`;
-  selDiv.style.width = selDiv.style.height = "0px";
+  selDiv.style.left   = `${selStartX}px`;
+  selDiv.style.top    = `${selStartY}px`;
+  selDiv.style.width  = "0px";
+  selDiv.style.height = "0px";
   document.body.appendChild(selDiv);
+
   document.addEventListener("mousemove", onSelectMove);
-  document.addEventListener("mouseup",   onSelectEnd, { once: true });
+  document.addEventListener("mouseup", onSelectEnd, { once: true });
   e.preventDefault();
 }
+
 function onSelectMove(e) {
+  if (!selDiv) return;
   const x = Math.min(e.clientX, selStartX),
         y = Math.min(e.clientY, selStartY),
         w = Math.abs(e.clientX - selStartX),
@@ -237,6 +279,7 @@ function onSelectMove(e) {
   selDiv.style.top    = `${y}px`;
   selDiv.style.width  = `${w}px`;
   selDiv.style.height = `${h}px`;
+
   const box = selDiv.getBoundingClientRect();
   document.querySelectorAll(".desktop-icon").forEach(icon => {
     const r = icon.getBoundingClientRect();
@@ -249,58 +292,63 @@ function onSelectMove(e) {
     icon.classList.toggle("selected", inside);
   });
 }
+
 function onSelectEnd() {
   if (selDiv) selDiv.remove();
   selDiv = null;
-  document.removeEventListener("mousemove", onSelectMove);
 }
 
-// ———————————————————————————————————————————————————————————————————————
-// 6) STARFIELD BACKGROUND
-// ———————————————————————————————————————————————————————————————————————
+// 7) STARFIELD BACKGROUND
 function initStarfield() {
   const canvas = document.getElementById("background-canvas");
   const ctx    = canvas.getContext("2d");
+
   function resize() {
     canvas.width  = window.innerWidth;
     canvas.height = window.innerHeight;
   }
   window.addEventListener("resize", resize);
   resize();
+
   const numStars = 300;
-  const stars = Array.from({length:numStars}, () => ({
-    x: Math.random()*canvas.width,
-    y: Math.random()*canvas.height,
-    z: Math.random()*canvas.width,
+  const stars = Array.from({ length: numStars }, () => ({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    z: Math.random() * canvas.width,
     o: Math.random()
   }));
+
   (function animate() {
+    // fade trails
     ctx.fillStyle = 'rgba(0,0,0,0.4)';
-    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // draw stars
     for (let s of stars) {
       s.z -= 2;
       if (s.z <= 0) {
         s.z = canvas.width;
-        s.x = Math.random()*canvas.width;
-        s.y = Math.random()*canvas.height;
+        s.x = Math.random() * canvas.width;
+        s.y = Math.random() * canvas.height;
       }
-      const k  = 128.0/s.z;
-      const px = (s.x - canvas.width/2)*k + canvas.width/2;
-      const py = (s.y - canvas.height/2)*k + canvas.height/2;
-      const sz = Math.max(0,(1 - s.z/canvas.width)*3);
+      const k  = 128.0 / s.z;
+      const px = (s.x - canvas.width/2) * k + canvas.width/2;
+      const py = (s.y - canvas.height/2) * k + canvas.height/2;
+      const sz = Math.max(0, (1 - s.z / canvas.width) * 3);
+
       ctx.globalAlpha = s.o;
+      ctx.fillStyle   = '#fff';
       ctx.beginPath();
-      ctx.arc(px,py,sz,0,Math.PI*2);
+      ctx.arc(px, py, sz, 0, Math.PI * 2);
       ctx.fill();
     }
     ctx.globalAlpha = 1;
+
     requestAnimationFrame(animate);
   })();
 }
 
-// ———————————————————————————————————————————————————————————————————————
-// 7) WINDOW HEADER DRAG & BUTTONS
-// ———————————————————————————————————————————————————————————————————————
+// 8) WINDOW HEADER DRAG & BUTTONS
 function initWindowControls() {
   document.querySelectorAll(".popup-window").forEach(win => {
     const id     = win.id;
@@ -330,9 +378,7 @@ function initWindowControls() {
   });
 }
 
-// ———————————————————————————————————————————————————————————————————————
-// 8) KICK IT OFF
-// ———————————————————————————————————————————————————————————————————————
+// 9) KICK IT OFF
 document.addEventListener("DOMContentLoaded", () => {
   runBootSequence().then(() => {
     initDesktopIcons();
@@ -340,5 +386,4 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 window.addEventListener("load", initWindowControls);
-window.addEventListener("load", initDesktopIcons);
 window.addEventListener("mousedown", onSelectStart);
