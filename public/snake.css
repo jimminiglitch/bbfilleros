@@ -64,7 +64,6 @@ html, body {
   transition: transform 0.2s, border-color 0.2s;
   text-shadow: 0 0 6px #fffc00;
 }
-#score-entry button.selected,
 #snake-play-button:hover,
 #play-again-button:hover,
 #score-entry button:hover {
@@ -73,7 +72,7 @@ html, body {
 }
 
 /*─────────────────────────────────────────────────────────────────────────────
-  CANVAS & HUD
+  CANVAS & FRAME
 ─────────────────────────────────────────────────────────────────────────────*/
 #snake-canvas {
   position: absolute;
@@ -81,7 +80,14 @@ html, body {
   width: 100%; height: 100%;
   display: block;
   z-index: 1;
+  /* clear neon frame */
+  outline: 4px solid #00f0ff;
+  outline-offset: -4px;
 }
+
+/*─────────────────────────────────────────────────────────────────────────────
+  HUD
+─────────────────────────────────────────────────────────────────────────────*/
 #snake-ui {
   position: absolute;
   top: 12px;
@@ -156,12 +162,3 @@ html, body {
   background: rgba(0,0,0,0.4);
   border: 1px solid #00ff66;
   border-radius: 4px;
-  color: #00ff66;
-  cursor: pointer;
-  transition: transform 0.2s, border-color 0.2s;
-}
-#touch-controls button:hover {
-  transform: scale(1.1);
-  border-color: #00f0ff;
-  color: #00f0ff;
-}

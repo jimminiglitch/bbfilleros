@@ -28,12 +28,6 @@ window.addEventListener('load', () => {
   const muteButton   = document.getElementById('mute-button');
   const touchControls= document.getElementById('touch-controls');
 
-  
-  // ── START BUTTON ─────────────────────────────────────────────────────────────
-playButton.addEventListener('click', () => {
-  startGame();
-});
-
   // ──────────────────────────────────────────────────────────────────────────
   // State
   // ──────────────────────────────────────────────────────────────────────────
@@ -55,7 +49,7 @@ playButton.addEventListener('click', () => {
   };
 
   // ──────────────────────────────────────────────────────────────────────────
-  // Helpers
+  // High-Score Helpers
   // ──────────────────────────────────────────────────────────────────────────
   function loadHighScores() {
     const json = localStorage.getItem(HIGH_SCORES_KEY);
@@ -80,6 +74,9 @@ playButton.addEventListener('click', () => {
     saveHighScores(list.slice(0, MAX_HIGH_SCORES));
   }
 
+  // ──────────────────────────────────────────────────────────────────────────
+  // Game Helpers
+  // ──────────────────────────────────────────────────────────────────────────
   function placeApple() {
     do {
       apple = {
@@ -149,7 +146,7 @@ playButton.addEventListener('click', () => {
   }
 
   // ──────────────────────────────────────────────────────────────────────────
-  // Game loop
+  // Update & Draw
   // ──────────────────────────────────────────────────────────────────────────
   function update(delta) {
     if (!started || paused || gameOver) return;
@@ -219,8 +216,8 @@ playButton.addEventListener('click', () => {
     ctx.save();
     ctx.translate(screenShake, screenShake);
 
-    // background
-    ctx.fillStyle = 'rgba(0,0,0,0.3)'; 
+    // translucent black field to reveal stars
+    ctx.fillStyle = 'rgba(0,0,0,0.3)';
     ctx.fillRect(0,0,canvas.width,canvas.height);
 
     // particles
@@ -236,37 +233,22 @@ playButton.addEventListener('click', () => {
     // power-ups
     powerUps.forEach(pu=>{
       ctx.fillStyle = pu.color;
-      ctx.fillRect(
-        pu.x*GRID,pu.y*GRID,
-        GRID-2,GRID-2
-      );
+      ctx.fillRect(pu.x*GRID,pu.y*GRID,GRID-2,GRID-2);
       ctx.fillStyle = 'black';
       ctx.font = '10px Press Start 2P';
-      ctx.fillText(
-        pu.type[0],
-        pu.x*GRID+2,
-        pu.y*GRID+14
-      );
+      ctx.fillText(pu.type[0],pu.x*GRID+2,pu.y*GRID+14);
     });
 
     // apple pulse
     const pulse = Math.sin(Date.now()/300)*10;
     ctx.fillStyle = `hsl(300,100%,${50+pulse}%)`;
-    ctx.fillRect(
-      apple.x*GRID,
-      apple.y*GRID,
-      GRID-2,GRID-2
-    );
+    ctx.fillRect(apple.x*GRID,apple.y*GRID,GRID-2,GRID-2);
 
     // snake
     snake.forEach((seg,i)=>{
       const hue = (hueOffset + i*10 + level*20) % 360;
       ctx.fillStyle = `hsl(${hue},100%,50%)`;
-      ctx.fillRect(
-        seg.x*GRID,
-        seg.y*GRID,
-        GRID-2,GRID-2
-      );
+      ctx.fillRect(seg.x*GRID,seg.y*GRID,GRID-2,GRID-2);
     });
 
     ctx.restore();
@@ -288,6 +270,10 @@ playButton.addEventListener('click', () => {
   // Controls & UI
   // ──────────────────────────────────────────────────────────────────────────
   function resetGame() {
+    // always stop/reset music on exit
+    music.pause();
+    music.currentTime = 0;
+
     cols = Math.floor(canvas.width/GRID);
     rows = Math.floor(canvas.height/GRID);
     snake = [{ x: Math.floor(cols/2), y: Math.floor(rows/2) }];
@@ -302,11 +288,11 @@ playButton.addEventListener('click', () => {
     screenShake = 0;
     powerUps    = [];
     particles   = [];
-    ui.score.textContent = `Score: 0`;
-    ui.level.textContent = `Level: 1`;
+    ui.score.textContent  = `Score: 0`;
+    ui.level.textContent  = `Level: 1`;
     best = Number(localStorage.getItem('snakeBest')||'0');
-    ui.best.textContent  = `Best: ${best}`;
-    ui.status.textContent= 'Running';
+    ui.best.textContent   = `Best: ${best}`;
+    ui.status.textContent = 'Running';
     startOverlay.classList.remove('hidden');
     gameOverOverlay.classList.add('hidden');
     displayHighScores();
@@ -316,7 +302,6 @@ playButton.addEventListener('click', () => {
   function startGame() {
     started = true;
     startOverlay.classList.add('hidden');
-    music.currentTime = 0;
     music.play().catch(()=>{});
     requestAnimationFrame(loop);
   }
@@ -336,7 +321,10 @@ playButton.addEventListener('click', () => {
   window.addEventListener('resize', resize);
   resize();
 
-  // Submit score
+  // Hook up play
+  playButton.addEventListener('click', startGame);
+
+  // Submit high score
   submitButton.addEventListener('click', () => {
     const name = nameInput.value.trim() || 'ANON';
     addHighScore(name, score);
@@ -351,49 +339,48 @@ playButton.addEventListener('click', () => {
     startGame();
   });
 
-   // ── Keyboard controls ────────────────────────────────────────────────────
+  // Keyboard controls (arrow + space)
   window.addEventListener('keydown', e => {
     if (!started) return;
 
-    // stop arrow keys from scrolling the page
+    // prevent scroll
     if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key)) {
       e.preventDefault();
     }
 
-    // space to pause
     if (e.key === ' ') {
       paused = !paused;
       ui.status.textContent = paused ? 'Paused' : 'Running';
+      if (paused) music.pause();
+      else       music.play().catch(()=>{});
       return;
     }
     if (paused || gameOver) return;
 
-    // arrows to change direction (no 180° turns)
     switch (e.key) {
       case 'ArrowUp':
-        if (dy === 0) { dx = 0; dy = -1; }
+        if (dy === 0) { dx=0; dy=-1; }
         break;
       case 'ArrowDown':
-        if (dy === 0) { dx = 0; dy =  1; }
+        if (dy === 0) { dx=0; dy=1;  }
         break;
       case 'ArrowLeft':
-        if (dx === 0) { dx = -1; dy = 0; }
+        if (dx === 0) { dx=-1;dy=0;  }
         break;
       case 'ArrowRight':
-        if (dx === 0) { dx =  1; dy = 0; }
+        if (dx === 0) { dx=1; dy=0;  }
         break;
     }
   });
-
 
   // Touch controls
   touchControls.querySelectorAll('button').forEach(btn => {
     btn.addEventListener('touchstart', () => {
       const dir = btn.dataset.dir;
-      if (dir === 'up'    && dy === 0) { dx=0; dy=-1; }
-      if (dir === 'down'  && dy === 0) { dx=0; dy=1; }
-      if (dir === 'left'  && dx === 0) { dx=-1;dy=0; }
-      if (dir === 'right' && dx === 0) { dx=1; dy=0; }
+      if (dir==='up'    && dy===0) { dx=0; dy=-1; }
+      if (dir==='down'  && dy===0) { dx=0; dy=1;  }
+      if (dir==='left'  && dx===0) { dx=-1;dy=0;  }
+      if (dir==='right' && dx===0) { dx=1; dy=0;  }
     });
   });
 
@@ -403,10 +390,10 @@ playButton.addEventListener('click', () => {
     muteButton.textContent = music.muted ? '🔇' : '🔊';
   });
 
-  // Initialize best and high scores
+  // Initialize best & high scores
   best = Number(localStorage.getItem('snakeBest')||'0');
   displayHighScores();
 
-  // Start fresh
+  // Kickoff
   resetGame();
 });
