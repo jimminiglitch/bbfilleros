@@ -198,49 +198,54 @@ function initDesktopIcons() {
     icon.addEventListener("dblclick", () => openWindow(icon.dataset.window));
 
     // drag-group start
-    icon.addEventListener("mousedown", e => {
-      e.preventDefault();
-      const parentRect = icon.parentElement.getBoundingClientRect();
-      const clickRect  = icon.getBoundingClientRect();
+   icon.addEventListener("mousedown", e => {
+  e.preventDefault();
+  const parentRect = icon.parentElement.getBoundingClientRect();
+  const clickRect  = icon.getBoundingClientRect();
 
-      // build your selection group
-      let group = icon.classList.contains("selected")
-        ? Array.from(document.querySelectorAll(".desktop-icon.selected"))
-        : (
-            document.querySelectorAll(".desktop-icon.selected")
-              .forEach(ic => ic.classList.remove("selected")),
-            [icon].map(ic => (ic.classList.add("selected"), ic))
-          );
+  // Build your drag‐group: if this icon was already selected, drag ALL selected;
+  // otherwise clear selection & only drag this one.
+  let group;
+  if (icon.classList.contains("selected")) {
+    group = Array.from(document.querySelectorAll(".desktop-icon.selected"));
+  } else {
+    document.querySelectorAll(".desktop-icon.selected")
+      .forEach(ic => ic.classList.remove("selected"));
+    icon.classList.add("selected");
+    group = [icon];
+  }
 
-      const shiftX = e.clientX - clickRect.left;
-      const shiftY = e.clientY - clickRect.top;
+  // Compute initial offsets
+  const shiftX = e.clientX - clickRect.left;
+  const shiftY = e.clientY - clickRect.top;
 
-      const groupData = group.map(ic => {
-        const r = ic.getBoundingClientRect();
-        ic.style.left   = (r.left - parentRect.left) + "px";
-        ic.style.top    = (r.top  - parentRect.top ) + "px";
-        ic.style.zIndex = getNextZIndex();
-        return {
-          icon:      ic,
-          startLeft: r.left - parentRect.left,
-          startTop:  r.top  - parentRect.top
-        };
-      });
+  // Record each icon’s starting position
+  const groupData = group.map(ic => {
+    const r = ic.getBoundingClientRect();
+    const startLeft = r.left - parentRect.left;
+    const startTop  = r.top  - parentRect.top;
+    ic.style.left  = `${startLeft}px`;
+    ic.style.top   = `${startTop}px`;
+    ic.style.zIndex = getNextZIndex();
+    return { icon: ic, startLeft, startTop };
+  });
 
-      function onMouseMove(e) {
-        const dx = (e.clientX - shiftX - parentRect.left) - groupData[0].startLeft;
-        const dy = (e.clientY - shiftY - parentRect.top)  - groupData[0].startTop;
-        groupData.forEach(({ icon, startLeft, startTop }) => {
-          icon.style.left = startLeft + dx + "px";
-          icon.style.top  = startTop  + dy + "px";
-        });
-      }
-
-      document.addEventListener("mousemove", onMouseMove);
-      document.addEventListener("mouseup", () => {
-        document.removeEventListener("mousemove", onMouseMove);
-      }, { once: true });
+  // Drag listener
+  function onMouseMove(e) {
+    const dx = (e.clientX - shiftX - parentRect.left) - groupData[0].startLeft;
+    const dy = (e.clientY - shiftY - parentRect.top)  - groupData[0].startTop;
+    groupData.forEach(({ icon, startLeft, startTop }) => {
+      icon.style.left = `${startLeft + dx}px`;
+      icon.style.top  = `${startTop  + dy}px`;
     });
+  }
+
+  document.addEventListener("mousemove", onMouseMove);
+  document.addEventListener("mouseup", () => {
+    document.removeEventListener("mousemove", onMouseMove);
+  }, { once: true });
+});
+
 
     // disable native drag ghost
     icon.ondragstart = () => false;
