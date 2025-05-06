@@ -8,18 +8,15 @@
     best:   document.getElementById('snake-best'),
     status: document.getElementById('snake-status'),
   };
-  const music      = document.getElementById('snake-music');
-  const playButton = document.getElementById('snake-play-button');
+  const music          = document.getElementById('snake-music');
+  const playButton     = document.getElementById('snake-play-button');
 
   const GRID = 20;
   let cols, rows, snake, dx, dy, apple, hueOffset;
   let lastTime = 0, speed = 5, frameAcc = 0;
   let score = 0, level = 1, best = 0;
-  let paused = false, gameOver = false, started = false;
-
-  // load photorealistic apple sprite
-  const appleImg = new Image();
-  appleImg.src = 'https://i.imgur.com/1eKqX0m.png'; // a transparent PNG apple
+  let paused = false, gameOver = false;
+  let started = false;
 
   // load best score
   best = Number(localStorage.getItem('snakeBest') || 0);
@@ -43,7 +40,7 @@
     score = 0; level = 1; speed = 5; hueOffset = 0;
     ui.score.textContent = `Score: ${score}`;
     ui.level.textContent = `Level: ${level}`;
-    ui.status.textContent = 'Running';
+    ui.status.textContent = paused ? 'Paused' : 'Running';
     gameOver = false;
     music.currentTime = 0;
   }
@@ -52,6 +49,7 @@
     if (started) return;
     started = true;
     playButton.style.display = 'none';
+    // unmute & play
     music.muted = false;
     music.play().catch(()=>{});
     window.requestAnimationFrame(loop);
@@ -114,36 +112,22 @@
 
   function draw() {
     if (!started) return;
-
     // fade for trail
     ctx.fillStyle = 'rgba(0,0,0,0.25)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // draw apple
-    const sz = GRID - 2;
-    ctx.drawImage(
-      appleImg,
-      apple.x * GRID + 1,
-      apple.y * GRID + 1,
-      sz, sz
-    );
+    // apple
+    ctx.fillStyle = 'magenta';
+    ctx.fillRect(apple.x * GRID, apple.y * GRID, GRID - 2, GRID - 2);
 
-    // draw snake segments (rounded, rainbow)
+    // snake
     snake.forEach((seg, i) => {
-      const hue = (hueOffset + i * 12 + level * 20) % 360;
-      const x = seg.x * GRID + GRID/2;
-      const y = seg.y * GRID + GRID/2;
-      const r = (GRID - 4) / 2;
-      const grad = ctx.createRadialGradient(x, y, r*0.2, x, y, r);
-      grad.addColorStop(0, `hsl(${hue},100%,80%)`);
-      grad.addColorStop(1, `hsl(${hue},100%,40%)`);
-      ctx.fillStyle = grad;
-      ctx.beginPath();
-      ctx.arc(x, y, r, 0, Math.PI*2);
-      ctx.fill();
+      const hue = (hueOffset + i*10 + level*20) % 360;
+      ctx.fillStyle = `hsl(${hue},100%,50%)`;
+      ctx.fillRect(seg.x * GRID, seg.y * GRID, GRID - 2, GRID - 2);
     });
 
-    hueOffset = (hueOffset + 2 + level) % 360;
+    hueOffset = (hueOffset + 1 + level) % 360;
   }
 
   function loop(ts) {
@@ -160,7 +144,6 @@
   function resize() {
     canvas.width  = canvas.clientWidth;
     canvas.height = canvas.clientHeight;
-    reset();
   }
   window.addEventListener('resize', resize);
   resize();
