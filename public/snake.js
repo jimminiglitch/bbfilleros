@@ -8,15 +8,15 @@ window.addEventListener('load', () => {
   const startOverlay      = document.getElementById('start-overlay');
   const gameOverOverlay   = document.getElementById('game-over-overlay');
   const playButton        = document.getElementById('snake-play-button');
-  const retryButton       = document.getElementById('retry-button');
+  const submitButton      = document.getElementById('submit-score');
+  const nameInput         = document.getElementById('name-input');
   const finalScoreDisplay = document.getElementById('final-score');
-  const difficultyMenu    = document.getElementById('difficulty-menu');
-  const themeMenu         = document.getElementById('theme-menu');
-  const muteButton        = document.getElementById('mute-button');
-  const touchControls     = document.getElementById('touch-controls');
-  const canvas            = document.getElementById('snake-canvas');
-  const ctx               = canvas.getContext('2d');
-  const ui = {
+  const highScoresList    = document.getElementById('high-scores-list');
+  const playAgainButton   = document.getElementById('play-again-button');
+
+  const canvas        = document.getElementById('snake-canvas');
+  const ctx           = canvas.getContext('2d');
+  const ui            = {
     score:  document.getElementById('snake-score'),
     level:  document.getElementById('snake-level'),
     best:   document.getElementById('snake-best'),
@@ -25,9 +25,17 @@ window.addEventListener('load', () => {
   const music        = document.getElementById('snake-music');
   const eatSound     = document.getElementById('eat-sound');
   const powerUpSound = document.getElementById('power-up-sound');
+  const muteButton   = document.getElementById('mute-button');
+  const touchControls= document.getElementById('touch-controls');
+
+  
+  // ── START BUTTON ─────────────────────────────────────────────────────────────
+playButton.addEventListener('click', () => {
+  startGame();
+});
 
   // ──────────────────────────────────────────────────────────────────────────
-  // State variables
+  // State
   // ──────────────────────────────────────────────────────────────────────────
   const GRID = 20;
   let cols, rows;
@@ -36,7 +44,9 @@ window.addEventListener('load', () => {
   let paused, gameOver, started, hueOffset, screenShake;
   let powerUps, particles;
   let frameAcc = 0, lastTime = 0;
-  let selectedSpeed = 5, selectedTheme = 'cyberpunk';
+
+  const HIGH_SCORES_KEY = 'snakeHighScores';
+  const MAX_HIGH_SCORES = 7;
 
   const POWER_UPS = {
     SPEED:      { color: 'cyan',    effect: 'speed',      duration: 5000, value: 2 },
@@ -47,6 +57,29 @@ window.addEventListener('load', () => {
   // ──────────────────────────────────────────────────────────────────────────
   // Helpers
   // ──────────────────────────────────────────────────────────────────────────
+  function loadHighScores() {
+    const json = localStorage.getItem(HIGH_SCORES_KEY);
+    return json ? JSON.parse(json) : [];
+  }
+
+  function saveHighScores(list) {
+    localStorage.setItem(HIGH_SCORES_KEY, JSON.stringify(list));
+  }
+
+  function displayHighScores() {
+    const list = loadHighScores();
+    highScoresList.innerHTML = list
+      .map(h => `<li>${h.name}: ${h.score}</li>`)
+      .join('');
+  }
+
+  function addHighScore(name, sc) {
+    const list = loadHighScores();
+    list.push({ name, score: sc });
+    list.sort((a, b) => b.score - a.score);
+    saveHighScores(list.slice(0, MAX_HIGH_SCORES));
+  }
+
   function placeApple() {
     do {
       apple = {
@@ -116,12 +149,12 @@ window.addEventListener('load', () => {
   }
 
   // ──────────────────────────────────────────────────────────────────────────
-  // Update & Draw
+  // Game loop
   // ──────────────────────────────────────────────────────────────────────────
   function update(delta) {
     if (!started || paused || gameOver) return;
     frameAcc += delta;
-    const interval = 1000 / (speed + level * 0.5);
+    const interval = 1000 / speed;
     if (frameAcc < interval) return;
     frameAcc = 0;
 
@@ -166,14 +199,16 @@ window.addEventListener('load', () => {
     // collision
     if (!snake.invincible) {
       if (
-        head.x < 0 || head.y < 0 ||
-        head.x >= cols || head.y >= rows ||
-        snake.slice(1).some(s => s.x === head.x && s.y === head.y)
+        head.x<0||head.y<0||
+        head.x>=cols||head.y>=rows||
+        snake.slice(1).some(s=>s.x===head.x&&s.y===head.y)
       ) {
         gameOver = true;
         ui.status.textContent = 'Game Over';
         finalScoreDisplay.textContent = `Your score: ${score}`;
         showGameOver();
+        music.pause();
+        music.currentTime = 0;
         for (let i=0; i<20; i++) createParticle(head.x, head.y, 'red');
       }
     }
@@ -185,11 +220,7 @@ window.addEventListener('load', () => {
     ctx.translate(screenShake, screenShake);
 
     // background
-    const grad = ctx.createLinearGradient(0,0,canvas.width,canvas.height);
-    grad.addColorStop(0,'rgba(0,0,0,0.9)');
-    grad.addColorStop(0.5,'rgba(255,0,255,0.1)');
-    grad.addColorStop(1,'rgba(0,0,0,0.9)');
-    ctx.fillStyle = grad;
+    ctx.fillStyle = 'rgba(0,0,0,0.3)'; 
     ctx.fillRect(0,0,canvas.width,canvas.height);
 
     // particles
@@ -203,24 +234,39 @@ window.addEventListener('load', () => {
     ctx.globalAlpha = 1;
 
     // power-ups
-    powerUps.forEach(pu => {
+    powerUps.forEach(pu=>{
       ctx.fillStyle = pu.color;
-      ctx.fillRect(pu.x*GRID,pu.y*GRID,GRID-2,GRID-2);
+      ctx.fillRect(
+        pu.x*GRID,pu.y*GRID,
+        GRID-2,GRID-2
+      );
       ctx.fillStyle = 'black';
       ctx.font = '10px Press Start 2P';
-      ctx.fillText(pu.type[0],pu.x*GRID+2,pu.y*GRID+14);
+      ctx.fillText(
+        pu.type[0],
+        pu.x*GRID+2,
+        pu.y*GRID+14
+      );
     });
 
     // apple pulse
     const pulse = Math.sin(Date.now()/300)*10;
     ctx.fillStyle = `hsl(300,100%,${50+pulse}%)`;
-    ctx.fillRect(apple.x*GRID,apple.y*GRID,GRID-2,GRID-2);
+    ctx.fillRect(
+      apple.x*GRID,
+      apple.y*GRID,
+      GRID-2,GRID-2
+    );
 
     // snake
-    snake.forEach((seg,i) => {
+    snake.forEach((seg,i)=>{
       const hue = (hueOffset + i*10 + level*20) % 360;
       ctx.fillStyle = `hsl(${hue},100%,50%)`;
-      ctx.fillRect(seg.x*GRID,seg.y*GRID,GRID-2,GRID-2);
+      ctx.fillRect(
+        seg.x*GRID,
+        seg.y*GRID,
+        GRID-2,GRID-2
+      );
     });
 
     ctx.restore();
@@ -239,37 +285,38 @@ window.addEventListener('load', () => {
   }
 
   // ──────────────────────────────────────────────────────────────────────────
-  // Game control & UI
+  // Controls & UI
   // ──────────────────────────────────────────────────────────────────────────
   function resetGame() {
     cols = Math.floor(canvas.width/GRID);
     rows = Math.floor(canvas.height/GRID);
     snake = [{ x: Math.floor(cols/2), y: Math.floor(rows/2) }];
     dx = 1; dy = 0;
-    speed = selectedSpeed;
-    score = 0; level = 1;
-    paused = false; gameOver = false; started = false;
-    hueOffset = 0; screenShake = 0;
-    powerUps = []; particles = [];
-    ui.score.textContent  = `Score: 0`;
-    ui.level.textContent  = `Level: 1`;
-    ui.best.textContent   = `Best: ${best}`;
-    ui.status.textContent = 'Running';
+    speed       = 5;
+    score       = 0;
+    level       = 1;
+    paused      = false;
+    gameOver    = false;
+    started     = false;
+    hueOffset   = 0;
+    screenShake = 0;
+    powerUps    = [];
+    particles   = [];
+    ui.score.textContent = `Score: 0`;
+    ui.level.textContent = `Level: 1`;
+    best = Number(localStorage.getItem('snakeBest')||'0');
+    ui.best.textContent  = `Best: ${best}`;
+    ui.status.textContent= 'Running';
     startOverlay.classList.remove('hidden');
     gameOverOverlay.classList.add('hidden');
+    displayHighScores();
     placeApple();
   }
 
   function startGame() {
-    // pause parent audio
-    if (window.parent && window.parent.document) {
-      window.parent.document.querySelectorAll('audio').forEach(a => {
-        if (a.id !== 'snake-music') a.pause();
-      });
-    }
     started = true;
     startOverlay.classList.add('hidden');
-    music.muted = false;
+    music.currentTime = 0;
     music.play().catch(()=>{});
     requestAnimationFrame(loop);
   }
@@ -289,44 +336,55 @@ window.addEventListener('load', () => {
   window.addEventListener('resize', resize);
   resize();
 
-  // Difficulty selector
-  difficultyMenu.querySelectorAll('button').forEach(btn => {
-    btn.addEventListener('click', () => {
-      difficultyMenu.querySelector('.selected').classList.remove('selected');
-      btn.classList.add('selected');
-      selectedSpeed = +btn.dataset.speed;
-    });
+  // Submit score
+  submitButton.addEventListener('click', () => {
+    const name = nameInput.value.trim() || 'ANON';
+    addHighScore(name, score);
+    displayHighScores();
+    submitButton.disabled = true;
+    nameInput.disabled = true;
   });
 
-  // Theme selector
-  themeMenu.querySelectorAll('button').forEach(btn => {
-    btn.addEventListener('click', () => {
-      themeMenu.querySelector('.selected').classList.remove('selected');
-      btn.classList.add('selected');
-      document.body.className = `theme-${btn.dataset.theme}`;
-    });
-  });
-
-  // Mute toggle
-  muteButton.addEventListener('click', () => {
-    music.muted = !music.muted;
-    muteButton.textContent = music.muted ? '🔇' : '🔊';
-  });
-
-  // Play button
-  playButton.addEventListener('click', startGame);
-
-  // Retry button & R key
-  retryButton.addEventListener('click', () => {
+  // Play again
+  playAgainButton.addEventListener('click', () => {
     resetGame();
     startGame();
   });
+
+   // ── Keyboard controls ────────────────────────────────────────────────────
   window.addEventListener('keydown', e => {
-    if (gameOver && (e.key === 'r' || e.key === 'R')) {
-      resetGame();
-      startGame();
+    if (!started) return;
+
+    // stop arrow keys from scrolling the page
+    if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key)) {
+      e.preventDefault();
+    }
+
+    // space to pause
+    if (e.key === ' ') {
+      paused = !paused;
+      ui.status.textContent = paused ? 'Paused' : 'Running';
+      return;
+    }
+    if (paused || gameOver) return;
+
+    // arrows to change direction (no 180° turns)
+    switch (e.key) {
+      case 'ArrowUp':
+        if (dy === 0) { dx = 0; dy = -1; }
+        break;
+      case 'ArrowDown':
+        if (dy === 0) { dx = 0; dy =  1; }
+        break;
+      case 'ArrowLeft':
+        if (dx === 0) { dx = -1; dy = 0; }
+        break;
+      case 'ArrowRight':
+        if (dx === 0) { dx =  1; dy = 0; }
+        break;
     }
   });
+
 
   // Touch controls
   touchControls.querySelectorAll('button').forEach(btn => {
@@ -339,24 +397,16 @@ window.addEventListener('load', () => {
     });
   });
 
-  // Keyboard controls
-  window.addEventListener('keydown', e => {
-    if (!started) return;
-    if (e.key === ' ') {
-      paused = !paused;
-      ui.status.textContent = paused ? 'Paused' : 'Running';
-      return;
-    }
-    if (paused || gameOver) return;
-    if      (e.key === 'ArrowUp'    && dy === 0) { dx=0;  dy=-1; }
-    else if (e.key === 'ArrowDown'  && dy === 0) { dx=0;  dy=1;  }
-    else if (e.key === 'ArrowLeft'  && dx === 0) { dx=-1; dy=0;  }
-    else if (e.key === 'ArrowRight' && dx === 0) { dx=1;  dy=0;  }
+  // Mute toggle
+  muteButton.addEventListener('click', () => {
+    music.muted = !music.muted;
+    muteButton.textContent = music.muted ? '🔇' : '🔊';
   });
 
-  // Initialize best score
-  best = Number(localStorage.getItem('snakeBest') || '0');
+  // Initialize best and high scores
+  best = Number(localStorage.getItem('snakeBest')||'0');
+  displayHighScores();
 
-  // Kick off
+  // Start fresh
   resetGame();
 });

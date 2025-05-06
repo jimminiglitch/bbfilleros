@@ -14,27 +14,11 @@
   <!-- Main Stylesheet -->
   <link rel="stylesheet" href="snake.css" />
 </head>
-<body class="theme-cyberpunk">
+<body>
   <!-- START OVERLAY -->
   <div id="start-overlay" class="overlay">
     <div class="overlay-content">
       <h1>Snake.EXE</h1>
-      <div class="menu-group">
-        <p>Select difficulty:</p>
-        <div id="difficulty-menu">
-          <button data-speed="3">Slow</button>
-          <button data-speed="5" class="selected">Normal</button>
-          <button data-speed="8">Fast</button>
-        </div>
-      </div>
-      <div class="menu-group">
-        <p>Select theme:</p>
-        <div id="theme-menu">
-          <button data-theme="cyberpunk" class="selected">Cyberpunk</button>
-          <button data-theme="green">Green</button>
-          <button data-theme="vaporwave">Vaporwave</button>
-        </div>
-      </div>
       <button id="snake-play-button">CLICK TO START</button>
     </div>
   </div>
@@ -44,7 +28,19 @@
     <div class="overlay-content">
       <h1>Game Over</h1>
       <p id="final-score">Your score: 0</p>
-      <button id="retry-button">Press R to Retry</button>
+
+      <div id="score-entry">
+        <input
+          id="name-input"
+          type="text"
+          placeholder="Your Name (max 7 chars)"
+          maxlength="7"
+        />
+        <button id="submit-score">Submit Score</button>
+      </div>
+
+      <ol id="high-scores-list"></ol>
+      <button id="play-again-button">Play Again</button>
     </div>
   </div>
 
@@ -71,9 +67,22 @@
   </div>
 
   <!-- AUDIO -->
-  <audio id="snake-music" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3" loop preload="auto"></audio>
-  <audio id="eat-sound"   src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/blip.mp3?v=1746368158788" preload="auto"></audio>
-  <audio id="power-up-sound" src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/hover.mp3?v=1746405427792" preload="auto"></audio>
+  <audio
+    id="snake-music"
+    src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3"
+    loop
+    preload="auto"
+  ></audio>
+  <audio
+    id="eat-sound"
+    src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
+    preload="auto"
+  ></audio>
+  <audio
+    id="power-up-sound"
+    src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"
+    preload="auto"
+  ></audio>
 
   <!-- Main Script -->
   <script src="snake.js"></script>

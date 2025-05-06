@@ -1,37 +1,13 @@
 /*─────────────────────────────────────────────────────────────────────────────
-  VARIABLES & THEMES
-─────────────────────────────────────────────────────────────────────────────*/
-:root {
-  --neon-cyan:   #00f0ff;
-  --neon-pink:   #f3a1ff;
-  --neon-yellow: #fffc00;
-  --neon-green:  #00ff66;
-  --overlay-bg:  rgba(0,0,0,0.85);
-}
-
-body.theme-cyberpunk {
-  --bg-gradient: linear-gradient(45deg, #000000, #1a001a, #000000);
-}
-body.theme-green {
-  --bg-gradient: linear-gradient(45deg, #001a00, #003300, #001a00);
-}
-body.theme-vaporwave {
-  --bg-gradient: linear-gradient(45deg, #330033, #663366, #330033);
-}
-
-/*─────────────────────────────────────────────────────────────────────────────
-  GLOBAL & LAYOUT
+  BACKGROUND & RESET
 ─────────────────────────────────────────────────────────────────────────────*/
 html, body {
   width: 100%;
   height: 100%;
   margin: 0; padding: 0;
-  background: var(--bg-gradient);
+  background: rgba(0,0,0,0.6); /* translucent black so stars show */
   overflow: hidden;
   font-family: 'Press Start 2P', monospace;
-}
-.hidden {
-  display: none !important;
 }
 
 /*─────────────────────────────────────────────────────────────────────────────
@@ -40,11 +16,14 @@ html, body {
 .overlay {
   position: fixed;
   inset: 0;
-  background: var(--overlay-bg);
+  background: rgba(0,0,0,0.85);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 100;
+}
+.hidden {
+  display: none !important;
 }
 .overlay-content {
   text-align: center;
@@ -53,45 +32,44 @@ html, body {
 .overlay-content h1 {
   margin-bottom: 1rem;
   font-size: 2rem;
-  color: var(--neon-cyan);
-  text-shadow: 0 0 8px var(--neon-cyan);
+  color: #00f0ff;
+  text-shadow: 0 0 8px #00f0ff;
 }
-.menu-group {
+.overlay-content p {
+  margin-bottom: 1rem;
+  font-size: 1rem;
+}
+#score-entry {
   margin-bottom: 1rem;
 }
-.menu-group p {
-  margin-bottom: 0.5rem;
-  color: var(--neon-pink);
-  text-shadow: 0 0 6px var(--neon-pink);
-}
-#difficulty-menu button,
-#theme-menu button,
-#snake-play-button,
-#retry-button {
+#score-entry input {
   font-family: inherit;
-  font-size: 0.8rem;
-  margin: 0 0.5rem;
+  font-size: 0.9rem;
+  padding: 0.5rem;
+  width: 140px;
+  text-align: center;
+  margin-right: 0.5rem;
+}
+#score-entry button,
+#snake-play-button,
+#play-again-button {
+  font-family: inherit;
+  font-size: 0.9rem;
   padding: 0.6rem 1rem;
-  border: 2px solid var(--neon-yellow);
+  border: 2px solid #fffc00;
   border-radius: 4px;
   background: rgba(0,0,0,0.7);
-  color: var(--neon-yellow);
+  color: #fffc00;
   cursor: pointer;
   transition: transform 0.2s, border-color 0.2s;
-  text-shadow: 0 0 6px var(--neon-yellow);
+  text-shadow: 0 0 6px #fffc00;
 }
-#difficulty-menu button.selected,
-#theme-menu button.selected {
-  border-color: var(--neon-cyan);
-  color: var(--neon-cyan);
-  text-shadow: 0 0 8px var(--neon-cyan);
-}
+#score-entry button.selected,
 #snake-play-button:hover,
-#retry-button:hover,
-#difficulty-menu button:hover,
-#theme-menu button:hover {
+#play-again-button:hover,
+#score-entry button:hover {
   transform: scale(1.05);
-  border-color: var(--neon-cyan);
+  border-color: #00f0ff;
 }
 
 /*─────────────────────────────────────────────────────────────────────────────
@@ -111,14 +89,29 @@ html, body {
   z-index: 2;
   background: rgba(0,0,0,0.4);
   padding: 6px 10px;
-  border: 1px solid var(--neon-cyan);
+  border: 1px solid #00f0ff;
   border-radius: 4px;
   color: white;
   font-size: 0.8rem;
-  text-shadow: 0 0 6px var(--neon-cyan);
+  text-shadow: 0 0 6px #00f0ff;
 }
 #snake-ui span {
   margin-right: 12px;
+}
+
+/*─────────────────────────────────────────────────────────────────────────────
+  HIGH SCORE LIST
+─────────────────────────────────────────────────────────────────────────────*/
+#high-scores-list {
+  list-style: decimal inside;
+  text-align: left;
+  color: #00ff66;
+  text-shadow: 0 0 6px #00ff66;
+  margin-bottom: 1rem;
+}
+#high-scores-list li {
+  margin: 0.2rem 0;
+  font-size: 0.9rem;
 }
 
 /*─────────────────────────────────────────────────────────────────────────────
@@ -132,17 +125,17 @@ html, body {
   font-size: 1.2rem;
   padding: 4px;
   background: rgba(0,0,0,0.4);
-  border: 1px solid var(--neon-pink);
+  border: 1px solid #f3a1ff;
   border-radius: 4px;
-  color: var(--neon-pink);
+  color: #f3a1ff;
   cursor: pointer;
-  text-shadow: 0 0 6px var(--neon-pink);
+  text-shadow: 0 0 6px #f3a1ff;
   transition: transform 0.2s, border-color 0.2s;
 }
 #mute-button:hover {
   transform: scale(1.1);
-  border-color: var(--neon-cyan);
-  color: var(--neon-cyan);
+  border-color: #00f0ff;
+  color: #00f0ff;
 }
 
 /*─────────────────────────────────────────────────────────────────────────────
@@ -161,15 +154,14 @@ html, body {
   font-size: 1.5rem;
   padding: 8px;
   background: rgba(0,0,0,0.4);
-  border: 1px solid var(--neon-green);
+  border: 1px solid #00ff66;
   border-radius: 4px;
-  color: var(--neon-green);
-  text-shadow: 0 0 6px var(--neon-green);
+  color: #00ff66;
   cursor: pointer;
   transition: transform 0.2s, border-color 0.2s;
 }
 #touch-controls button:hover {
   transform: scale(1.1);
-  border-color: var(--neon-cyan);
-  color: var(--neon-cyan);
+  border-color: #00f0ff;
+  color: #00f0ff;
 }
