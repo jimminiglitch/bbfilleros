@@ -7,35 +7,22 @@
     <link rel="stylesheet" href="style.css" />
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
     <style>
-      /* Add psychedelic background gradient */
-      body, html {
-        background: linear-gradient(45deg, #000000, #1a1a1a, #000000);
-      }
-      
-      /* Add glow effects to UI elements */
-      #snake-ui {
-        text-shadow: 0 0 10px var(--neon-cyan);
-      }
-      
-      #snake-play-button {
-        text-shadow: 0 0 10px var(--neon-yellow);
-        transition: all 0.3s ease;
-      }
-      
-      #snake-play-button:hover {
-        transform: translate(-50%, -50%) scale(1.1);
-        border-color: var(--neon-cyan);
-      }
-      
-      /* Add power-up and particle styles */
-      .power-up {
-        color: var(--neon-pink);
-      }
-      
-      .particle {
-        background: var(--neon-cyan);
-        border-radius: 50%;
-      }
+     function startGame() {
+  if (started) return;
+  // Pause any audio in the parent (so only snake-music plays)
+  if (window.parent && window.parent.document) {
+    window.parent.document.querySelectorAll('audio').forEach(a => {
+      if (a.id !== 'snake-music') a.pause();
+    });
+  }
+
+  started = true;
+  playButton.style.display = 'none';
+  music.muted = false;
+  music.play().catch(()=>{});
+  window.requestAnimationFrame(loop);
+}
+
     </style>
   </head>
   <body>
