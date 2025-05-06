@@ -2,9 +2,7 @@
 // snake.js
 //─────────────────────────────────────────────────────────────────────────────
 window.addEventListener('load', () => {
-  // ──────────────────────────────────────────────────────────────────────────
-  // Element refs
-  // ──────────────────────────────────────────────────────────────────────────
+  // ─── Element refs ─────────────────────────────────────────────────────────
   const startOverlay      = document.getElementById('start-overlay');
   const gameOverOverlay   = document.getElementById('game-over-overlay');
   const playButton        = document.getElementById('snake-play-button');
@@ -28,9 +26,7 @@ window.addEventListener('load', () => {
   const muteButton   = document.getElementById('mute-button');
   const touchControls= document.getElementById('touch-controls');
 
-  // ──────────────────────────────────────────────────────────────────────────
-  // State
-  // ──────────────────────────────────────────────────────────────────────────
+  // ─── State vars ────────────────────────────────────────────────────────────
   const GRID = 20;
   let cols, rows;
   let snake, dx, dy, apple;
@@ -48,25 +44,29 @@ window.addEventListener('load', () => {
     INVINCIBLE: { color: 'yellow',  effect: 'invincible', duration: 5000, value: 0 }
   };
 
-  // ──────────────────────────────────────────────────────────────────────────
-  // High-Score Helpers
-  // ──────────────────────────────────────────────────────────────────────────
+  // ─── Resize helper ─────────────────────────────────────────────────────────
+  function resize() {
+    const field = document.getElementById('game-field');
+    canvas.width  = field.clientWidth;
+    canvas.height = field.clientHeight;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  // ─── High-score helpers ────────────────────────────────────────────────────
   function loadHighScores() {
     const json = localStorage.getItem(HIGH_SCORES_KEY);
     return json ? JSON.parse(json) : [];
   }
-
   function saveHighScores(list) {
     localStorage.setItem(HIGH_SCORES_KEY, JSON.stringify(list));
   }
-
   function displayHighScores() {
     const list = loadHighScores();
     highScoresList.innerHTML = list
       .map(h => `<li>${h.name}: ${h.score}</li>`)
       .join('');
   }
-
   function addHighScore(name, sc) {
     const list = loadHighScores();
     list.push({ name, score: sc });
@@ -74,9 +74,7 @@ window.addEventListener('load', () => {
     saveHighScores(list.slice(0, MAX_HIGH_SCORES));
   }
 
-  // ──────────────────────────────────────────────────────────────────────────
-  // Game Helpers
-  // ──────────────────────────────────────────────────────────────────────────
+  // ─── Game helpers ──────────────────────────────────────────────────────────
   function placeApple() {
     do {
       apple = {
@@ -105,11 +103,11 @@ window.addEventListener('load', () => {
 
   function createParticle(x, y, color) {
     particles.push({
-      x: x*GRID + GRID/2,
-      y: y*GRID + GRID/2,
+      x: x * GRID + GRID/2,
+      y: y * GRID + GRID/2,
       size: Math.random()*4 + 2,
-      vx: (Math.random()-0.5)*2,
-      vy: (Math.random()-0.5)*2,
+      vx: (Math.random() - 0.5)*2,
+      vy: (Math.random() - 0.5)*2,
       color,
       alpha: 1
     });
@@ -131,7 +129,7 @@ window.addEventListener('load', () => {
         createParticle(snake[0].x, snake[0].y, def.color);
         break;
       case 'grow':
-        for (let i=0; i<def.value; i++) {
+        for (let i = 0; i < def.value; i++) {
           const tail = snake[snake.length - 1];
           snake.push({ x: tail.x, y: tail.y });
         }
@@ -145,9 +143,7 @@ window.addEventListener('load', () => {
     }
   }
 
-  // ──────────────────────────────────────────────────────────────────────────
-  // Update & Draw
-  // ──────────────────────────────────────────────────────────────────────────
+  // ─── Update & draw ─────────────────────────────────────────────────────────
   function update(delta) {
     if (!started || paused || gameOver) return;
     frameAcc += delta;
@@ -182,11 +178,11 @@ window.addEventListener('load', () => {
         localStorage.setItem('snakeBest', best);
         ui.best.textContent = `Best: ${best}`;
       }
-      for (let i=0; i<12; i++) createParticle(apple.x, apple.y, 'magenta');
+      for (let i = 0; i < 12; i++) createParticle(apple.x, apple.y, 'magenta');
       if (score % 50 === 0) {
         level++;
         ui.level.textContent = `Level: ${level}`;
-        for (let i=0; i<12; i++) createParticle(head.x, head.y, 'cyan');
+        for (let i = 0; i < 12; i++) createParticle(head.x, head.y, 'cyan');
       }
       placeApple();
     } else {
@@ -196,17 +192,16 @@ window.addEventListener('load', () => {
     // collision
     if (!snake.invincible) {
       if (
-        head.x<0||head.y<0||
-        head.x>=cols||head.y>=rows||
-        snake.slice(1).some(s=>s.x===head.x&&s.y===head.y)
+        head.x < 0 || head.y < 0 ||
+        head.x >= cols || head.y >= rows ||
+        snake.slice(1).some(s => s.x === head.x && s.y === head.y)
       ) {
         gameOver = true;
         ui.status.textContent = 'Game Over';
         finalScoreDisplay.textContent = `Your score: ${score}`;
         showGameOver();
-        music.pause();
-        music.currentTime = 0;
-        for (let i=0; i<20; i++) createParticle(head.x, head.y, 'red');
+        music.pause(); music.currentTime = 0;
+        for (let i = 0; i < 20; i++) createParticle(head.x, head.y, 'red');
       }
     }
   }
@@ -216,39 +211,39 @@ window.addEventListener('load', () => {
     ctx.save();
     ctx.translate(screenShake, screenShake);
 
-    // translucent black field to reveal stars
+    // translucent field
     ctx.fillStyle = 'rgba(0,0,0,0.3)';
-    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     // particles
     particles.forEach(p => {
       ctx.globalAlpha = p.alpha;
       ctx.fillStyle   = p.color;
       ctx.beginPath();
-      ctx.arc(p.x,p.y,p.size,0,2*Math.PI);
+      ctx.arc(p.x, p.y, p.size, 0, 2*Math.PI);
       ctx.fill();
     });
     ctx.globalAlpha = 1;
 
     // power-ups
-    powerUps.forEach(pu=>{
+    powerUps.forEach(pu => {
       ctx.fillStyle = pu.color;
-      ctx.fillRect(pu.x*GRID,pu.y*GRID,GRID-2,GRID-2);
+      ctx.fillRect(pu.x*GRID, pu.y*GRID, GRID-2, GRID-2);
       ctx.fillStyle = 'black';
       ctx.font = '10px Press Start 2P';
-      ctx.fillText(pu.type[0],pu.x*GRID+2,pu.y*GRID+14);
+      ctx.fillText(pu.type[0], pu.x*GRID+2, pu.y*GRID+14);
     });
 
     // apple pulse
     const pulse = Math.sin(Date.now()/300)*10;
     ctx.fillStyle = `hsl(300,100%,${50+pulse}%)`;
-    ctx.fillRect(apple.x*GRID,apple.y*GRID,GRID-2,GRID-2);
+    ctx.fillRect(apple.x*GRID, apple.y*GRID, GRID-2, GRID-2);
 
     // snake
-    snake.forEach((seg,i)=>{
+    snake.forEach((seg,i) => {
       const hue = (hueOffset + i*10 + level*20) % 360;
       ctx.fillStyle = `hsl(${hue},100%,50%)`;
-      ctx.fillRect(seg.x*GRID,seg.y*GRID,GRID-2,GRID-2);
+      ctx.fillRect(seg.x*GRID, seg.y*GRID, GRID-2, GRID-2);
     });
 
     ctx.restore();
@@ -266,31 +261,20 @@ window.addEventListener('load', () => {
     requestAnimationFrame(loop);
   }
 
-  // ──────────────────────────────────────────────────────────────────────────
-  // Controls & UI
-  // ──────────────────────────────────────────────────────────────────────────
+  // ─── Controls & UI ─────────────────────────────────────────────────────────
   function resetGame() {
-    // always stop/reset music on exit
-    music.pause();
-    music.currentTime = 0;
-
+    music.pause(); music.currentTime = 0;
     cols = Math.floor(canvas.width/GRID);
     rows = Math.floor(canvas.height/GRID);
     snake = [{ x: Math.floor(cols/2), y: Math.floor(rows/2) }];
     dx = 1; dy = 0;
-    speed       = 5;
-    score       = 0;
-    level       = 1;
-    paused      = false;
-    gameOver    = false;
-    started     = false;
-    hueOffset   = 0;
-    screenShake = 0;
-    powerUps    = [];
-    particles   = [];
+    speed = 5; score = 0; level = 1;
+    paused = false; gameOver = false; started = false;
+    hueOffset = 0; screenShake = 0;
+    powerUps = []; particles = [];
     ui.score.textContent  = `Score: 0`;
     ui.level.textContent  = `Level: 1`;
-    best = Number(localStorage.getItem('snakeBest')||'0');
+    best = Number(localStorage.getItem('snakeBest') || '0');
     ui.best.textContent   = `Best: ${best}`;
     ui.status.textContent = 'Running';
     startOverlay.classList.remove('hidden');
@@ -310,21 +294,9 @@ window.addEventListener('load', () => {
     gameOverOverlay.classList.remove('hidden');
   }
 
-  // ──────────────────────────────────────────────────────────────────────────
-  // Event bindings
-  // ──────────────────────────────────────────────────────────────────────────
-  // Resize canvas
-  function resize() {
-    canvas.width  = canvas.clientWidth;
-    canvas.height = canvas.clientHeight;
-  }
-  window.addEventListener('resize', resize);
-  resize();
-
-  // Hook up play
+  // Bindings
   playButton.addEventListener('click', startGame);
 
-  // Submit high score
   submitButton.addEventListener('click', () => {
     const name = nameInput.value.trim() || 'ANON';
     addHighScore(name, score);
@@ -333,67 +305,48 @@ window.addEventListener('load', () => {
     nameInput.disabled = true;
   });
 
-  // Play again
   playAgainButton.addEventListener('click', () => {
     resetGame();
     startGame();
   });
 
-  // Keyboard controls (arrow + space)
   window.addEventListener('keydown', e => {
     if (!started) return;
-
-    // prevent scroll
     if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key)) {
       e.preventDefault();
     }
-
     if (e.key === ' ') {
       paused = !paused;
       ui.status.textContent = paused ? 'Paused' : 'Running';
-      if (paused) music.pause();
-      else       music.play().catch(()=>{});
+      if (paused) music.pause(); else music.play().catch(()=>{});
       return;
     }
     if (paused || gameOver) return;
-
     switch (e.key) {
-      case 'ArrowUp':
-        if (dy === 0) { dx=0; dy=-1; }
-        break;
-      case 'ArrowDown':
-        if (dy === 0) { dx=0; dy=1;  }
-        break;
-      case 'ArrowLeft':
-        if (dx === 0) { dx=-1;dy=0;  }
-        break;
-      case 'ArrowRight':
-        if (dx === 0) { dx=1; dy=0;  }
-        break;
+      case 'ArrowUp': if (dy === 0) { dx = 0; dy = -1; } break;
+      case 'ArrowDown': if (dy === 0) { dx = 0; dy = 1; } break;
+      case 'ArrowLeft': if (dx === 0) { dx = -1; dy = 0; } break;
+      case 'ArrowRight': if (dx === 0) { dx = 1; dy = 0; } break;
     }
   });
 
-  // Touch controls
   touchControls.querySelectorAll('button').forEach(btn => {
     btn.addEventListener('touchstart', () => {
-      const dir = btn.dataset.dir;
-      if (dir==='up'    && dy===0) { dx=0; dy=-1; }
-      if (dir==='down'  && dy===0) { dx=0; dy=1;  }
-      if (dir==='left'  && dx===0) { dx=-1;dy=0;  }
-      if (dir==='right' && dx===0) { dx=1; dy=0;  }
+      const d = btn.dataset.dir;
+      if (d === 'up' && dy === 0)    { dx = 0; dy = -1; }
+      if (d === 'down' && dy === 0)  { dx = 0; dy = 1; }
+      if (d === 'left' && dx === 0)  { dx = -1; dy = 0; }
+      if (d === 'right' && dx === 0) { dx = 1; dy = 0; }
     });
   });
 
-  // Mute toggle
   muteButton.addEventListener('click', () => {
     music.muted = !music.muted;
     muteButton.textContent = music.muted ? '🔇' : '🔊';
   });
 
-  // Initialize best & high scores
-  best = Number(localStorage.getItem('snakeBest')||'0');
+  // Initialize
+  best = Number(localStorage.getItem('snakeBest') || '0');
   displayHighScores();
-
-  // Kickoff
   resetGame();
 });
