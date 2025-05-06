@@ -424,13 +424,58 @@ function initNatureGallery() {
   }
 }
 
-// 9) KICK IT OFF
+// ─── ARTWORK.EXE (Digital Artwork Gallery) ────────────────────────────────
+
+// 1) URLs for your digital artwork images (place these files under /public/artwork/)
+const artworkImages = [
+  'https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/whodat.gif?v=1746365769069',
+  'https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/octavia.jpg?v=1746412752104',
+  'https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/MilesSwings2025.jpg?v=1746410914289',
+  'https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/Leetridoid.jpg?v=1746411261773',
+  '/artwork/art5.jpg'
+];
+
+let artworkIndex = 0;
+const artworkImgEl = document.getElementById('artwork-img');
+
+// Preload all Artwork images
+function preloadArtwork(urls) {
+  urls.forEach(u => {
+    const i = new Image();
+    i.src = u;
+  });
+}
+
+// Show wrapped-around index
+function showArtworkImage(i) {
+  artworkIndex = (i + artworkImages.length) % artworkImages.length;
+  artworkImgEl.src = artworkImages[artworkIndex];
+}
+
+// Initialize your Artwork gallery
+function initArtworkGallery() {
+  // preload
+  preloadArtwork(artworkImages);
+
+  // first image
+  showArtworkImage(0);
+
+  // bind buttons
+  const btns = document.querySelectorAll('#artwork .gallery-controls button');
+  btns[0].onclick = () => showArtworkImage(artworkIndex - 1);
+  btns[1].onclick = () => showArtworkImage(artworkIndex + 1);
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// ensure it runs after boot + the other inits
 document.addEventListener("DOMContentLoaded", () => {
   runBootSequence().then(() => {
     initDesktopIcons();
     initStarfield();
-    initNatureGallery();
+    initNatureGallery();    
+    initArtworkGallery();   
   });
 });
+
 window.addEventListener("load", initWindowControls);
 window.addEventListener("mousedown", onSelectStart);
