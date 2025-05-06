@@ -366,6 +366,27 @@
       <a href="javascript:void(0)" onclick="openWindow('snake')">Snake</a>
     </div>
 
+    <!-- Add this before the closing body tag -->
+<div id="terminal" class="popup-window hidden">
+  <div class="window-header">
+    <span>TERMINAL.EXE</span>
+    <button class="minimize">_</button>
+    <button class="maximize">▭</button>
+    <button class="close">X</button>
+  </div>
+  <div class="window-content">
+    <div class="terminal">
+      <div class="terminal-output" id="terminal-output"></div>
+      <div class="terminal-prompt">
+        <span class="user">benjamin@cyberdeck</span>
+        <span class="path">~</span>
+        <span class="prompt">$</span>
+        <input type="text" id="terminal-input" autocomplete="off">
+      </div>
+    </div>
+  </div>
+</div>
+    
     <!-- Main Script -->
     <script src="/script.js"></script>
   </body>

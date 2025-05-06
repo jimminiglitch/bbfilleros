@@ -548,3 +548,310 @@ document.addEventListener("mousemove", e => {
     snapWindowToEdge(win);
   }
 });
+
+// Terminal commands
+const terminalCommands = {
+  'help': 'Available commands: help, about, projects, contact, exit',
+  'about': 'Benjamin Filler - Media Creator & Narrative Designer',
+  'projects': 'View projects in PROJECTS.EXE',
+  'contact': 'Contact info in CONTACT.EXE',
+  'exit': 'Closing terminal...'
+};
+
+// Initialize terminal
+function initTerminal() {
+  const input = document.getElementById('terminal-input');
+  const output = document.getElementById('terminal-output');
+  
+  input.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      const command = input.value.trim().toLowerCase();
+      const response = terminalCommands[command] || 'Command not found';
+      
+      output.innerHTML += `<div class="terminal-command">${input.value}</div>
+                          <div class="terminal-output">${response}</div>`;
+      
+      input.value = '';
+      input.scrollIntoView();
+    }
+  });
+}
+
+// Add to window initialization
+document.addEventListener("DOMContentLoaded", () => {
+  runBootSequence().then(() => {
+    initDesktopIcons();
+    initStarfield();
+    initNatureGallery();
+    initArtworkGallery();
+    initTerminal();  // Add this
+  });
+});
+
+// Add to script.js
+async function updateWeather() {
+  try {
+    const response = await fetch('https://api.openweathermap.org/data/2.5/weather?q=Birmingham&appid=YOUR_API_KEY&units=imperial');
+    const data = await response.json();
+    
+    const weatherWidget = document.getElementById('weather-widget');
+    if (weatherWidget) {
+      weatherWidget.innerHTML = `
+        <div class="weather-temp">${Math.round(data.main.temp)}°F</div>
+        <div class="weather-condition">${data.weather[0].description}</div>
+        <div class="weather-location">Birmingham, MI</div>
+      `;
+    }
+  } catch (error) {
+    console.error('Error fetching weather:', error);
+  }
+}
+
+// Add this to your HTML in the body
+<div id="weather-widget" class="weather-widget">
+  Loading weather...
+</div>
+
+// Initialize weather
+document.addEventListener("DOMContentLoaded", () => {
+  updateWeather();
+  setInterval(updateWeather, 3600000); // Update every hour
+});
+
+// Add to script.js
+let screensaverTimeout;
+let isScreensaverActive = false;
+
+function startScreensaver() {
+  if (isScreensaverActive) return;
+  
+  const screensaver = document.createElement('div');
+  screensaver.className = 'screensaver active';
+  screensaver.innerHTML = `
+    <div class="screensaver-content">
+      <div class="screensaver-artwork">
+        <img src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/whodat.gif" alt="Artwork">
+      </div>
+      <div class="screensaver-text">
+        <h2>Benjamin Filler</h2>
+        <p>Cyber Deck Active</p>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(screensaver);
+  
+  isScreensaverActive = true;
+}
+
+function stopScreensaver() {
+  const screensaver = document.querySelector('.screensaver');
+  if (screensaver) {
+    screensaver.remove();
+    isScreensaverActive = false;
+  }
+}
+
+// Listen for activity
+document.addEventListener('mousemove', () => {
+  clearTimeout(screensaverTimeout);
+  stopScreensaver();
+  screensaverTimeout = setTimeout(startScreensaver, 300000); // 5 minutes
+});
+
+document.addEventListener('keypress', () => {
+  clearTimeout(screensaverTimeout);
+  stopScreensaver();
+  screensaverTimeout = setTimeout(startScreensaver, 300000);
+});
+
+// Add to script.js
+function initMusicPlayer() {
+  const musicPlayer = document.createElement('div');
+  musicPlayer.className = 'music-player popup-window';
+  musicPlayer.innerHTML = `
+    <div class="window-header">
+      <span>MUSIC.PLAYER</span>
+      <button class="minimize">_</button>
+      <button class="maximize">▭</button>
+      <button class="close">X</button>
+    </div>
+    <div class="window-content">
+      <audio id="music-audio" controls>
+        <source src="https://your-music-file.mp3" type="audio/mpeg">
+      </audio>
+      <div id="music-tracks">
+        <div class="track" data-src="https://track1.mp3">Track 1</div>
+        <div class="track" data-src="https://track2.mp3">Track 2</div>
+        <div class="track" data-src="https://track3.mp3">Track 3</div>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(musicPlayer);
+  
+  const audio = document.getElementById('music-audio');
+  const tracks = document.querySelectorAll('.track');
+  
+  tracks.forEach(track => {
+    track.addEventListener('click', () => {
+      audio.src = track.dataset.src;
+      audio.play();
+    });
+  });
+}
+
+// Add to window initialization
+document.addEventListener("DOMContentLoaded", () => {
+  // ... existing code ...
+  initMusicPlayer();
+});
+
+// Add to script.js
+function initFileExplorer() {
+  const explorer = document.createElement('div');
+  explorer.className = 'file-explorer popup-window';
+  explorer.innerHTML = `
+    <div class="window-header">
+      <span>FILE.EXPLORER</span>
+      <button class="minimize">_</button>
+      <button class="maximize">▭</button>
+      <button class="close">X</button>
+    </div>
+    <div class="window-content">
+      <div class="explorer-path">C:\Portfolio\</div>
+      <div class="explorer-content">
+        <div class="file-item folder" data-path="projects">Projects</div>
+        <div class="file-item" data-path="resume.pdf">Resume</div>
+        <div class="file-item" data-path="contact.html">Contact</div>
+        <div class="file-item folder" data-path="artwork">Artwork</div>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(explorer);
+  
+  const files = document.querySelectorAll('.file-item');
+  
+  files.forEach(file => {
+    file.addEventListener('click', () => {
+      if (file.classList.contains('folder')) {
+        // Toggle folder view
+        file.classList.toggle('expanded');
+      } else {
+        // Open file
+        const path = file.dataset.path;
+        if (path) {
+          window.open(path, '_blank');
+        }
+      }
+    });
+  });
+}
+
+// Add to script.js
+function createNotification(message, type = 'info') {
+  const notification = document.createElement('div');
+  notification.className = `notification ${type}`;
+  notification.innerHTML = `
+    <span class="notification-icon">${type === 'info' ? 'ℹ️' : '⚠️'}</span>
+    <span class="notification-message">${message}</span>
+  `;
+  
+  document.body.appendChild(notification);
+  
+  // Auto-hide after 3 seconds
+  setTimeout(() => {
+    notification.style.opacity = '0';
+    setTimeout(() => notification.remove(), 300);
+  }, 3000);
+}
+
+// Example usage
+window.addEventListener('load', () => {
+  createNotification('Cyber Deck Initialized', 'info');
+});
+
+// Add to script.js
+function initWindowStack() {
+  const stack = document.createElement('div');
+  stack.className = 'window-stack';
+  
+  document.body.appendChild(stack);
+  
+  // Update stack when windows open/close
+  function updateStack() {
+    const windows = document.querySelectorAll('.popup-window:not(.hidden)');
+    stack.innerHTML = '';
+    
+    windows.forEach(win => {
+      const item = document.createElement('div');
+      item.className = 'window-stack-item';
+      item.textContent = win.querySelector('.window-header span').textContent;
+      item.addEventListener('click', () => {
+        win.classList.add('active');
+        win.classList.remove('hidden');
+        win.style.display = 'flex';
+      });
+      stack.appendChild(item);
+    });
+  }
+  
+  // Listen for window state changes
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('.minimize, .maximize, .close')) {
+      setTimeout(updateStack, 100);
+    }
+  });
+}
+
+// Add to script.js
+document.addEventListener('keydown', (e) => {
+  // Alt + Tab for window switching
+  if (e.altKey && e.key === 'Tab') {
+    const windows = Array.from(document.querySelectorAll('.popup-window:not(.hidden)'));
+    const currentIndex = windows.findIndex(win => win.classList.contains('active'));
+    const nextIndex = (currentIndex + 1) % windows.length;
+    
+    if (currentIndex !== -1) {
+      windows[currentIndex].classList.remove('active');
+    }
+    windows[nextIndex].classList.add('active');
+  }
+  
+  // Ctrl + W to close window
+  if (e.ctrlKey && e.key === 'w') {
+    const activeWin = document.querySelector('.popup-window.active:not(.hidden)');
+    if (activeWin) {
+      closeWindow(activeWin.id);
+    }
+  }
+  
+  // Ctrl + N for new window
+  if (e.ctrlKey && e.key === 'n') {
+    openWindow('about'); // Default to About window
+  }
+});
+
+// Add to script.js
+function initClipboardManager() {
+  const clipboard = document.createElement('div');
+  clipboard.className = 'clipboard-manager popup-window';
+  clipboard.innerHTML = `
+    <div class="window-header">
+      <span>CLIPBOARD.MANAGER</span>
+      <button class="minimize">_</button>
+      <button class="maximize">▭</button>
+      <button class="close">X</button>
+    </div>
+    <div class="window-content">
+      <textarea id="clipboard-content" placeholder="Clipboard history..."></textarea>
+    </div>
+  `;
+  
+  document.body.appendChild(clipboard);
+  
+  // Listen for copy/paste
+  document.addEventListener('copy', (e) => {
+    const text = e.clipboardData.getData('text');
+    
+    
