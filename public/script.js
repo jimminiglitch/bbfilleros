@@ -237,9 +237,9 @@ function initMusicPlayer() {
         <source src="[https://your-music-file.mp3](https://your-music-file.mp3)" type="audio/mpeg">
       </audio>
       <div id="music-tracks">
-        <div class="track" data-src="[https://track1.mp3](https://track1.mp3)">Track 1</div>
-        <div class="track" data-src="[https://track2.mp3](https://track2.mp3)">Track 2</div>
-        <div class="track" data-src="[https://track3.mp3](https://track3.mp3)">Track 3</div>
+        <div class="track" data-src="[https://your-music-file.mp3](https://your-music-file.mp3)">Track 1</div>
+        <div class="track" data-src="[https://your-music-file.mp3](https://your-music-file.mp3)">Track 2</div>
+        <div class="track" data-src="[https://your-music-file.mp3](https://your-music-file.mp3)">Track 3</div>
       </div>
     </div>
   `;
@@ -428,31 +428,7 @@ function initTerminal() {
   const output = document.getElementById('terminal-output');
   
   input.addEventListener('keypress', (e) => {
-    // Initialize everything on DOMContentLoaded
-document.addEventListener("DOMContentLoaded", () => {
-  // Run boot sequence
-  runBootSequence().then(() => {
-    // Initialize all components
-    initDesktopIcons();
-    initStarfield();
-    initNatureGallery();
-    initArtworkGallery();
-    initMusicPlayer();
-    initWeatherWidget();
-    initScreensaver();
-    initClipboardManager();
-    initFileExplorer();
-    initTerminal();
-    
-    // Initialize window controls
-    initWindowControls();
-    
-    // Initialize selection box
-    initSelectionBox();
-  });
-});
-
-// Initialize window controls
+    // 12) WINDOW CONTROLS
 function initWindowControls() {
   document.querySelectorAll(".popup-window").forEach(win => {
     const id = win.id;
@@ -483,7 +459,7 @@ function initWindowControls() {
   });
 }
 
-// Initialize selection box
+// 13) SELECTION BOX
 function initSelectionBox() {
   let selStartX, selStartY, selDiv;
 
@@ -538,7 +514,80 @@ function initSelectionBox() {
   document.addEventListener("mousedown", onSelectStart);
 }
 
-// Initialize Starfield Background
+// 14) WINDOW STACK
+function initWindowStack() {
+  const stack = document.createElement('div');
+  stack.className = 'window-stack';
+  
+  document.body.appendChild(stack);
+  
+  // Update stack when windows open/close
+  function updateStack() {
+    const windows = document.querySelectorAll('.popup-window:not(.hidden)');
+    stack.innerHTML = '';
+    
+    windows.forEach(win => {
+      const item = document.createElement('div');
+      item.className = 'window-stack-item';
+      item.textContent = win.querySelector('.window-header span').textContent;
+      item.addEventListener('click', () => {
+        win.classList.add('active');
+        win.classList.remove('hidden');
+        win.style.display = 'flex';
+      });
+      stack.appendChild(item);
+    });
+  }
+  
+  // Listen for window state changes
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('.minimize, .maximize, .close')) {
+      setTimeout(updateStack, 100);
+    }
+  });
+}
+
+// 15) DRAG AND DROP
+function initDragAndDrop() {
+  const draggables = document.querySelectorAll('.draggable');
+  
+  draggables.forEach(item => {
+    item.addEventListener('dragstart', (e) => {
+      e.dataTransfer.setData('text/plain', item.id);
+      item.classList.add('dragging');
+    });
+    
+    item.addEventListener('dragend', () => {
+      item.classList.remove('dragging');
+    });
+  });
+  
+  const dropzones = document.querySelectorAll('.dropzone');
+  
+  dropzones.forEach(zone => {
+    zone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      zone.classList.add('hover');
+    });
+    
+    zone.addEventListener('dragleave', () => {
+      zone.classList.remove('hover');
+    });
+    
+    zone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      zone.classList.remove('hover');
+      const id = e.dataTransfer.getData('text/plain');
+      const draggable = document.getElementById(id);
+      if (draggable) {
+        zone.appendChild(draggable);
+        createNotification('File moved successfully', 'info');
+      }
+    });
+  });
+}
+
+// 16) STARFIELD BACKGROUND
 function initStarfield() {
   const canvas = document.getElementById("background-canvas");
   const ctx = canvas.getContext("2d");
@@ -588,73 +637,77 @@ function initStarfield() {
   })();
 }
 
-// Initialize Nature Gallery
-function initNatureGallery() {
-  const images = [
-    '[https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/Galloway%20Geese%20at%20Sunset.png',](https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/Galloway%20Geese%20at%20Sunset.png',)
-    // ... add all your nature images
-  ];
+// 17) GALLERY INITIALIZATION
+const natureImages = [
+  '[https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/Galloway%20Geese%20at%20Sunset.png',](https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/Galloway%20Geese%20at%20Sunset.png',)
+  '[https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/A%20Sedge%20of%20Sandhill%20on%20the%20Green.png',](https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/A%20Sedge%20of%20Sandhill%20on%20the%20Green.png',)
+  '[https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/GoldenHourGeese.png',](https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/GoldenHourGeese.png',)
+  '[https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/bombilate%20vicissitude.png',](https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/bombilate%20vicissitude.png',)
+  '[https://cdn.glitch.me/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/SB1012.png',](https://cdn.glitch.me/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/SB1012.png',)
+  '[https://cdn.glitch.me/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/Calm%20Reeds.png',](https://cdn.glitch.me/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/Calm%20Reeds.png',)
+                                                                                   // 17) GALLERY INITIALIZATION (continued)
+const natureImages = [
+  'https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/LeafTrail.png',
+  'https://cdn.glitch.me/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/HawkTrail.png',
+  'https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/TrailMix108.png',
+  'https://cdn.glitch.me/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/ToadInTheHole.png'
+];
 
+const artworkImages = [
+  'https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/whodat.gif',
+  'https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/octavia.jpg',
+  'https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/MilesSwings2025.jpg',
+  'https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/Leetridoid.jpg',
+  'https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/decay%20psych.png'
+];
+
+function initNatureGallery() {
   let index = 0;
   const img = document.getElementById('nature-img');
-
+  
   function showImage(i) {
-    index = (i + images.length) % images.length;
-    img.src = images[index];
+    index = (i + natureImages.length) % natureImages.length;
+    img.src = natureImages[index];
   }
-
+  
   document.getElementById('prevNature').addEventListener('click', () => showImage(index - 1));
   document.getElementById('nextNature').addEventListener('click', () => showImage(index + 1));
 }
 
-// Initialize Artwork Gallery
 function initArtworkGallery() {
-  const images = [
-    '[https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/whodat.gif',](https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/whodat.gif',)
-    // ... add all your artwork images
-  ];
-
   let index = 0;
   const img = document.getElementById('artwork-img');
-
+  
   function showImage(i) {
-    index = (i + images.length) % images.length;
-    img.src = images[index];
+    index = (i + artworkImages.length) % artworkImages.length;
+    img.src = artworkImages[index];
   }
-
+  
   document.querySelector('#artwork .gallery-controls button:first-child')
     .addEventListener('click', () => showImage(index - 1));
   document.querySelector('#artwork .gallery-controls button:last-child')
     .addEventListener('click', () => showImage(index + 1));
 }
 
-// Initialize Weather Widget
-function initWeatherWidget() {
-  updateWeather();
-  setInterval(updateWeather, 3600000); // Update every hour
-}
-
-// Initialize Screensaver
-function initScreensaver() {
-  screensaverTimeout = setTimeout(startScreensaver, 300000); // 5 minutes
-}
-
-// Keyboard Shortcuts
-document.addEventListener('keydown', (e) => {
-  // Alt + Tab for window switching
-  if (e.altKey && e.key === 'Tab') {
-    const windows = Array.from(document.querySelectorAll('.popup-window:not(.hidden)'));
-    const currentIndex = windows.findIndex(win => win.classList.contains('active'));
-    const nextIndex = (currentIndex + 1) % windows.length;
-    
-    if (currentIndex !== -1) {
-      windows[currentIndex].classList.remove('active');
-    }
-    windows[nextIndex].classList.add('active');
-  }
+// 18) SYSTEM NOTIFICATIONS
+function createNotification(message, type = 'info') {
+  const notification = document.createElement('div');
+  notification.className = `notification ${type}`;
+  notification.innerHTML = `
+    <span class="notification-icon">${type === 'info' ? 'ℹ️' : '⚠️'}</span>
+    <span class="notification-message">${message}</span>
+  `;
   
-  // Ctrl + W to close window
-  // Keyboard Shortcuts
+  document.body.appendChild(notification);
+  
+  // Auto-hide after 3 seconds
+  setTimeout(() => {
+    notification.style.opacity = '0';
+    setTimeout(() => notification.remove(), 300);
+  }, 3000);
+}
+
+// 19) KEYBOARD SHORTCUTS
 document.addEventListener('keydown', (e) => {
   // Alt + Tab for window switching
   if (e.altKey && e.key === 'Tab') {
@@ -702,98 +755,7 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-// Window Stack View
-function initWindowStack() {
-  const stack = document.createElement('div');
-  stack.className = 'window-stack';
-  
-  document.body.appendChild(stack);
-  
-  // Update stack when windows open/close
-  function updateStack() {
-    const windows = document.querySelectorAll('.popup-window:not(.hidden)');
-    stack.innerHTML = '';
-    
-    windows.forEach(win => {
-      const item = document.createElement('div');
-      item.className = 'window-stack-item';
-      item.textContent = win.querySelector('.window-header span').textContent;
-      item.addEventListener('click', () => {
-        win.classList.add('active');
-        win.classList.remove('hidden');
-        win.style.display = 'flex';
-      });
-      stack.appendChild(item);
-    });
-  }
-  
-  // Listen for window state changes
-  document.addEventListener('click', (e) => {
-    if (e.target.closest('.minimize, .maximize, .close')) {
-      setTimeout(updateStack, 100);
-    }
-  });
-}
-
-// System Notifications
-function createNotification(message, type = 'info') {
-  const notification = document.createElement('div');
-  notification.className = `notification ${type}`;
-  notification.innerHTML = `
-    <span class="notification-icon">${type === 'info' ? 'ℹ️' : '⚠️'}</span>
-    <span class="notification-message">${message}</span>
-  `;
-  
-  document.body.appendChild(notification);
-  
-  // Auto-hide after 3 seconds
-  setTimeout(() => {
-    notification.style.opacity = '0';
-    setTimeout(() => notification.remove(), 300);
-  }, 3000);
-}
-
-// Drag and Drop
-function initDragAndDrop() {
-  const draggables = document.querySelectorAll('.draggable');
-  
-  draggables.forEach(item => {
-    item.addEventListener('dragstart', (e) => {
-      e.dataTransfer.setData('text/plain', item.id);
-      item.classList.add('dragging');
-    });
-    
-    item.addEventListener('dragend', () => {
-      item.classList.remove('dragging');
-    });
-  });
-  
-  const dropzones = document.querySelectorAll('.dropzone');
-  
-  dropzones.forEach(zone => {
-    zone.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      zone.classList.add('hover');
-    });
-    
-    zone.addEventListener('dragleave', () => {
-      zone.classList.remove('hover');
-    });
-    
-    zone.addEventListener('drop', (e) => {
-      e.preventDefault();
-      zone.classList.remove('hover');
-      const id = e.dataTransfer.getData('text/plain');
-      const draggable = document.getElementById(id);
-      if (draggable) {
-        zone.appendChild(draggable);
-        createNotification('File moved successfully', 'info');
-      }
-    });
-  });
-}
-
-// Final Initialization
+// 20) FINAL INITIALIZATION
 document.addEventListener('DOMContentLoaded', () => {
   // Initialize all components
   initDesktopIcons();
@@ -817,7 +779,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// Clean up on unload
+// 21) CLEANUP AND STATE MANAGEMENT
 window.addEventListener('beforeunload', () => {
   // Save window positions
   const windows = document.querySelectorAll('.popup-window');
@@ -839,7 +801,6 @@ window.addEventListener('beforeunload', () => {
   }
 });
 
-// Restore saved state
 window.addEventListener('load', () => {
   // Restore window positions
   Object.entries(windowStates).forEach(([id, bounds]) => {
@@ -858,211 +819,3 @@ window.addEventListener('load', () => {
     }
   }
 });
-  // Terminal Commands
-const terminalCommands = {
-  'help': 'Available commands: help, about, projects, contact, exit',
-  'about': 'Benjamin Filler - Media Creator & Narrative Designer',
-  'projects': 'View projects in PROJECTS.EXE',
-  'contact': 'Contact info in CONTACT.EXE',
-  'exit': 'Closing terminal...'
-};
-
-// Initialize terminal
-function initTerminal() {
-  const input = document.getElementById('terminal-input');
-  const output = document.getElementById('terminal-output');
-  
-  input.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-      const command = input.value.trim().toLowerCase();
-      const response = terminalCommands[command] || 'Command not found';
-      
-      output.innerHTML += `
-        <div class="terminal-command">${input.value}</div>
-        <div class="terminal-output">${response}</div>
-      `;
-      
-      input.value = '';
-      input.scrollIntoView();
-    }
-  });
-}
-
-// Initialize File Explorer
-function initFileExplorer() {
-  const explorer = document.createElement('div');
-  explorer.className = 'file-explorer popup-window';
-  explorer.innerHTML = `
-    <div class="window-header">
-      <span>FILE.EXPLORER</span>
-      <button class="minimize">_</button>
-      <button class="maximize">▭</button>
-      <button class="close">X</button>
-    </div>
-    <div class="window-content">
-      <div class="explorer-path">C:\Portfolio\</div>
-      <div class="explorer-content">
-        <div class="file-item folder" data-path="projects">Projects</div>
-        <div class="file-item" data-path="resume.pdf">Resume</div>
-        <div class="file-item" data-path="contact.html">Contact</div>
-        <div class="file-item folder" data-path="artwork">Artwork</div>
-      </div>
-    </div>
-  `;
-  
-  document.body.appendChild(explorer);
-  
-  const files = document.querySelectorAll('.file-item');
-  
-  files.forEach(file => {
-    file.addEventListener('click', () => {
-      if (file.classList.contains('folder')) {
-        // Toggle folder view
-        file.classList.toggle('expanded');
-      } else {
-        // Open file
-        const path = file.dataset.path;
-        if (path) {
-          window.open(path, '_blank');
-        }
-      }
-    });
-  });
-}
-
-// Initialize Clipboard Manager
-function initClipboardManager() {
-  const clipboard = document.createElement('div');
-  clipboard.className = 'clipboard-manager popup-window';
-  clipboard.innerHTML = `
-    <div class="window-header">
-      <span>CLIPBOARD.MANAGER</span>
-      <button class="minimize">_</button>
-      <button class="maximize">▭</button>
-      <button class="close">X</button>
-    </div>
-    <div class="window-content">
-      <textarea id="clipboard-content" placeholder="Clipboard history..."></textarea>
-    </div>
-  `;
-  
-  document.body.appendChild(clipboard);
-  
-  // Load saved clipboard content
-  const savedContent = localStorage.getItem('clipboardContent');
-  if (savedContent) {
-    document.getElementById('clipboard-content').value = savedContent;
-  }
-  
-  // Listen for copy/paste
-  document.addEventListener('copy', (e) => {
-    const text = e.clipboardData.getData('text');
-    const content = document.getElementById('clipboard-content');
-    if (content) {
-      content.value += `\n${new Date().toLocaleString()}: ${text}`;
-      localStorage.setItem('clipboardContent', content.value);
-    }
-  });
-}
-
-// Initialize Music Player
-function initMusicPlayer() {
-  const musicPlayer = document.createElement('div');
-  musicPlayer.className = 'music-player popup-window';
-  musicPlayer.innerHTML = `
-    <div class="window-header">
-      <span>MUSIC.PLAYER</span>
-      <button class="minimize">_</button>
-      <button class="maximize">▭</button>
-      <button class="close">X</button>
-    </div>
-    <div class="window-content">
-      <audio id="music-audio" controls>
-        <source src="[https://your-music-file.mp3](https://your-music-file.mp3)" type="audio/mpeg">
-      </audio>
-      <div id="music-tracks">
-        <div class="track" data-src="[https://track1.mp3](https://track1.mp3)">Track 1</div>
-        <div class="track" data-src="[https://track2.mp3](https://track2.mp3)">Track 2</div>
-        <div class="track" data-src="[https://track3.mp3](https://track3.mp3)">Track 3</div>
-      </div>
-    </div>
-  `;
-  
-  document.body.appendChild(musicPlayer);
-  
-  const audio = document.getElementById('music-audio');
-  const tracks = document.querySelectorAll('.track');
-  
-  tracks.forEach(track => {
-    track.addEventListener('click', () => {
-      audio.src = track.dataset.src;
-      audio.play();
-    });
-  });
-}
-
-// Initialize Weather Widget
-async function initWeatherWidget() {
-  try {
-    const response = await fetch('https://api.openweathermap.org/data/2.5/weather?q=Birmingham&appid=YOUR_API_KEY&units=imperial');
-    const data = await response.json();
-    
-    const widget = document.getElementById('weather-widget');
-    if (widget) {
-      widget.innerHTML = `
-        <div class="weather-temp">${Math.round(data.main.temp)}°F</div>
-        <div class="weather-condition">${data.weather[0].description}</div>
-        <div class="weather-location">Birmingham, MI</div>
-      `;
-    }
-  } catch (error) {
-    console.error('Error fetching weather:', error);
-    createNotification('Failed to fetch weather data', 'error');
-  }
-}
-
-// Initialize Screensaver
-function initScreensaver() {
-  let screensaverTimeout;
-  let isScreensaverActive = false;
-
-  function startScreensaver() {
-    if (isScreensaverActive) return;
-    
-    const screensaver = document.createElement('div');
-    screensaver.className = 'screensaver active';
-    screensaver.innerHTML = `
-      <div class="screensaver-content">
-        <div class="screensaver-artwork">
-          <img src="[https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/whodat.gif"](https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/whodat.gif") alt="Artwork">
-        </div>
-        <div class="screensaver-text">
-          <h2>Benjamin Filler</h2>
-          <p>Cyber Deck Active</p>
-        </div>
-      </div>
-    `;
-    document.body.appendChild(screensaver);
-    
-    isScreensaverActive = true;
-  }
-
-  function stopScreensaver() {
-    const screensaver = document.querySelector('.screensaver');
-    if (screensaver) {
-      screensaver.remove();
-      isScreensaverActive = false;
-    }
-  }
-
-  // Listen for activity
-  document.addEventListener('mousemove', () => {
-    clearTimeout(screensaverTimeout);
-    stopScreensaver();
-    screensaverTimeout = setTimeout(startScreensaver, 300000); // 5 minutes
-  });
-
-  document.addEventListener('keypress', () => {
-    clearTimeout(screensaverTimeout);
-    stopScreensaver();
-    screensaverTimeout = setTimeout(startScreensaver, 300000);
