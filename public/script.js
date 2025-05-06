@@ -27,18 +27,19 @@ function openWindow(id) {
   document.getElementById("start-menu").style.display = "none";
   document.querySelectorAll(".popup-window").forEach(w => w.classList.remove("active"));
 
-  // 2) Lazy-load Snake iframe
-  if (id === "snake") {
-    const iframe = win.querySelector("iframe[data-src]");
-    if (iframe && !iframe.src) iframe.src = iframe.dataset.src;
-  }
+  // 2) Lazy-load any <iframe data-src> in this window
+  win.querySelectorAll("iframe[data-src]").forEach(iframe => {
+    if (!iframe.src) {
+      iframe.src = iframe.dataset.src;
+    }
+  });
 
   // 3) Lazy-load any <video data-src> in this window
   win.querySelectorAll("video[data-src]").forEach(v => {
     if (!v.src) {
       v.src = v.dataset.src;
       v.load();
-      v.play().catch(() => { /* autoplay may require a gesture */ });
+      v.play().catch(() => { /* may require a user gesture */ });
     }
   });
 
@@ -194,97 +195,83 @@ function runBootSequence() {
 // 5) DESKTOP ICONS (double-click to open + drag-group)
 function initDesktopIcons() {
   document.querySelectorAll(".desktop-icon").forEach(icon => {
-    // double-click to open
+    // only double-click opens now
     icon.addEventListener("dblclick", () => openWindow(icon.dataset.window));
 
     // drag-group start
-   icon.addEventListener("mousedown", e => {
-  e.preventDefault();
-  const parentRect = icon.parentElement.getBoundingClientRect();
-  const clickRect  = icon.getBoundingClientRect();
+    icon.addEventListener("mousedown", e => {
+      e.preventDefault();
+      const parentRect = icon.parentElement.getBoundingClientRect();
+      const clickRect  = icon.getBoundingClientRect();
 
-  // Build your drag‐group: if this icon was already selected, drag ALL selected;
-  // otherwise clear selection & only drag this one.
-  let group;
-  if (icon.classList.contains("selected")) {
-    group = Array.from(document.querySelectorAll(".desktop-icon.selected"));
-  } else {
-    document.querySelectorAll(".desktop-icon.selected")
-      .forEach(ic => ic.classList.remove("selected"));
-    icon.classList.add("selected");
-    group = [icon];
-  }
+      let group;
+      if (icon.classList.contains("selected")) {
+        group = Array.from(document.querySelectorAll(".desktop-icon.selected"));
+      } else {
+        document.querySelectorAll(".desktop-icon.selected")
+          .forEach(ic => ic.classList.remove("selected"));
+        icon.classList.add("selected");
+        group = [icon];
+      }
 
-  // Compute initial offsets
-  const shiftX = e.clientX - clickRect.left;
-  const shiftY = e.clientY - clickRect.top;
+      const shiftX = e.clientX - clickRect.left;
+      const shiftY = e.clientY - clickRect.top;
 
-  // Record each icon’s starting position
-  const groupData = group.map(ic => {
-    const r = ic.getBoundingClientRect();
-    const startLeft = r.left - parentRect.left;
-    const startTop  = r.top  - parentRect.top;
-    ic.style.left  = `${startLeft}px`;
-    ic.style.top   = `${startTop}px`;
-    ic.style.zIndex = getNextZIndex();
-    return { icon: ic, startLeft, startTop };
-  });
+      const groupData = group.map(ic => {
+        const r = ic.getBoundingClientRect();
+        const startLeft = r.left - parentRect.left;
+        const startTop  = r.top  - parentRect.top;
+        ic.style.left  = `${startLeft}px`;
+        ic.style.top   = `${startTop}px`;
+        ic.style.zIndex = getNextZIndex();
+        return { icon: ic, startLeft, startTop };
+      });
 
-  // Drag listener
-  function onMouseMove(e) {
-    const dx = (e.clientX - shiftX - parentRect.left) - groupData[0].startLeft;
-    const dy = (e.clientY - shiftY - parentRect.top)  - groupData[0].startTop;
-    groupData.forEach(({ icon, startLeft, startTop }) => {
-      icon.style.left = `${startLeft + dx}px`;
-      icon.style.top  = `${startTop  + dy}px`;
+      function onMouseMove(e) {
+        const dx = (e.clientX - shiftX - parentRect.left) - groupData[0].startLeft;
+        const dy = (e.clientY - shiftY - parentRect.top)  - groupData[0].startTop;
+        groupData.forEach(({ icon, startLeft, startTop }) => {
+          icon.style.left = `${startLeft + dx}px`;
+          icon.style.top  = `${startTop  + dy}px`;
+        });
+      }
+
+      document.addEventListener("mousemove", onMouseMove);
+      document.addEventListener("mouseup", () => {
+        document.removeEventListener("mousemove", onMouseMove);
+      }, { once: true });
     });
-  }
 
-  document.addEventListener("mousemove", onMouseMove);
-  document.addEventListener("mouseup", () => {
-    document.removeEventListener("mousemove", onMouseMove);
-  }, { once: true });
-});
-
-
-    // disable native drag ghost
     icon.ondragstart = () => false;
   });
 }
 
 // 6) CLICK-AND-DRAG MULTI-SELECT (rainbow selector box)
 let selStartX, selStartY, selDiv;
-
 function onSelectStart(e) {
-  if (e.target.closest(".desktop-icon, .popup-window, #start-bar, #start-menu")) {
-    return;
-  }
-  selStartX = e.clientX;
-  selStartY = e.clientY;
-  selDiv    = document.createElement("div");
+  if (e.target.closest(".desktop-icon, .popup-window, #start-bar, #start-menu")) return;
+  selStartX = e.clientX; selStartY = e.clientY;
+  selDiv = document.createElement("div");
   selDiv.id = "selection-rect";
-  selDiv.style.left   = `${selStartX}px`;
-  selDiv.style.top    = `${selStartY}px`;
-  selDiv.style.width  = "0px";
-  selDiv.style.height = "0px";
+  selDiv.style.left  = `${selStartX}px`;
+  selDiv.style.top   = `${selStartY}px`;
+  selDiv.style.width = "0px";
+  selDiv.style.height= "0px";
   document.body.appendChild(selDiv);
-
   document.addEventListener("mousemove", onSelectMove);
   document.addEventListener("mouseup", onSelectEnd, { once: true });
   e.preventDefault();
 }
-
 function onSelectMove(e) {
   if (!selDiv) return;
   const x = Math.min(e.clientX, selStartX),
         y = Math.min(e.clientY, selStartY),
         w = Math.abs(e.clientX - selStartX),
         h = Math.abs(e.clientY - selStartY);
-  selDiv.style.left   = `${x}px`;
-  selDiv.style.top    = `${y}px`;
-  selDiv.style.width  = `${w}px`;
-  selDiv.style.height = `${h}px`;
-
+  selDiv.style.left  = `${x}px`;
+  selDiv.style.top   = `${y}px`;
+  selDiv.style.width = `${w}px`;
+  selDiv.style.height= `${h}px`;
   const box = selDiv.getBoundingClientRect();
   document.querySelectorAll(".desktop-icon").forEach(icon => {
     const r = icon.getBoundingClientRect();
@@ -297,7 +284,6 @@ function onSelectMove(e) {
     icon.classList.toggle("selected", inside);
   });
 }
-
 function onSelectEnd() {
   if (selDiv) selDiv.remove();
   selDiv = null;
@@ -307,48 +293,31 @@ function onSelectEnd() {
 function initStarfield() {
   const canvas = document.getElementById("background-canvas");
   const ctx    = canvas.getContext("2d");
-
-  function resize() {
-    canvas.width  = window.innerWidth;
-    canvas.height = window.innerHeight;
-  }
+  function resize(){ canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
   window.addEventListener("resize", resize);
   resize();
-
   const numStars = 300;
   const stars = Array.from({ length: numStars }, () => ({
-    x: Math.random() * canvas.width,
-    y: Math.random() * canvas.height,
-    z: Math.random() * canvas.width,
+    x: Math.random()*canvas.width,
+    y: Math.random()*canvas.height,
+    z: Math.random()*canvas.width,
     o: Math.random()
   }));
-
-  (function animate() {
-    // fade trails
+  ;(function animate(){
     ctx.fillStyle = 'rgba(0,0,0,0.4)';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    // draw stars
+    ctx.fillRect(0,0,canvas.width,canvas.height);
     for (let s of stars) {
       s.z -= 2;
-      if (s.z <= 0) {
-        s.z = canvas.width;
-        s.x = Math.random() * canvas.width;
-        s.y = Math.random() * canvas.height;
-      }
+      if (s.z <= 0) { s.z = canvas.width; s.x = Math.random()*canvas.width; s.y = Math.random()*canvas.height; s.o = Math.random(); }
       const k  = 128.0 / s.z;
-      const px = (s.x - canvas.width/2) * k + canvas.width/2;
-      const py = (s.y - canvas.height/2) * k + canvas.height/2;
-      const sz = Math.max(0, (1 - s.z / canvas.width) * 3);
-
+      const px = (s.x - canvas.width/2)*k + canvas.width/2;
+      const py = (s.y - canvas.height/2)*k + canvas.height/2;
+      const sz = Math.max(0, (1 - s.z/canvas.width)*3);
       ctx.globalAlpha = s.o;
       ctx.fillStyle   = '#fff';
-      ctx.beginPath();
-      ctx.arc(px, py, sz, 0, Math.PI * 2);
-      ctx.fill();
+      ctx.beginPath(); ctx.arc(px,py,sz,0,Math.PI*2); ctx.fill();
     }
     ctx.globalAlpha = 1;
-
     requestAnimationFrame(animate);
   })();
 }
@@ -361,11 +330,9 @@ function initWindowControls() {
     const btnMin = header.querySelector(".minimize");
     const btnMax = header.querySelector(".maximize");
     const btnCls = header.querySelector(".close");
-
     if (btnMin) btnMin.addEventListener("click", () => minimizeWindow(id));
     if (btnMax) btnMax.addEventListener("click", () => toggleMaximizeWindow(id));
     if (btnCls) btnCls.addEventListener("click", () => closeWindow(id));
-
     let isDragging = false, offsetX = 0, offsetY = 0;
     header.addEventListener("mousedown", e => {
       isDragging = true;
@@ -383,104 +350,14 @@ function initWindowControls() {
   });
 }
 
-// ─── NATURE.EXE (Gallery) ──────────────────────────────────────────────────
-
-// 1) Your Nature image URLs
-const natureImages = [
-  'https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/Galloway%20Geese%20at%20Sunset.png?v=1746411517025',
-  'https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/A%20Sedge%20of%20Sandhill%20on%20the%20Green.png?v=1746411505927',
-  'https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/GoldenHourGeese.png?v=1746411283749',
-  'https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/bombilate%20vicissitude.png?v=1746411262153',
-  'https://cdn.glitch.me/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/SB1012.png?v=1746413539089',
-  'https://cdn.glitch.me/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/Calm%20Reeds.png?v=1746413471050',
-  'https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/LeafTrail.png?v=1746413486576',
-  'https://cdn.glitch.me/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/HawkTrail.png?v=1746413521889',
-  'https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/TrailMix108.png?v=1746413545072',
-  'https://cdn.glitch.me/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/ToadInTheHole.png?v=1746413566459'
-];
-
-let natureIndex = 0;
-const natureImgEl = document.getElementById('nature-img');
-
-// Preload all the images:
-function preloadNature(urls) {
-  urls.forEach(u => {
-    const i = new Image();
-    i.src = u;
-  });
-}
-
-// Show the image at (wrapped) index i:
-function showNatureImage(i) {
-  natureIndex = (i + natureImages.length) % natureImages.length;
-  natureImgEl.src = natureImages[natureIndex];
-}
-
-// Wire up your Prev/Next buttons and kickoff:
-function initNatureGallery() {
-  preloadNature(natureImages);
-  showNatureImage(0);
-
-  // find the two buttons in the nature window:
-  const btns = document.querySelectorAll('#nature .window-content > div button');
-  if (btns.length === 2) {
-    btns[0].onclick = () => showNatureImage(natureIndex - 1);
-    btns[1].onclick = () => showNatureImage(natureIndex + 1);
-  }
-}
-
-// ─── ARTWORK.EXE (Digital Artwork Gallery) ────────────────────────────────
-
-// 1) URLs for your digital artwork images (place these files under /public/artwork/)
-const artworkImages = [
-  'https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/whodat.gif?v=1746365769069',
-  'https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/octavia.jpg?v=1746412752104',
-  'https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/MilesSwings2025.jpg?v=1746410914289',
-  'https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/Leetridoid.jpg?v=1746411261773',
-  'https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/decay%20psych.png?v=1746500904118'
-];
-
-let artworkIndex = 0;
-const artworkImgEl = document.getElementById('artwork-img');
-
-// Preload all Artwork images
-function preloadArtwork(urls) {
-  urls.forEach(u => {
-    const i = new Image();
-    i.src = u;
-  });
-}
-
-// Show wrapped-around index
-function showArtworkImage(i) {
-  artworkIndex = (i + artworkImages.length) % artworkImages.length;
-  artworkImgEl.src = artworkImages[artworkIndex];
-}
-
-// Initialize your Artwork gallery
-function initArtworkGallery() {
-  // preload
-  preloadArtwork(artworkImages);
-
-  // first image
-  showArtworkImage(0);
-
-  // bind buttons
-  const btns = document.querySelectorAll('#artwork .gallery-controls button');
-  btns[0].onclick = () => showArtworkImage(artworkIndex - 1);
-  btns[1].onclick = () => showArtworkImage(artworkIndex + 1);
-}
-
-// ──────────────────────────────────────────────────────────────────────────
-// ensure it runs after boot + the other inits
+// INIT everything
 document.addEventListener("DOMContentLoaded", () => {
   runBootSequence().then(() => {
     initDesktopIcons();
     initStarfield();
-    initNatureGallery();    
-    initArtworkGallery();   
+    initNatureGallery();
+    initArtworkGallery();
   });
 });
-
 window.addEventListener("load", initWindowControls);
 window.addEventListener("mousedown", onSelectStart);
