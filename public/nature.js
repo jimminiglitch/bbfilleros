@@ -21,4 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   showSlide(currentIndex);
+
+  // Ensure window is scrollable
+  document.body.style.overflowY = "auto";
 });
