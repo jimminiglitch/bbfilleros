@@ -1,0 +1,12 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  background: black;
+  overflow: hidden;
+  height: 100%;
+}
+#pong-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
