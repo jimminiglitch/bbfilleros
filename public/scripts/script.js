@@ -183,3 +183,117 @@ function initDesktopIcons() {
     icon.addEventListener("click", () => openWindow(icon.dataset.window));
   });
 }
+//────────────────────────────────────────
+//   Click-and-drag Multi-select Box
+//────────────────────────────────────────
+
+let selStartX, selStartY, selDiv;
+
+function startMultiSelect(e) {
+  if (e.target.closest(".desktop-icon, .popup-window, #start-bar, #start-menu")) return;
+
+  selStartX = e.clientX;
+  selStartY = e.clientY;
+
+  selDiv = document.createElement("div");
+  selDiv.id = "selection-rect";
+  selDiv.style.left = `${selStartX}px`;
+  selDiv.style.top = `${selStartY}px`;
+  selDiv.style.width = "0px";
+  selDiv.style.height = "0px";
+  document.body.appendChild(selDiv);
+
+  document.addEventListener("mousemove", dragMultiSelect);
+  document.addEventListener("mouseup", endMultiSelect, { once: true });
+
+  e.preventDefault();
+}
+
+function dragMultiSelect(e) {
+  if (!selDiv) return;
+  const x = Math.min(e.clientX, selStartX);
+  const y = Math.min(e.clientY, selStartY);
+  const w = Math.abs(e.clientX - selStartX);
+  const h = Math.abs(e.clientY - selStartY);
+
+  selDiv.style.left = `${x}px`;
+  selDiv.style.top = `${y}px`;
+  selDiv.style.width = `${w}px`;
+  selDiv.style.height = `${h}px`;
+
+  const box = selDiv.getBoundingClientRect();
+  document.querySelectorAll(".desktop-icon").forEach(icon => {
+    const r = icon.getBoundingClientRect();
+    const inside =
+      r.left >= box.left && r.right <= box.right &&
+      r.top >= box.top && r.bottom <= box.bottom;
+    icon.classList.toggle("selected", inside);
+  });
+}
+
+function endMultiSelect() {
+  if (selDiv) selDiv.remove();
+  selDiv = null;
+}
+
+//────────────────────────────────────────
+//   Boot Sequence
+//────────────────────────────────────────
+
+function initBootSequence() {
+  const bootScreen = document.getElementById("bootScreen");
+  const logEl = document.getElementById("boot-log");
+  const progress = document.getElementById("progress-bar");
+
+  const msgs = [
+    "[ OK ] Initializing hardware...",
+    "[ OK ] Loading kernel modules...",
+    "[ OK ] Mounting filesystems...",
+    "[ OK ] Starting system services...",
+    "[ OK ] CyberDeck ready.",
+    "[ DONE ] Boot complete."
+  ];
+
+  let idx = 0;
+  const total = msgs.length;
+  const delay = 400;
+
+  const typer = setInterval(() => {
+    logEl.textContent += msgs[idx] + "\n";
+    logEl.scrollTop = logEl.scrollHeight;
+    progress.style.width = `${((idx + 1) / total) * 100}%`;
+    idx++;
+    if (idx === total) {
+      clearInterval(typer);
+      setTimeout(() => {
+        bootScreen.style.transition = "opacity 0.8s";
+        bootScreen.style.opacity = "0";
+        setTimeout(() => {
+          bootScreen.style.display = "none";
+        }, 800);
+      }, 500);
+    }
+  }, delay);
+}
+
+//────────────────────────────────────────
+//   Clock (Taskbar Time Display)
+//────────────────────────────────────────
+
+function initClock() {
+  const clk = document.getElementById("clock");
+  function updateClock() {
+    if (clk) clk.textContent = new Date().toLocaleTimeString();
+  }
+  setInterval(updateClock, 1000);
+  updateClock();
+}
+
+//────────────────────────────────────────
+//   Start Button Toggle
+//────────────────────────────────────────
+
+document.getElementById("start-button").addEventListener("click", () => {
+  const m = document.getElementById("start-menu");
+  m.style.display = m.style.display === "flex" ? "none" : "flex";
+});

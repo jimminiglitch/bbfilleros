@@ -1,0 +1,226 @@
+/*────────────────────────────────────────
+  GLOBAL BASE STYLES
+────────────────────────────────────────*/
+body {
+  margin: 0;
+  padding: 0;
+  background-color: black;
+  color: #00ffff;
+  font-family: 'VT323', monospace;
+  overflow: hidden;
+}
+
+h1.glitch {
+  text-align: center;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 2rem;
+  color: #00ffff;
+}
+
+/*────────────────────────────────────────
+  SCANLINES EFFECT
+────────────────────────────────────────*/
+.scanlines {
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 255, 255, 0.03) 0px,
+    rgba(0, 255, 255, 0.03) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  pointer-events: none;
+  z-index: 1000;
+}
+
+/*────────────────────────────────────────
+  DESKTOP ICONS
+────────────────────────────────────────*/
+#desktop-icons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 2rem;
+}
+
+.desktop-icon {
+  width: 90px;
+  text-align: center;
+  cursor: pointer;
+  color: #00ffff;
+  user-select: none;
+  position: relative;
+}
+
+.desktop-icon img {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto 0.3rem;
+}
+
+.desktop-icon.selected {
+  outline: 2px dashed #00ffff;
+  border-radius: 4px;
+}
+
+/*────────────────────────────────────────
+  POPUP WINDOWS
+────────────────────────────────────────*/
+.popup-window {
+  position: absolute;
+  background-color: #111;
+  border: 2px solid #00ffff;
+  border-radius: 6px;
+  display: none;
+  flex-direction: column;
+  resize: both;
+  overflow: hidden;
+  z-index: 10;
+}
+
+.popup-window.active {
+  display: flex;
+}
+
+.window-header {
+  display: flex;
+  justify-content: space-between;
+  background-color: #00ffff;
+  color: black;
+  padding: 0.25rem 0.5rem;
+  font-weight: bold;
+  user-select: none;
+  cursor: move;
+}
+
+.window-header button {
+  background: none;
+  border: none;
+  color: black;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0 0.4rem;
+}
+
+.window-content {
+  background: black;
+  color: #00ffff;
+  padding: 1rem;
+  overflow: auto;
+  flex-grow: 1;
+}
+
+/*────────────────────────────────────────
+  TASKBAR & CLOCK
+────────────────────────────────────────*/
+#start-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #111;
+  color: #00ffff;
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  border-top: 1px solid #00ffff;
+  font-family: 'VT323', monospace;
+  font-size: 1rem;
+  z-index: 50;
+}
+
+#start-button {
+  background: #00ffff;
+  border: none;
+  color: black;
+  font-weight: bold;
+  padding: 0.25rem 1rem;
+  cursor: pointer;
+  margin-right: 1rem;
+}
+
+#taskbar-icons {
+  flex-grow: 1;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.taskbar-icon {
+  background-color: #222;
+  color: #00ffff;
+  border: 1px solid #00ffff;
+  padding: 0.2rem 0.6rem;
+  font-family: 'VT323', monospace;
+  cursor: pointer;
+}
+
+/*────────────────────────────────────────
+  START MENU
+────────────────────────────────────────*/
+#start-menu {
+  display: none;
+  position: fixed;
+  bottom: 2.5rem;
+  left: 0;
+  background: #111;
+  border: 2px solid #00ffff;
+  z-index: 60;
+  font-family: 'VT323', monospace;
+  font-size: 1.1rem;
+  padding: 0.5rem;
+  flex-direction: column;
+}
+
+#start-menu a {
+  color: #00ffff;
+  text-decoration: none;
+  margin-bottom: 0.3rem;
+}
+
+#start-menu a:hover {
+  text-decoration: underline;
+}
+
+/*────────────────────────────────────────
+  BOOT SCREEN
+────────────────────────────────────────*/
+.boot-screen {
+  position: fixed;
+  inset: 0;
+  background-color: black;
+  color: #00ffff;
+  z-index: 1001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.boot-log {
+  font-family: monospace;
+  font-size: 1rem;
+  margin: 1rem;
+  white-space: pre-wrap;
+  max-height: 200px;
+  overflow-y: auto;
+  width: 80%;
+  border: 1px solid #00ffff;
+  padding: 1rem;
+}
+
+.progress-container {
+  width: 80%;
+  height: 8px;
+  background-color: #222;
+  margin-top: 1rem;
+}
+
+.progress-bar {
+  height: 100%;
+  width: 0%;
+  background-color: #00ffff;
+  transition: width 0.4s ease;
+}

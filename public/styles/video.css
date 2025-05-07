@@ -1,0 +1,49 @@
+/* video.css – shared styles for video popup windows */
+
+body {
+  background-color: black;
+  color: #00ffff;
+  font-family: 'VT323', monospace;
+  margin: 0;
+  padding: 1rem;
+  text-align: center;
+}
+
+h1, h2 {
+  color: #00ff00;
+  margin-bottom: 1rem;
+}
+
+video {
+  width: 100%;
+  max-width: 960px;
+  height: auto;
+  border: 2px solid #00ffff;
+  border-radius: 8px;
+  margin: 0 auto;
+  display: block;
+  background-color: black;
+}
+
+#video1-player,
+#video2-player,
+#video3-player {
+  outline: none;
+}
+
+::-webkit-media-controls {
+  color-scheme: dark;
+}
+
+/*────────────────────────────────────────
+  Responsive Adjustments
+────────────────────────────────────────*/
+@media (max-width: 768px) {
+  video {
+    max-width: 100%;
+  }
+
+  h2 {
+    font-size: 1.3rem;
+  }
+}
