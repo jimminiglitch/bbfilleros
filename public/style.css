@@ -1370,3 +1370,54 @@ body {
   height: 100vh !important;
   border-radius: 0;
 }
+/* ─── MOBILE FRIENDLY WINDOW HANDLING ───────────────────────────── */
+@media screen and (max-width: 768px) {
+  .popup-window {
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    border-radius: 0;
+    overflow-y: auto;
+    font-size: var(--font-size-base);
+  }
+
+  .window-header button {
+    font-size: var(--font-size-base);
+    padding: var(--spacing-xs);
+  }
+
+  .desktop-icon {
+    display: none; /* Hide icons on small screens if layout is too crowded */
+  }
+
+  .scanlines {
+    opacity: 0.2;
+  }
+}
+.boot-screen {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: black;
+  color: var(--neon-green);
+  font-family: var(--font-vt323);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--z-boot);
+  animation: bootFadeOut 3s ease 2s forwards;
+}
+
+.boot-text {
+  font-size: var(--font-size-base);
+  white-space: pre;
+  padding: var(--spacing-md);
+}
+
+@keyframes bootFadeOut {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
