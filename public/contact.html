@@ -4,26 +4,40 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Contact Me</title>
+  
+  <!-- Preconnect to Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <!-- Load fonts with display=swap for better performance -->
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+  
   <style>
+    :root {
+      /* Colors */
+      --neon-purple: #a9a1ff;
+      --neon-pink: #f3a1ff;
+      --neon-cyan: #00f0ff;
+      --neon-yellow: #fffc00;
+      --neon-green: #00ff66;
+    }
+    
     @font-face {
       font-family: "Press Start 2P";
       font-style: normal;
       font-weight: 400;
+      font-display: swap;
       src: url("https://fonts.gstatic.com/s/pressstart2p/v15/e3t4euO8T-267oIAQAu6jDQyK3nVivM.woff2") format("woff2");
     }
+    
     @font-face {
       font-family: "VT323";
       font-style: normal;
       font-weight: 400;
+      font-display: swap;
       src: url("https://fonts.gstatic.com/s/vt323/v17/pxiKyp0ihIEF2isfFJU.woff2") format("woff2");
     }
-    :root {
-      --neon-purple: #a9a1ff;
-      --neon-pink: #f3a1ff;
-      --neon-cyan: #00f0ff;
-      --neon-green: #00ff66;
-    }
+    
     body {
       margin: 0;
       padding: 2rem;
@@ -34,6 +48,7 @@
       justify-content: center;
       min-height: 100vh;
     }
+    
     .container {
       background: rgba(0, 0, 0, 0.9);
       border: 2px solid var(--neon-purple);
@@ -43,6 +58,7 @@
       max-width: 900px;
       width: 100%;
     }
+    
     h1 {
       font-family: "Press Start 2P";
       font-size: 2rem;
@@ -51,16 +67,19 @@
       text-shadow: 0 0 10px var(--neon-cyan);
       margin-bottom: 1.5rem;
     }
+    
     .contact-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 2rem;
     }
+    
     .contact-item {
       display: flex;
       align-items: center;
       gap: 1rem;
     }
+    
     .icon {
       width: 2.5rem;
       height: 2.5rem;
@@ -72,17 +91,20 @@
       align-items: center;
       font-size: 1.25rem;
     }
+    
     .label {
       font-family: "Press Start 2P";
       font-size: 0.9rem;
       color: var(--neon-pink);
       margin: 0;
     }
+    
     .value {
       color: var(--neon-green);
       font-size: 1rem;
       margin: 0;
     }
+    
     .email-btn {
       font-family: "Press Start 2P";
       padding: 0.75rem 1.5rem;
@@ -93,8 +115,59 @@
       box-shadow: 0 0 5px var(--neon-green);
       transition: background 0.3s;
     }
+    
     .email-btn:hover {
       background: var(--neon-green);
+    }
+    
+    /* Responsive styles */
+    @media (max-width: 768px) {
+      .contact-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+      
+      h1 {
+        font-size: 1.5rem;
+      }
+      
+      .container {
+        padding: 1.5rem;
+      }
+      
+      .email-btn {
+        display: block;
+        text-align: center;
+        margin-top: 1rem;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      body {
+        padding: 1rem;
+      }
+      
+      h1 {
+        font-size: 1.2rem;
+      }
+      
+      .container {
+        padding: 1rem;
+      }
+      
+      .icon {
+        width: 2rem;
+        height: 2rem;
+        font-size: 1rem;
+      }
+      
+      .label {
+        font-size: 0.7rem;
+      }
+      
+      .value {
+        font-size: 0.9rem;
+      }
     }
   </style>
 </head>

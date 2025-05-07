@@ -12,11 +12,19 @@
       type="image/png"
     />
 
-    <!-- Google Fonts -->
+    <!-- Preconnect to Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    
+    <!-- Load critical font first -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap"
+      href="https://fonts.googleapis.com/css2?family=VT323&display=swap"
+      rel="stylesheet"
+    />
+    
+    <!-- Load decorative font second -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
       rel="stylesheet"
     />
 
@@ -34,7 +42,7 @@
           src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/whodat.gif?v=1746365769069"
           alt="Tiger boot animation"
           class="boot-tiger"
-          loading="lazy"
+          loading="eager"
         />
         <pre id="boot-log" class="boot-log"></pre>
         <div class="progress-container">
@@ -51,25 +59,25 @@
           <img
             src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/Benny.png?v=1746392528967"
             alt="About"
-            loading="lazy"
+            loading="eager"
           />
           <span>About</span>
         </div>
         
         <div class="desktop-icon" id="icon-tigerrr" data-window="TIGERRR">
-  <img src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/whodat.gif?v=1746365769069" alt="TIGERRR" />
-  <span>TIGERRR</span>
-</div>
+          <img src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/whodat.gif?v=1746365769069" alt="TIGERRR" loading="lazy" />
+          <span>TIGERRR</span>
+        </div>
         
         <div class="desktop-icon" id="icon-octavia" data-window="OCTAVIA">
-  <img src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/octavia.jpg?v=1746412752104" alt="OCTAVIA" />
-  <span>OCTAVIA</span>
-</div>
+          <img src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/octavia.jpg?v=1746412752104" alt="OCTAVIA" loading="lazy" />
+          <span>OCTAVIA</span>
+        </div>
 
-<div class="desktop-icon" id="icon-MILES" data-window="MILES">
-  <img src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/MilesSwings2025.jpg?v=1746410914289" alt="MILES" />
-  <span>MILES</span>
-</div>
+        <div class="desktop-icon" id="icon-MILES" data-window="MILES">
+          <img src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/MilesSwings2025.jpg?v=1746410914289" alt="MILES" loading="lazy" />
+          <span>MILES</span>
+        </div>
         
         <div class="desktop-icon" id="icon-resume" data-window="resume">
           <img
@@ -81,11 +89,12 @@
         </div>
         
         <div class="desktop-icon" id="icon-toader" data-window="toader">
-        <img
-          src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/psychtoadglow.gif?v=1746572262753"
-          alt="Toader"
-        />
-        <span>Psych Toad</span>
+          <img
+            src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/psychtoadglow.gif?v=1746572262753"
+            alt="Toader"
+            loading="lazy"
+          />
+          <span>Psych Toad</span>
         </div>
         
         <div class="desktop-icon" id="icon-contact" data-window="contact">
@@ -142,7 +151,7 @@
           <span>Music</span>
         </div>
         
-      <div class="desktop-icon" id="icon-snake" data-window="snake">
+        <div class="desktop-icon" id="icon-snake" data-window="snake">
           <img
             src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/TrippyWorm.png?v=1746410810962"
             alt="SPACEWORM"
@@ -151,300 +160,286 @@
           <span>Spaceworm</span>
         </div>
       
-         <div class="desktop-icon" id="icon-r3d3ch0" data-window="r3d3ch0">
+        <div class="desktop-icon" id="icon-r3d3ch0" data-window="r3d3ch0">
           <img
-            src="https://storymaps.arcgis.com/stories/e55421d5ad4b4a11bf7986926c38dfc5"
+            src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/VaporTree.png?v=1746411815542"
             alt="r3d3ch0"
             loading="lazy"
           />
           <span>r3d3ch0</span>
         </div>
-        
       </div>
-  
 
-    <!-- ABOUT.EXE -->
-    <div id="about" class="popup-window hidden">
-      <div class="window-header">
-        <span>ABOUT.EXE</span>
-        <button class="minimize">_</button>
-        <button class="maximize">▭</button>
-        <button class="close">X</button>
-      </div>
-      <div class="window-content">
-        <h2>👾 WHO IS BENJAMIN FILLER?</h2>
-        <p>
-          I'm a media creator, director, and narrative systems designer from
-          Michigan. I tell stories across film, games, and interactive spaces.
-        </p>
-        <p>
-          My work blends cinematic technique, code-based immersion, and analog
-          grit. I like strange archives, gripping installations, modular synths,
-          and custom hardware.
-        </p>
-        <h3>💾 KEYWORDS</h3>
-        <ul>
-          <li>⛓ Experimental Documentary</li>
-          <li>🧠 Narrative Design</li>
-          <li>🛸 Cyberpunk Escapism</li>
-          <li>🎮 Game Worlds &amp; Story Maps</li>
-          <li>📼 Lo-fi / New Media Aesthetics</li>
-        </ul>
-      </div>
-    </div>
-
-    <!-- RESUME.EXE -->
-    <div id="resume" class="popup-window hidden">
-      <div class="window-header">
-        <span>RESUME.EXE</span>
-        <button class="minimize">_</button>
-        <button class="close">X</button>
-      </div>
-      <div class="window-content">
-       <iframe src="/resume.html" allowfullscreen style="width: 100%; height: 100%; border: none;"></iframe>
-
-      </div>
-    </div>
-
-    <!-- CONTACT.EXE -->
-    <div id="contact" class="popup-window hidden">
-      <div class="window-header">
-        <span>CONTACT.EXE</span>
-        <button class="minimize">_</button>
-        <button class="close">X</button>
-      </div>
-      <div class="window-content">
-        <iframe src="/contact.html" allowfullscreen></iframe>
-      </div>
-    </div>
-
-
-<!-- NATURE.EXE -->
-<div id="nature" class="popup-window hidden">
-  <div class="window-header">
-    <span>NATURE.EXE</span>
-    <button class="minimize">_</button>
-    <button class="close">X</button>
-  </div>
-  <div class="window-content">
-    <iframe src="/nature.html" style="width: 100%; height: 100%; border: none;" allowfullscreen></iframe>
-  </div>
-</div>
-
-    
-     
-
-    <!-- VIDEO1.EXE -->
-    <div id="video1" class="popup-window hidden">
-      <div class="window-header">
-        <span>JOYFUL.EXE</span>
-        <button class="minimize">_</button>
-        <button class="close">X</button>
-      </div>
-      <div class="window-content">
-        <video
-          id="video1-player"
-          data-src="https://cdn.glitch.me/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/A%20Joyful%20and%20Meaningful%20Life.mp4?v=1746453364188"
-          controls
-          autoplay
-          playsinline
-          preload="metadata"
-        ></video>
-      </div>
-    </div>
-
-    <!-- VIDEO2.EXE -->
-    <div id="video2" class="popup-window hidden">
-      <div class="window-header">
-        <span>PAPAZ.EXE</span>
-        <button class="minimize">_</button>
-        <button class="close">X</button>
-      </div>
-      <div class="window-content">
-        <video
-          id="video2-player"
-          data-src="https://cdn.glitch.me/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/SEPChallengeVideo2.mp4?v=1746454142843"
-          controls
-          autoplay
-          playsinline
-          preload="metadata"
-        ></video>
-      </div>
-    </div>
-
-    <!-- VIDEO3.EXE -->
-    <div id="video3" class="popup-window hidden">
-      <div class="window-header">
-        <span>ABSTRACT.EXE</span>
-        <button class="minimize">_</button>
-        <button class="close">X</button>
-      </div>
-      <div class="window-content">
-        <video
-          id="video3-player"
-          data-src="https://cdn.glitch.me/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/SEP%20Challenge-Video%206.mov?v=1746456155714"
-          controls
-          autoplay
-          playsinline
-          preload="metadata"
-        ></video>
-      </div>
-    </div>
-
-    
-    <!-- MUSIC.EXE -->
-    <div id="music" class="popup-window hidden">
-      <div class="window-header">
-        <span>MUSIC.EXE</span>
-        <button class="minimize">_</button>
-        <button class="close">X</button>
-      </div>
-      <div class="window-content">
-        <audio id="music-player" preload="metadata"></audio>
-        <div id="now-playing">▶ Loading…</div>
-        <div class="music-controls">
-          <button id="prevTrack">◀ Prev</button>
-          <button id="togglePlay">Play/Pause</button>
-          <button id="nextTrack">Next ▶</button>
+      <!-- ABOUT.EXE -->
+      <div id="about" class="popup-window hidden">
+        <div class="window-header">
+          <span>ABOUT.EXE</span>
+          <button class="minimize">_</button>
+          <button class="maximize">▭</button>
+          <button class="close">X</button>
         </div>
-        <ul id="playlist"></ul>
+        <div class="window-content">
+          <h2>👾 WHO IS BENJAMIN FILLER?</h2>
+          <p>
+            I'm a media creator, director, and narrative systems designer from
+            Michigan. I tell stories across film, games, and interactive spaces.
+          </p>
+          <p>
+            My work blends cinematic technique, code-based immersion, and analog
+            grit. I like strange archives, gripping installations, modular synths,
+            and custom hardware.
+          </p>
+          <h3>💾 KEYWORDS</h3>
+          <ul>
+            <li>⛓ Experimental Documentary</li>
+            <li>🧠 Narrative Design</li>
+            <li>🛸 Cyberpunk Escapism</li>
+            <li>🎮 Game Worlds &amp; Story Maps</li>
+            <li>📼 Lo-fi / New Media Aesthetics</li>
+          </ul>
+        </div>
       </div>
-    </div>
 
-    <!-- SNAKE.EXE -->
-    <div id="snake" class="popup-window hidden">
-      <div class="window-header">
-        <span>SPACEWORM.EXE</span>
-        <button class="minimize">_</button>
-        <button class="close">X</button>
+      <!-- RESUME.EXE -->
+      <div id="resume" class="popup-window hidden">
+        <div class="window-header">
+          <span>RESUME.EXE</span>
+          <button class="minimize">_</button>
+          <button class="close">X</button>
+        </div>
+        <div class="window-content">
+          <iframe src="/resume.html" allowfullscreen style="width: 100%; height: 100%; border: none;" loading="lazy"></iframe>
+        </div>
       </div>
-      <div class="window-content">
-        <iframe
-          data-src="/snake.html"
-          style="
-            width: 100%;
-            height: 100%;
-            border: none;
-            display: block;
-            background: black;
-          "
-          loading="lazy"
-        ></iframe>
+
+      <!-- CONTACT.EXE -->
+      <div id="contact" class="popup-window hidden">
+        <div class="window-header">
+          <span>CONTACT.EXE</span>
+          <button class="minimize">_</button>
+          <button class="close">X</button>
+        </div>
+        <div class="window-content">
+          <iframe src="/contact.html" allowfullscreen loading="lazy"></iframe>
+        </div>
       </div>
-    </div>
+
+      <!-- NATURE.EXE -->
+      <div id="nature" class="popup-window hidden">
+        <div class="window-header">
+          <span>NATURE.EXE</span>
+          <button class="minimize">_</button>
+          <button class="close">X</button>
+        </div>
+        <div class="window-content">
+          <iframe src="/nature.html" style="width: 100%; height: 100%; border: none;" allowfullscreen loading="lazy"></iframe>
+        </div>
+      </div>
+
+      <!-- VIDEO1.EXE -->
+      <div id="video1" class="popup-window hidden">
+        <div class="window-header">
+          <span>JOYFUL.EXE</span>
+          <button class="minimize">_</button>
+          <button class="close">X</button>
+        </div>
+        <div class="window-content">
+          <video
+            id="video1-player"
+            data-src="https://cdn.glitch.me/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/A%20Joyful%20and%20Meaningful%20Life.mp4?v=1746453364188"
+            controls
+            playsinline
+            preload="none"
+            poster="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/VaporTV.png?v=1746411817932"
+          ></video>
+        </div>
+      </div>
+
+      <!-- VIDEO2.EXE -->
+      <div id="video2" class="popup-window hidden">
+        <div class="window-header">
+          <span>PAPAZ.EXE</span>
+          <button class="minimize">_</button>
+          <button class="close">X</button>
+        </div>
+        <div class="window-content">
+          <video
+            id="video2-player"
+            data-src="https://cdn.glitch.me/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/SEPChallengeVideo2.mp4?v=1746454142843"
+            controls
+            playsinline
+            preload="none"
+            poster="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/VaporTV.png?v=1746411817932"
+          ></video>
+        </div>
+      </div>
+
+      <!-- VIDEO3.EXE -->
+      <div id="video3" class="popup-window hidden">
+        <div class="window-header">
+          <span>ABSTRACT.EXE</span>
+          <button class="minimize">_</button>
+          <button class="close">X</button>
+        </div>
+        <div class="window-content">
+          <video
+            id="video3-player"
+            data-src="https://cdn.glitch.me/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/SEP%20Challenge-Video%206.mov?v=1746456155714"
+            controls
+            playsinline
+            preload="none"
+            poster="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/VaporTV.png?v=1746411817932"
+          ></video>
+        </div>
+      </div>
+
+    
+      <!-- MUSIC.EXE -->
+      <div id="music" class="popup-window hidden">
+        <div class="window-header">
+          <span>MUSIC.EXE</span>
+          <button class="minimize">_</button>
+          <button class="close">X</button>
+        </div>
+        <div class="window-content">
+          <audio id="music-player" preload="none"></audio>
+          <div id="now-playing">▶ Loading…</div>
+          <div class="music-controls">
+            <button id="prevTrack">◀ Prev</button>
+            <button id="togglePlay">Play/Pause</button>
+            <button id="nextTrack">Next ▶</button>
+          </div>
+          <ul id="playlist"></ul>
+        </div>
+      </div>
+
+      <!-- SNAKE.EXE -->
+      <div id="snake" class="popup-window hidden">
+        <div class="window-header">
+          <span>SPACEWORM.EXE</span>
+          <button class="minimize">_</button>
+          <button class="close">X</button>
+        </div>
+        <div class="window-content">
+          <iframe
+            data-src="/snake.html"
+            style="width: 100%; height: 100%; border: none; display: block; background: black;"
+            loading="lazy"
+          ></iframe>
+        </div>
+      </div>
       
-       <!-- r3d3ch0.EXE -->
-    <div id="r3d3ch0" class="popup-window hidden">
-      <div class="window-header">
-        <span>r3d3ch0.EXE</span>
-        <button class="minimize">_</button>
-        <button class="close">X</button>
+      <!-- r3d3ch0.EXE -->
+      <div id="r3d3ch0" class="popup-window hidden">
+        <div class="window-header">
+          <span>r3d3ch0.EXE</span>
+          <button class="minimize">_</button>
+          <button class="close">X</button>
+        </div>
+        <div class="window-content">
+          <iframe
+            src="https://storymaps.arcgis.com/stories/e55421d5ad4b4a11bf7986926c38dfc5"
+            style="width: 100%; height: 100%; border: none; display: block; background: black;"
+            loading="lazy"
+          ></iframe>
+        </div>
       </div>
-      <div class="window-content">
-        <iframe
-          src="https://storymaps.arcgis.com/stories/e55421d5ad4b4a11bf7986926c38dfc5"
-          style="
-            width: 100%;
-            height: 100%;
-            border: none;
-            display: block;
-            background: black;
-          "
-          loading="lazy"
-        ></iframe>
+
+    
+      <!-- TOADER.EXE -->
+      <div id="toader" class="popup-window hidden">
+        <div class="window-header">
+          <span>TOADER.EXE</span>
+          <button class="minimize">_</button>
+          <button class="close">X</button>
+        </div>
+        <div class="window-content toader-comingsoon">
+          <img
+            src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/psychtoadglow.gif?v=1746572262753"
+            alt="Psychedelic Toad"
+            style="max-width: 100%; max-height: 300px; display: block; margin: 1rem auto;"
+            loading="lazy"
+          />
+          <h2 class="psychedelic-text">PSYCHEDELIC TOAD</h2>
+          <audio id="toader-audio" src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/hover.mp3?v=1746577634973" preload="none" loop></audio>
+        </div>
+      </div>
+
+      <!-- TIGERRR.EXE -->
+      <div id="TIGERRR" class="popup-window hidden">
+        <div class="window-header">
+          <span>TIGERRR.EXE</span>
+          <button class="minimize">_</button>
+          <button class="close">X</button>
+        </div>
+        <div class="window-content TIGERRR">
+          <img
+            src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/whodat.gif?v=1746365769069"
+            alt="TIGERRR"
+            style="max-width: 100%; max-height: 300px; display: block; margin: 1rem auto;"
+            loading="lazy"
+          />
+          <h2 class="psychedelic-text">TIGERRR</h2>
+        </div>
+      </div>
+    
+      <!-- OCTAVIA.EXE -->
+      <div id="OCTAVIA" class="popup-window hidden">
+        <div class="window-header">
+          <span>OCTAVIA.EXE</span>
+          <button class="minimize">_</button>
+          <button class="close">X</button>
+        </div>
+        <div class="window-content OCTAVIA">
+          <img
+            src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/octavia.jpg?v=1746412752104"
+            alt="OCTAVIA"
+            style="max-width: 100%; max-height: 300px; display: block; margin: 1rem auto;"
+            loading="lazy"
+          />
+          <h2 class="psychedelic-text">OCTAVIA</h2>
+        </div>
+      </div>
+
+      <!-- MILES.EXE -->
+      <div id="MILES" class="popup-window hidden">
+        <div class="window-header">
+          <span>MILES.EXE</span>
+          <button class="minimize">_</button>
+          <button class="close">X</button>
+        </div>
+        <div class="window-content MILES">
+          <img
+            src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/MilesSwings2025.jpg?v=1746410914289"
+            alt="MILES"
+            style="max-width: 100%; max-height: 300px; display: block; margin: 1rem auto;"
+            loading="lazy"
+          />
+          <h2 class="psychedelic-text">MILES</h2>
+        </div>
+      </div>
+
+    
+      <!-- Starfield Background -->
+      <canvas id="background-canvas"></canvas>
+
+      <!-- Taskbar & Clock -->
+      <div id="start-bar">
+        <button id="start-button">START</button>
+        <div id="taskbar-icons"></div>
+        <span id="clock"></span>
+      </div>
+
+      <!-- Start Menu -->
+      <div id="start-menu">
+        <a href="javascript:void(0)" onclick="openWindow('about')">About</a>
+        <a href="javascript:void(0)" onclick="openWindow('resume')">Resume</a>
+        <a href="javascript:void(0)" onclick="openWindow('contact')">Contact</a>
+        <a href="javascript:void(0)" onclick="openWindow('nature')">Nature</a>
+        <a href="javascript:void(0)" onclick="openWindow('snake')">SPACEWORM</a>
       </div>
     </div>
-
     
-<!-- TOADER.EXE -->
-<div id="toader" class="popup-window hidden">
-  <div class="window-header">
-    <span>TOADER.EXE</span>
-    <button class="minimize">_</button>
-    <button class="close">X</button>
-  </div>
-  <div class="window-content toader-comingsoon">
-    <img
-      src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/psychtoadglow.gif?v=1746572262753"
-      alt="Psychedelic Toad"
-      style="max-width: 100%; max-height: 300px; display: block; margin: 1rem auto;"
-    />
-    <h2 class="psychedelic-text">PSYCHEDELIC TOAD</h2>
-    <audio id="toader-audio" src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/hover.mp3?v=1746577634973" loop></audio>
-  </div>
-</div>
-
-    <!-- TIGERRR.EXE -->
-<div id="TIGERRR" class="popup-window hidden">
-  <div class="window-header">
-    <span>TIGERRR.EXE</span>
-    <button class="minimize">_</button>
-    <button class="close">X</button>
-  </div>
-  <div class="window-content TIGERRR">
-    <img
-      src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/whodat.gif?v=1746365769069"
-      alt="TIGERRR"
-      style="max-width: 100%; max-height: 300px; display: block; margin: 1rem auto;"
-    />
-    <h2 class="psychedelic-text">TIGERRR</h2>
-  </div>
-</div>
-    
-       <!-- OCTAVIA.EXE -->
-<div id="OCTAVIA" class="popup-window hidden">
-  <div class="window-header">
-    <span>OCTAVIA.EXE</span>
-    <button class="minimize">_</button>
-    <button class="close">X</button>
-  </div>
-  <div class="window-content OCTAVIA">
-    <img
-      src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/octavia.jpg?v=1746412752104"
-      alt="OCTAVIA"
-      style="max-width: 100%; max-height: 300px; display: block; margin: 1rem auto;"
-    />
-    <h2 class="psychedelic-text">OCTAVIA</h2>
-  </div>
-</div>
-
-        <!-- MILES.EXE -->
-<div id="MILES" class="popup-window hidden">
-  <div class="window-header">
-    <span>MILES.EXE</span>
-    <button class="minimize">_</button>
-    <button class="close">X</button>
-  </div>
-  <div class="window-content MILES">
-    <img
-      src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/MilesSwings2025.jpg?v=1746410914289"
-      alt="MILES"
-      style="max-width: 100%; max-height: 300px; display: block; margin: 1rem auto;"
-    />
-    <h2 class="psychedelic-text">MILES</h2>
-  </div>
-</div>
-
-    
-    <!-- Starfield Background -->
-    <canvas id="background-canvas"></canvas>
-
-    <!-- Taskbar & Clock -->
-    <div id="start-bar">
-      <button id="start-button">START</button>
-      <div id="taskbar-icons"></div>
-      <span id="clock"></span>
-    </div>
-
-    <!-- Start Menu -->
-    <div id="start-menu">
-      <a href="javascript:void(0)" onclick="openWindow('about')">About</a>
-      <a href="javascript:void(0)" onclick="openWindow('resume')">Resume</a>
-      <a href="javascript:void(0)" onclick="openWindow('contact')">Contact</a>
-      <a href="javascript:void(0)" onclick="openWindow('nature')">Nature</a>
-      <a href="javascript:void(0)" onclick="openWindow('snake')">SPACEWORM</a>
-    </div>
-</div>
     <!-- Main Script -->
     <script src="/script.js"></script>
   </body>

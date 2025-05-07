@@ -1,7 +1,8 @@
 /*─────────────────────────────────────────────────────────────────────────────
-  GLOBAL VARIABLES & RESET
+  GLOBAL VARIABLES & RESET - OPTIMIZED VERSION
 ─────────────────────────────────────────────────────────────────────────────*/
 :root {
+  /* Colors */
   --font-press-start: "Press Start 2P", monospace;
   --font-vt323: "VT323", monospace;
   --neon-purple: #a9a1ff;
@@ -9,12 +10,37 @@
   --neon-cyan: #00f0ff;
   --neon-yellow: #fffc00;
   --neon-green: #00ff66;
+  
+  /* Typography */
+  --font-size-sm: 0.8rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.2rem;
+  --font-size-xl: 1.5rem;
+  --font-size-2xl: 2rem;
+  --font-size-3xl: 2.5rem;
+  
+  /* Spacing */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  
+  /* Z-index layers */
+  --z-background: -1;
+  --z-desktop: 1;
+  --z-window: 10;
+  --z-taskbar: 500;
+  --z-startmenu: 600;
+  --z-boot: 1000;
 }
+
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
+
 body {
   background: black;
   color: white;
@@ -45,6 +71,7 @@ body {
     rgba(0, 0, 0, 0.03) 1px,
     rgba(0, 0, 0, 0) 2px
   );
+  z-index: 5;
 }
 
 /*─────────────────────────────────────────────────────────────────────────────
@@ -53,12 +80,13 @@ body {
 .glitch {
   position: relative;
   font-family: var(--font-press-start);
-  font-size: 2.5rem;
+  font-size: var(--font-size-xl);
   color: var(--neon-cyan);
   text-align: center;
-  margin-top: 1.5rem;
+  margin-top: var(--spacing-lg);
   user-select: none;
 }
+
 .glitch::before,
 .glitch::after {
   content: attr(data-text);
@@ -70,10 +98,12 @@ body {
   overflow: hidden;
   clip-path: inset(0 0 0 0);
 }
+
 .glitch::before {
   animation: glitch-top 2s infinite linear;
   color: var(--neon-pink);
 }
+
 .glitch::after {
   animation: glitch-bottom 3s infinite linear;
   color: var(--neon-purple);
@@ -138,9 +168,10 @@ body {
 ─────────────────────────────────────────────────────────────────────────────*/
 .container {
   width: 100%;
-  height: calc(100vh - 30px); /* leave room for taskbar */
+  height: calc(100vh - 36px); /* leave room for taskbar */
   position: relative;
 }
+
 #desktop-icons {
   position: relative;
   width: 100%;
@@ -155,16 +186,19 @@ body {
   user-select: none;
   text-align: center;
 }
+
 .desktop-icon img {
   width: 64px;
   height: 64px;
   display: block;
   margin: 0 auto;
+  will-change: transform; /* Optimize for animations */
 }
+
 .desktop-icon span {
   display: block;
   margin-top: 4px;
-  font-size: 0.8rem;
+  font-size: var(--font-size-sm);
   color: white;
   text-shadow: 0 0 4px rgba(0, 0, 0, 0.7);
 }
@@ -222,7 +256,6 @@ body {
   top: 400px;
   left: 40px;
 }
-
 #icon-r3d3ch0 {
   top: 400px;
   left: 140px;
@@ -269,11 +302,15 @@ body {
   display: none;
   flex-direction: column;
   overflow: hidden;
+  z-index: var(--z-window);
+  will-change: transform, opacity; /* Optimize for animations */
 }
+
 .popup-window.active {
   display: flex;
   z-index: 100;
 }
+
 .popup-window.hidden {
   display: none !important;
 }
@@ -291,6 +328,7 @@ body {
   user-select: none;
   cursor: move;
 }
+
 .popup-window .window-header button {
   background: none;
   border: none;
@@ -319,12 +357,14 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: var(--z-boot);
 }
+
 .boot-screen .boot-tiger {
   width: 200px;
   margin-bottom: 1rem;
 }
+
 .boot-screen .boot-log {
   width: 100%;
   height: 200px;
@@ -336,12 +376,14 @@ body {
   border: 1px solid var(--neon-green);
   margin-bottom: 1rem;
 }
+
 .boot-screen .progress-container {
   width: 100%;
   background: #333333;
   height: 8px;
   border-radius: 4px;
 }
+
 .boot-screen .progress-bar {
   width: 0;
   height: 100%;
@@ -357,14 +399,17 @@ body {
   bottom: 0;
   left: 0;
   right: 0;
-  height: 30px;
-  background: rgba(0.8, 0.8, 0.8, 0.8);
+  height: 36px;
+  background: black;
+  border-top: 2px solid var(--neon-purple);
+  box-shadow: 0 -2px 12px var(--neon-purple);
   display: flex;
   align-items: center;
-  padding: 0 0.5rem;
+  padding: 0 1rem;
   font-family: var(--font-press-start);
-  z-index: 500;
+  z-index: var(--z-taskbar);
 }
+
 .taskbar-icon {
   background: cyan;
   border: violet;
@@ -373,20 +418,10 @@ body {
   cursor: pointer;
   font-size: 0.8rem;
 }
+
 /*─────────────────────────────────────────────────────────────────────────────
   NEON START BAR & BUTTON
 ─────────────────────────────────────────────────────────────────────────────*/
-#start-bar {
-  background: black;
-  border-top: 2px solid var(--neon-purple);
-  box-shadow: 0 -2px 12px var(--neon-purple);
-  height: 36px; /* slightly taller for visual weight */
-  padding: 0 1rem;
-  display: flex;
-  align-items: center;
-  z-index: 500;
-}
-
 #start-button {
   font-family: var(--font-press-start);
   font-size: 0.8rem;
@@ -415,21 +450,23 @@ body {
 /* Start menu */
 #start-menu {
   position: fixed;
-  bottom: 30px;
+  bottom: 36px;
   left: 0;
   background: rgba(0, 0, 0, 0.9);
   border: 2px solid var(--neon-cyan);
   display: none;
   flex-direction: column;
   font-family: var(--font-press-start);
-  z-index: 600;
+  z-index: var(--z-startmenu);
 }
+
 #start-menu a {
   padding: 0.5rem 1rem;
   color: pink;
   text-decoration: none;
   font-size: 0.8rem;
 }
+
 #start-menu a:hover {
   background: rgba(255, 255, 255, 0.1);
 }
@@ -443,8 +480,9 @@ body {
   left: 0;
   width: 100vw;
   height: 100vh;
-  z-index: -1;
+  z-index: var(--z-background);
 }
+
 /*─────────────────────────────────────────────────────────────────────────────
   MAKE EMBEDDED IFRAMES FILL THEIR POPUP WINDOWS
 ─────────────────────────────────────────────────────────────────────────────*/
@@ -463,7 +501,7 @@ body {
 
 /* …and the content area fills the rest of the window: */
 .popup-window .window-content {
-  flex: 1 1 auto; /* grow to fill whatever’s left */
+  flex: 1 1 auto; /* grow to fill whatever's left */
   padding: 0; /* remove any default padding */
   overflow: hidden; /* hide scrollbars on the container */
 }
@@ -475,6 +513,7 @@ body {
   border: none;
   display: block; /* avoids weird inline‐iframe gaps */
 }
+
 /*─────────────────────────────────────────────────────────────────────────────
    Only override the RESUME & CONTACT embeds
 ─────────────────────────────────────────────────────────────────────────────*/
@@ -490,6 +529,7 @@ body {
   border: none;
   display: block;
 }
+
 /*─────────────────────────────────────────────────────────────────────────────
   1) Swap & align the header buttons
 ─────────────────────────────────────────────────────────────────────────────*/
@@ -497,9 +537,11 @@ body {
   display: flex;
   align-items: center;
 }
+
 .popup-window .window-header span {
   flex: 1; /* push the buttons to the right */
 }
+
 .popup-window .window-header button {
   background: none;
   border: none;
@@ -526,6 +568,7 @@ body {
   width: 100%;
   border: none;
 }
+
 /*───────────────────────────────────────────────────────────
   Nature.EXE gallery sizing
 ────────────────────────────────────────────────────────────*/
@@ -542,6 +585,7 @@ body {
   max-height: calc(100% - 40px); /* leave room for the buttons below */
   object-fit: contain;
 }
+
 /*───────────────────────────────────────────────────────────
   GENERIC GALLERY CONSTRAINTS (Nature + Artwork)
 ────────────────────────────────────────────────────────────*/
@@ -562,6 +606,7 @@ body {
 .gallery-controls {
   margin-top: 0.5rem;
 }
+
 .gallery-controls button {
   margin: 0 0.5rem;
   font-family: var(--font-press-start);
@@ -571,6 +616,7 @@ body {
   cursor: pointer;
   color: var(--neon-cyan);
 }
+
 .gallery-controls button:hover {
   background: rgba(0, 0, 0, 0.9);
 }
@@ -607,38 +653,7 @@ body {
     transform: scale(1.05);
   }
 }
-.toader-comingsoon {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 2rem;
-}
 
-.psychedelic-text {
-  font-family: "Press Start 2P", monospace;
-  font-size: 1.5rem;
-  color: #f3a1ff;
-  text-shadow: 0 0 5px #ff00ff, 0 0 10px #00f0ff, 0 0 15px #fffc00,
-    0 0 20px #00ff66;
-  animation: pulse-glow 1.8s infinite ease-in-out;
-  margin-top: 1rem;
-}
-
-@keyframes pulse-glow {
-  0%,
-  100% {
-    text-shadow: 0 0 5px #ff00ff, 0 0 10px #00f0ff, 0 0 15px #fffc00,
-      0 0 20px #00ff66;
-    transform: scale(1);
-  }
-  50% {
-    text-shadow: 0 0 10px #ff00ff, 0 0 20px #00f0ff, 0 0 25px #fffc00,
-      0 0 30px #00ff66;
-    transform: scale(1.05);
-  }
-}
 .single-art {
   display: flex;
   justify-content: center;
@@ -679,283 +694,7 @@ body {
   position: absolute;
 }
 
-@media (max-width: 1024px) {
-  .glitch {
-    font-size: 1.8rem;
-  }
-  .popup-window {
-    width: 90vw !important;
-    height: 80vh !important;
-    top: 10vh !important;
-    left: 5vw !important;
-  }
-}
-
-@media (max-width: 768px) {
-  .desktop-icon {
-    position: relative;
-    display: inline-block;
-    width: 25vw;
-    margin: 10px;
-  }
-  #desktop-icons {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    height: auto;
-    padding: 1rem 0;
-  }
-  .glitch {
-    font-size: 1.5rem;
-  }
-  .popup-window {
-    width: 95vw !important;
-    height: 85vh !important;
-    top: 7vh !important;
-    left: 2.5vw !important;
-  }
-  #start-menu {
-    font-size: 0.7rem;
-  }
-  #start-bar {
-    flex-wrap: wrap;
-    height: auto;
-    padding: 0.5rem;
-  }
-  #clock {
-    font-size: 0.75rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .desktop-icon img {
-    width: 48px;
-    height: 48px;
-  }
-  .desktop-icon span {
-    font-size: 0.6rem;
-  }
-  .popup-window .window-header {
-    font-size: 0.6rem;
-    padding: 0.3rem;
-  }
-  .popup-window .window-header button {
-    font-size: 0.8rem;
-  }
-  .glitch {
-    font-size: 1.2rem;
-  }
-}
-/* style.css - responsive tweaks added */
-
-@media (max-width: 1024px) {
-  .glitch {
-    font-size: 1.8rem;
-  }
-  .popup-window {
-    width: 90vw !important;
-    height: 80vh !important;
-    top: 10vh !important;
-    left: 5vw !important;
-  }
-}
-
-@media (max-width: 768px) {
-  .desktop-icon {
-    position: relative;
-    display: inline-block;
-    width: 25vw;
-    margin: 10px;
-  }
-  #desktop-icons {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    height: auto;
-    padding: 1rem 0;
-  }
-  .glitch {
-    font-size: 1.5rem;
-  }
-  .popup-window {
-    width: 95vw !important;
-    height: 85vh !important;
-    top: 7vh !important;
-    left: 2.5vw !important;
-  }
-  #start-menu {
-    font-size: 0.7rem;
-  }
-  #start-bar {
-    flex-wrap: wrap;
-    height: auto;
-    padding: 0.5rem;
-  }
-  #clock {
-    font-size: 0.75rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .desktop-icon img {
-    width: 48px;
-    height: 48px;
-  }
-  .desktop-icon span {
-    font-size: 0.6rem;
-  }
-  .popup-window .window-header {
-    font-size: 0.6rem;
-    padding: 0.3rem;
-  }
-  .popup-window .window-header button {
-    font-size: 0.8rem;
-  }
-  .glitch {
-    font-size: 1.2rem;
-  }
-  .popup-window .window-content {
-    padding: 0.5rem;
-  }
-  #start-menu a {
-    padding: 0.3rem 0.6rem;
-  }
-  #start-button {
-    font-size: 0.6rem;
-    padding: 0.2rem 0.5rem;
-  }
-  #clock {
-    font-size: 0.6rem;
-  }
-}
-/* resume.css - targeted responsive tweaks for resume.html */
-
-.popup-window iframe {
-  width: 100%;
-  height: 100%;
-  border: none;
-}
-
-@media (max-width: 768px) {
-  body {
-    padding: 1rem;
-    align-items: center;
-  }
-  .container {
-    padding: 1.5rem;
-    border-radius: 1rem;
-  }
-  .top-bar {
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-  }
-  h1 {
-    font-size: 1.3rem;
-  }
-  .section h2 {
-    font-size: 0.9rem;
-  }
-  .section p,
-  .section li {
-    font-size: 1rem;
-    line-height: 1.6;
-  }
-  .skills-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .container {
-    padding: 1rem;
-  }
-  h1 {
-    font-size: 1.1rem;
-  }
-  .section h2 {
-    font-size: 0.8rem;
-  }
-  .section p,
-  .section li {
-    font-size: 0.9rem;
-  }
-  .skills-grid {
-    grid-template-columns: 1fr;
-  }
-}
-.resizer {
-  position: absolute;
-  z-index: 10;
-}
-
-.resizer-top,
-.resizer-bottom {
-  height: 6px;
-  left: 0;
-  right: 0;
-  cursor: ns-resize;
-}
-
-.resizer-top {
-  top: 0;
-}
-
-.resizer-bottom {
-  bottom: 0;
-}
-
-.resizer-left,
-.resizer-right {
-  width: 6px;
-  top: 0;
-  bottom: 0;
-  cursor: ew-resize;
-}
-
-.resizer-left {
-  left: 0;
-}
-
-.resizer-right {
-  right: 0;
-}
-
-.resizer-top-left,
-.resizer-top-right,
-.resizer-bottom-left,
-.resizer-bottom-right {
-  width: 12px;
-  height: 12px;
-  z-index: 15;
-}
-
-.resizer-top-left {
-  top: 0;
-  left: 0;
-  cursor: nwse-resize;
-}
-
-.resizer-top-right {
-  top: 0;
-  right: 0;
-  cursor: nesw-resize;
-}
-
-.resizer-bottom-left {
-  bottom: 0;
-  left: 0;
-  cursor: nesw-resize;
-}
-
-.resizer-bottom-right {
-  bottom: 0;
-  right: 0;
-  cursor: nwse-resize;
-}
+/* Window resizers */
 .resizer {
   position: absolute;
   background: transparent;
@@ -1007,4 +746,133 @@ body {
   bottom: 0;
   right: 0;
   cursor: nwse-resize;
+}
+
+/* Mobile-friendly improvements */
+@media (max-width: 1024px) {
+  :root {
+    --font-size-xl: 1.8rem;
+    --font-size-2xl: 2rem;
+    --font-size-3xl: 2.2rem;
+  }
+  
+  .popup-window {
+    width: 90vw;
+    height: 80vh;
+    top: 10vh;
+    left: 5vw;
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --font-size-sm: 0.7rem;
+    --font-size-base: 0.9rem;
+    --font-size-lg: 1.1rem;
+    --font-size-xl: 1.5rem;
+    --font-size-2xl: 1.8rem;
+    --font-size-3xl: 2rem;
+  }
+  
+  .desktop-icon {
+    position: relative;
+    display: inline-block;
+    width: 25vw;
+    margin: 10px;
+  }
+  
+  #desktop-icons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    height: auto;
+    padding: 1rem 0;
+  }
+  
+  .popup-window {
+    width: 95vw;
+    height: 85vh;
+    top: 7vh;
+    left: 2.5vw;
+  }
+  
+  #start-menu {
+    font-size: 0.7rem;
+  }
+  
+  #start-bar {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 0.5rem;
+  }
+  
+  #clock {
+    font-size: 0.75rem;
+  }
+  
+  /* Add mobile-specific close button for easier window management */
+  .mobile-close {
+    display: block;
+    position: fixed;
+    bottom: 50px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    color: var(--neon-cyan);
+    border: 2px solid var(--neon-cyan);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --font-size-sm: 0.6rem;
+    --font-size-base: 0.8rem;
+    --font-size-lg: 1rem;
+    --font-size-xl: 1.2rem;
+    --font-size-2xl: 1.5rem;
+    --font-size-3xl: 1.8rem;
+  }
+  
+  .desktop-icon img {
+    width: 48px;
+    height: 48px;
+  }
+  
+  .desktop-icon span {
+    font-size: 0.6rem;
+  }
+  
+  .popup-window .window-header {
+    font-size: 0.6rem;
+    padding: 0.3rem;
+  }
+  
+  .popup-window .window-header button {
+    font-size: 0.8rem;
+  }
+  
+  .popup-window .window-content {
+    padding: 0.5rem;
+  }
+  
+  #start-menu a {
+    padding: 0.3rem 0.6rem;
+  }
+  
+  #start-button {
+    font-size: 0.6rem;
+    padding: 0.2rem 0.5rem;
+  }
+  
+  #clock {
+    font-size: 0.6rem;
+  }
 }
