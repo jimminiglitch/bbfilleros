@@ -1,4 +1,4 @@
-/* contact.css – styles for contact.html */
+/* contact.css - responsive styles for contact.html */
 
 body {
   background-color: black;
@@ -36,18 +36,13 @@ a {
   text-decoration: underline;
 }
 
-/*────────────────────────────────────────
-  Responsive Tweaks
-────────────────────────────────────────*/
 @media (max-width: 768px) {
   body {
     padding: 1rem;
   }
-
   h2 {
     font-size: 1.3rem;
   }
-
   .contact-item {
     gap: 0.5rem;
     font-size: 1.1rem;
@@ -58,7 +53,6 @@ a {
   body {
     font-size: 1.1rem;
   }
-
   h2 {
     font-size: 1.1rem;
   }

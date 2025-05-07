@@ -1,0 +1,98 @@
+/* resume.css - targeted responsive tweaks for resume.html */
+
+.popup-window iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+body {
+  background-color: black;
+  color: #00ffff;
+  font-family: 'VT323', monospace;
+  font-size: 1.2rem;
+  line-height: 1.6;
+}
+
+a {
+  color: #00ffff;
+  text-decoration: underline;
+}
+
+.neon-label {
+  color: #ff00ff;
+  font-weight: bold;
+}
+
+h1 {
+  font-size: 2rem;
+  text-align: center;
+  color: #00ffff;
+}
+
+.section h2 {
+  color: #ff00ff;
+  font-size: 1.2rem;
+  margin-top: 2rem;
+}
+
+.section p,
+.section li {
+  color: #00ffff;
+}
+
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+}
+
+@media (max-width: 768px) {
+  body {
+    padding: 1rem;
+    align-items: center;
+  }
+  .container {
+    padding: 1.5rem;
+    border-radius: 1rem;
+  }
+  .top-bar {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+  h1 {
+    font-size: 1.3rem;
+  }
+  .section h2 {
+    font-size: 0.9rem;
+  }
+  .section p,
+  .section li {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  .skills-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 1rem;
+  }
+  h1 {
+    font-size: 1.1rem;
+  }
+  .section h2 {
+    font-size: 0.8rem;
+  }
+  .section p,
+  .section li {
+    font-size: 0.9rem;
+  }
+  .skills-grid {
+    grid-template-columns: 1fr;
+  }
+}

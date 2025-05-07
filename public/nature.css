@@ -1,0 +1,84 @@
+/* nature.css - single image slideshow with buttons */
+
+body {
+  background-color: black;
+  color: #00ffcc;
+  font-family: 'VT323', monospace;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.gallery-header {
+  text-align: center;
+  padding: 1rem;
+  font-size: 1.5rem;
+}
+
+.gallery-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  height: calc(100vh - 140px); /* leave space for header and window chrome */
+  overflow: hidden;
+}
+
+.gallery-item {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.gallery-item.active {
+  display: flex;
+}
+
+.gallery-item img {
+  max-height: 70vh;
+  max-width: 90vw;
+  border-radius: 12px;
+  transition: transform 0.3s;
+  object-fit: contain;
+}
+
+.caption {
+  margin-top: 0.5rem;
+  font-size: 1rem;
+  color: #aaffff;
+}
+
+.nav-buttons {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.nav-buttons button {
+  background-color: #222;
+  color: #00ffcc;
+  border: 1px solid #00ffcc;
+  font-family: 'VT323', monospace;
+  padding: 0.5rem 1rem;
+  margin: 0 1rem;
+  cursor: pointer;
+  font-size: 1.2rem;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.nav-buttons button:hover {
+  background-color: #00ffcc;
+  color: black;
+}
+
+@media (max-width: 600px) {
+  .gallery-item img {
+    max-height: 50vh;
+  }
+  .nav-buttons button {
+    font-size: 1rem;
+    padding: 0.4rem 0.8rem;
+  }
+}
