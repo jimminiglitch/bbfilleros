@@ -379,7 +379,7 @@ body {
   left: 120px;
   width: 750px;
   height: 60vh;
-  background: rgba(0, 0, 0, 0.9);
+  background: rgba(0, 0, 0, .75);
   border: 2px solid var(--neon-purple);
   border-radius: 0.5rem;
   box-shadow: 0 0 10px var(--neon-pink);
@@ -533,7 +533,7 @@ body {
   flex: 1;
   padding: 1rem;
   overflow: auto;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0);
 }
 
 /* Dragging and resizing states */
@@ -1320,4 +1320,13 @@ body {
   #clock {
     font-size: 0.6rem;
   }
+}
+/* target any image inside a popup’s content area */
+.popup-window .window-content img {
+  display: block;
+  max-width: 90vw;   /* up to 90% of the viewport width */
+  max-height: 80vh;  /* up to 80% of the viewport height */
+  width: auto;
+  height: auto;
+  margin: 0 auto;    /* center horizontally */
 }
