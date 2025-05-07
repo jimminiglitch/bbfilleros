@@ -932,3 +932,43 @@ body {
   left: 0 !important;
 }
 
+/* when JS adds .maximized to a window… */
+.popup-window.maximized {
+  position: fixed;            /* stick to the viewport */
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: calc(100vh - 36px) !important; /* leave your 36px taskbar visible */
+  border-radius: 0 !important;
+  z-index: 9999 !important;   /* float above everything else */
+}
+/* hide the little resize handles once maximized */
+.popup-window.maximized .resizer {
+  display: none !important;
+}
+/* FULL-SCREEN POPUP */
+.popup-window.maximized {
+  position: fixed !important;       /* stick to viewport */
+  top: 0 !important;               
+  left: 0 !important;
+  width: 100vw !important;          
+  height: calc(100vh - 36px) !important; /* leave your taskbar space */
+  border-radius: 0 !important;
+  margin: 0 !important;
+  z-index: 9999 !important;
+}
+/* —————————————————————————— */
+/* FULL-SCREEN MAXIMIZED WINDOWS */
+/* —————————————————————————— */
+.popup-window.maximized {
+  position: fixed !important;         /* stick to viewport */
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: calc(100vh - 36px) !important; /* leave taskbar visible */
+  margin: 0 !important;
+  border-radius: 0 !important;
+  /* optional debug outline to see that it’s working: */
+  /* outline: 2px solid yellow !important; */
+  z-index: 9999 !important;
+}

@@ -231,41 +231,43 @@ function toggleMaximizeWindow(id) {
   const win = document.getElementById(id);
   if (!win) return;
 
-  const resizers = win.querySelectorAll('.resizer');
+  const wasMax = win.classList.contains("maximized");
 
-  if (!win.classList.contains("maximized")) {
-    // Save current inline style as previous state
+  if (!wasMax) {
+    // save old bounds & position
     windowStates[id] = {
-      top: win.style.top,
-      left: win.style.left,
-      width: win.style.width,
+      top:    win.style.top,
+      left:   win.style.left,
+      width:  win.style.width,
       height: win.style.height
     };
 
     win.classList.add("maximized");
-
-    win.style.top = "0px";
-    win.style.left = "0px";
-    win.style.width = "100vw";
+    win.style.position = "fixed";
+    win.style.top  = "0";
+    win.style.left = "0";
+    win.style.width  = "100vw";
     win.style.height = "calc(100vh - 36px)";
     win.style.zIndex = getNextZIndex();
-
-    resizers.forEach(r => r.style.display = "none");
-
   } else {
     win.classList.remove("maximized");
-
-    const prev = windowStates[id];
-    if (prev) {
-      win.style.top = prev.top;
-      win.style.left = prev.left;
-      win.style.width = prev.width;
-      win.style.height = prev.height;
-    }
-
-    resizers.forEach(r => r.style.display = "block");
-  }
+    const prev = windowStates[id] || {};
+    win.style.position = "absolute";
+    if (prev.top)    win.style.top    = prev.top;
+    if (prev.left)   win.style.left   = prev.left;
+    if (prev.width)  win.style.width  = prev.width;
+    if (prev.height) win.style.height = prev.height;
+  
+  
+  function toggleMaximizeWindow(id) {
+  console.log("▶ toggleMaximizeWindow fired on:", id);
+  const win = document.getElementById(id);
+  if (!win) return;
+  // … rest of your code …
 }
+}
+}
+
 
 
 
