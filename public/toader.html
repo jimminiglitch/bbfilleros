@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>TOADER</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    body { margin: 0; padding: 0; background: black; color: #00FF00; text-align: center; font-family: 'Press Start 2P'; }
+    canvas { border: 2px solid #00FF00; margin-top: 20px; }
+    .score, .lives { margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <h1>TOADER</h1>
+  <div class="score">Score: 0</div>
+  <div class="lives">Lives: 3</div>
+  <canvas id="game-canvas" width="800" height="600"></canvas>
+  <audio id="background-music" loop src="your_music.mp3"></audio>
+  <audio id="jump-sound" src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/cartoon-jump-6462.mp3?v=1746576176368"></audio>
+  <audio id="hit-sound" src="hit.wav"></audio>
+  <script src="toader.js"></script>
+</body>
+</html>

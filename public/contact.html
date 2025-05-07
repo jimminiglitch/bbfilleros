@@ -1,163 +1,134 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Contact Me</title>
-    <style>
-      /*── FONTS & VARIABLES ──*/
-      @font-face {
-        font-family: "Press Start 2P";
-        font-style: normal;
-        font-weight: 400;
-        font-display: swap;
-        src: url("https://fonts.gstatic.com/s/pressstart2p/v15/e3t4euO8T-267oIAQAu6jDQyK3nVivM.woff2")
-          format("woff2");
-      }
-      @font-face {
-        font-family: "VT323";
-        font-style: normal;
-        font-weight: 400;
-        font-display: swap;
-        src: url("https://fonts.gstatic.com/s/vt323/v17/pxiKyp0ihIEF2isfFJU.woff2")
-          format("woff2");
-      }
-      :root {
-        --font-press-start: "Press Start 2P", monospace;
-        --font-vt323: "VT323", monospace;
-        --neon-purple: #a9a1ff;
-        --neon-pink: #f3a1ff;
-        --neon-cyan: #00f0ff;
-        --neon-green: #00ff66;
-      }
-      * {
-        box-sizing: border-box;
-      }
-      /*── PAGE LAYOUT ──*/
-      body {
-        margin: 0;
-        padding: 2rem;
-        background: black;
-        color: white;
-        font-family: var(--font-vt323);
-        display: flex;
-        justify-content: center;
-        align-items: flex-start;
-        min-height: 100vh;
-        -webkit-font-smoothing: antialiased;
-        text-rendering: optimizeLegibility;
-      }
-      .container {
-        background: rgba(0, 0, 0, 0.9);
-        border: 2px solid var(--neon-purple);
-        border-radius: 1.5rem;
-        padding: 2rem;
-        box-shadow: 0 0 10px var(--neon-pink);
-        max-width: 900px;
-        width: 100%;
-      }
-      h1 {
-        font-family: var(--font-press-start);
-        font-size: 2rem;
-        color: var(--neon-cyan);
-        text-align: center;
-        text-shadow: 0 0 10px var(--neon-cyan);
-        margin-bottom: 1.5rem;
-      }
-      .contact-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 2rem;
-      }
-      .contact-left {
-        display: flex;
-        flex-direction: column;
-        gap: 1.5rem;
-      }
-      .contact-item {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-      }
-      .icon {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 2.5rem;
-        height: 2.5rem;
-        background: var(--neon-purple);
-        border-radius: 50%;
-        font-size: 1.25rem;
-        color: black;
-      }
-      .contact-item .label {
-        margin: 0;
-        font-family: var(--font-press-start);
-        font-size: 0.9rem;
-        color: var(--neon-pink);
-      }
-      .contact-item .value {
-        margin: 0;
-        font-size: 1rem;
-        color: var(--neon-green);
-      }
-      .contact-right {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-      .email-btn {
-        font-family: var(--font-press-start);
-        font-size: 0.8rem;
-        text-decoration: none;
-        padding: 0.75rem 1.5rem;
-        border-radius: 0.5rem;
-        background: var(--neon-cyan);
-        color: black;
-        box-shadow: 0 0 5px var(--neon-green);
-        transition: background 0.3s;
-      }
-      .email-btn:hover {
-        background: var(--neon-green);
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <h1>Contact Me</h1>
-      <div class="contact-grid">
-        <!-- LEFT: Static Contact Info -->
-        <div class="contact-left">
-          <div class="contact-item">
-            <span class="icon">📧</span>
-            <div>
-              <p class="label">Email</p>
-              <p class="value">bbfiller@umich.edu</p>
-            </div>
-          </div>
-          <div class="contact-item">
-            <span class="icon">📞</span>
-            <div>
-              <p class="label">Phone</p>
-              <p class="value">(two48) 2one2-4six44</p>
-            </div>
-          </div>
-          <div class="contact-item">
-            <span class="icon">📍</span>
-            <div>
-              <p class="label">Location</p>
-              <p class="value">Birmingham, MI</p>
-            </div>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Me</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+  <style>
+    @font-face {
+      font-family: "Press Start 2P";
+      font-style: normal;
+      font-weight: 400;
+      src: url("https://fonts.gstatic.com/s/pressstart2p/v15/e3t4euO8T-267oIAQAu6jDQyK3nVivM.woff2") format("woff2");
+    }
+    @font-face {
+      font-family: "VT323";
+      font-style: normal;
+      font-weight: 400;
+      src: url("https://fonts.gstatic.com/s/vt323/v17/pxiKyp0ihIEF2isfFJU.woff2") format("woff2");
+    }
+    :root {
+      --neon-purple: #a9a1ff;
+      --neon-pink: #f3a1ff;
+      --neon-cyan: #00f0ff;
+      --neon-green: #00ff66;
+    }
+    body {
+      margin: 0;
+      padding: 2rem;
+      background: black;
+      color: white;
+      font-family: "VT323", monospace;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    .container {
+      background: rgba(0, 0, 0, 0.9);
+      border: 2px solid var(--neon-purple);
+      border-radius: 1.5rem;
+      padding: 2rem;
+      box-shadow: 0 0 10px var(--neon-pink);
+      max-width: 900px;
+      width: 100%;
+    }
+    h1 {
+      font-family: "Press Start 2P";
+      font-size: 2rem;
+      color: var(--neon-cyan);
+      text-align: center;
+      text-shadow: 0 0 10px var(--neon-cyan);
+      margin-bottom: 1.5rem;
+    }
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .icon {
+      width: 2.5rem;
+      height: 2.5rem;
+      background: var(--neon-purple);
+      border-radius: 50%;
+      color: black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.25rem;
+    }
+    .label {
+      font-family: "Press Start 2P";
+      font-size: 0.9rem;
+      color: var(--neon-pink);
+      margin: 0;
+    }
+    .value {
+      color: var(--neon-green);
+      font-size: 1rem;
+      margin: 0;
+    }
+    .email-btn {
+      font-family: "Press Start 2P";
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.5rem;
+      background: var(--neon-cyan);
+      color: black;
+      text-decoration: none;
+      box-shadow: 0 0 5px var(--neon-green);
+      transition: background 0.3s;
+    }
+    .email-btn:hover {
+      background: var(--neon-green);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Contact Me</h1>
+    <div class="contact-grid">
+      <div class="contact-left">
+        <div class="contact-item">
+          <span class="icon">📧</span>
+          <div>
+            <p class="label">Email</p>
+            <p class="value">bbfiller@umich.edu</p>
           </div>
         </div>
-
-        <!-- RIGHT: Mailto Button -->
-        <div class="contact-right">
-          <a href="mailto:bbfiller@umich.edu" class="email-btn">
-            ✉️ Email Me
-          </a>
+        <div class="contact-item">
+          <span class="icon">📞</span>
+          <div>
+            <p class="label">Phone</p>
+            <p class="value">(248) 212-4644</p>
+          </div>
+        </div>
+        <div class="contact-item">
+          <span class="icon">📍</span>
+          <div>
+            <p class="label">Location</p>
+            <p class="value">Birmingham, MI</p>
+          </div>
         </div>
       </div>
+      <div class="contact-right">
+        <a href="mailto:bbfiller@umich.edu" class="email-btn">✉️ Email Me</a>
+      </div>
     </div>
-  </body>
+  </div>
+</body>
 </html>
