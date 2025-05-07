@@ -34,15 +34,15 @@ function openWindow(id) {
     }
   });
 
-  // 3) If this is the Toader window, postMessage START_GAME
-  if (id === "toader") {
-    const iframe = win.querySelector("iframe");
-    if (iframe) {
-      iframe.onload = () => {
-        iframe.contentWindow.postMessage({ type: "START_GAME" }, "*");
-      };
-    }
+ // 3) If this is the Toader window, play hover audio
+if (id === "toader") {
+  const audio = document.getElementById("toader-audio");
+  if (audio && audio.paused) {
+    audio.volume = 0.6;
+    audio.play().catch(() => {});
   }
+}
+
 
   // 4) Lazy-load any <video data-src> in this window
   win.querySelectorAll("video[data-src]").forEach(v => {
@@ -117,6 +117,14 @@ function closeWindow(id) {
     if (vid) { vid.pause(); vid.currentTime = 0; }
     win.classList.add("hidden");
     win.style.display = "none";
+    if (id === "toader") {
+  const audio = document.getElementById("toader-audio");
+  if (audio) {
+    audio.pause();
+    audio.currentTime = 0;
+  }
+}
+
   }
   const icon = document.getElementById(`taskbar-icon-${id}`);
   if (icon) icon.remove();

@@ -523,4 +523,44 @@ body {
     transform: scale(1.05);
   }
 }
+.toader-comingsoon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+}
+
+.psychedelic-text {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 1.5rem;
+  color: #f3a1ff;
+  text-shadow:
+    0 0 5px #ff00ff,
+    0 0 10px #00f0ff,
+    0 0 15px #fffc00,
+    0 0 20px #00ff66;
+  animation: pulse-glow 1.8s infinite ease-in-out;
+  margin-top: 1rem;
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    text-shadow:
+      0 0 5px #ff00ff,
+      0 0 10px #00f0ff,
+      0 0 15px #fffc00,
+      0 0 20px #00ff66;
+    transform: scale(1);
+  }
+  50% {
+    text-shadow:
+      0 0 10px #ff00ff,
+      0 0 20px #00f0ff,
+      0 0 25px #fffc00,
+      0 0 30px #00ff66;
+    transform: scale(1.05);
+  }
+}
 
