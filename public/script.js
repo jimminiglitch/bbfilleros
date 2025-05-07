@@ -8,6 +8,10 @@ function debounce(func, wait) {
     timeout = setTimeout(() => func.apply(this, args), wait)
   }
 }
+// create one Audio instance for the toad’s hover sfx
+const toadHoverAudio = new Audio('https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/hover.mp3')
+toadHoverAudio.volume = 1
+
 
 // DOM ready handler with performance improvements
 document.addEventListener("DOMContentLoaded", () => {
@@ -18,7 +22,6 @@ document.addEventListener("DOMContentLoaded", () => {
   runBootSequence().then(() => {
     initDesktopIcons()
     initStarfield()
-    initDOSLoader()
     initGlitchEffects()
   })
 })
@@ -427,6 +430,17 @@ function runBootSequence() {
 
 // 5) DESKTOP ICONS (double-click to open + drag-group)
 function initDesktopIcons() {
+  
+  // Play hover sound on the psychedelic toad icon only
+  const toadIcon = document.querySelector('.desktop-icon[data-window="toader"]')
+if (toadIcon) {
+  toadIcon.addEventListener('mouseenter', () => {
+    toadHoverAudio.currentTime = 0
+    toadHoverAudio.play().catch(() => {})
+  })
+}
+
+
   document.querySelectorAll(".desktop-icon").forEach((icon) => {
     // open on double-click
     icon.addEventListener("dblclick", () => {
@@ -528,74 +542,73 @@ function onSelectEnd() {
 }
 
 // 7) STARFIELD BACKGROUND - pure white stars
+// ─── STARFIELD (revised) ───────────────────────────────────────────────────
 function initStarfield() {
   const canvas = document.getElementById("background-canvas")
-  const ctx = canvas.getContext("2d")
+  const ctx    = canvas.getContext("2d")
 
-  const handleResize = debounce(() => {
-    canvas.width = window.innerWidth
+  let stars = []
+  const STAR_COUNT = 500
+  function initStars() {
+    stars = Array.from({ length: STAR_COUNT }, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      z: Math.random() * canvas.width,
+      o: Math.random()
+    }))
+  }
+
+  function drawStars() {
+    // full‐opacity background to create motion-blur effect
+    ctx.fillStyle = 'rgba(0,0,0,1)'
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+    for (let s of stars) {
+      // twinkle
+      s.o += (Math.random() - 0.5) * 0.02
+      s.o = Math.max(0.1, Math.min(1, s.o))
+
+      // move forward
+      s.z -= 2
+      if (s.z <= 0) {
+        s.z = canvas.width
+        s.x = Math.random() * canvas.width
+        s.y = Math.random() * canvas.height
+        s.o = Math.random()
+      }
+
+      const k  = 128.0 / s.z
+      const px = (s.x - canvas.width / 2) * k + canvas.width  / 2
+      const py = (s.y - canvas.height / 2) * k + canvas.height / 2
+      const sz = Math.max(0.5, (1 - s.z / canvas.width) * 2)  // half as big
+
+      ctx.globalAlpha = s.o
+      ctx.fillStyle   = '#fff'
+      ctx.beginPath()
+      ctx.arc(px, py, sz, 0, Math.PI * 2)
+      ctx.fill()
+    }
+
+    ctx.globalAlpha = 1
+  }
+
+  // on resize, recalc canvas + reinit stars
+  window.addEventListener('resize', debounce(() => {
+    canvas.width  = window.innerWidth
     canvas.height = window.innerHeight
     initStars()
-  }, 250)
-  window.addEventListener("resize", handleResize)
+  }, 250))
 
-  canvas.width = window.innerWidth
+  // initial sizing & stars
+  canvas.width  = window.innerWidth
   canvas.height = window.innerHeight
+  initStars()
 
-  const numStars = 300
-  const stars = Array.from({ length: numStars }, () => ({
-    x: Math.random() * canvas.width,
-    y: Math.random() * canvas.height,
-    z: Math.random() * canvas.width,
-  }))
-
-  let lastTime = 0
-  const fps = 30
-  const frameInterval = 1000 / fps
-
-  function animate(timestamp) {
-    if (!lastTime) lastTime = timestamp
-    const elapsed = timestamp - lastTime
-    if (elapsed > frameInterval) {
-      lastTime = timestamp - (elapsed % frameInterval)
-      ctx.fillStyle = "rgba(0,0,0,0.4)"
-      ctx.fillRect(0, 0, canvas.width, canvas.height)
-
-      const batchSize = Math.min(100, stars.length)
-      for (let i = 0; i < batchSize; i++) {
-        const s = stars[i]
-        s.z -= 2
-        if (s.z <= 0) {
-          s.z = canvas.width
-          s.x = Math.random() * canvas.width
-          s.y = Math.random() * canvas.height
-        }
-        const k = 128.0 / s.z
-        const px = (s.x - canvas.width / 2) * k + canvas.width / 2
-        const py = (s.y - canvas.height / 2) * k + canvas.width / 2
-        const sz = Math.max(0, (1 - s.z / canvas.width) * 3)
-        ctx.globalAlpha = 1
-        ctx.fillStyle = "#ffffff"
-        ctx.beginPath()
-        ctx.arc(px, py, sz, 0, Math.PI * 2)
-        ctx.fill()
-      }
-      stars.push(...stars.splice(0, batchSize))
-    }
-    ctx.globalAlpha = 1
+  // loop
+  function animate() {
+    drawStars()
     requestAnimationFrame(animate)
   }
-
-  function initStars() {
-    for (let i = 0; i < stars.length; i++) {
-      stars[i] = {
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        z: Math.random() * canvas.width,
-      }
-    }
-  }
-
   requestAnimationFrame(animate)
 }
 
