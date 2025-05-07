@@ -8,9 +8,9 @@ function debounce(func, wait) {
     timeout = setTimeout(() => func.apply(this, args), wait)
   }
 }
-// create one Audio instance for the toad’s hover sfx
-const toadHoverAudio = new Audio('https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/hover.mp3')
-toadHoverAudio.volume = 1
+
+const toadHoverAudio = new Audio('https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/hover.mp3?v=1746577634973');
+toadHoverAudio.volume = 1;
 
 
 // DOM ready handler with performance improvements
@@ -164,77 +164,85 @@ function getNextZIndex() {
 }
 
 function openWindow(id) {
-  const win = document.getElementById(id)
-  if (!win) return
+  const win = document.getElementById(id);
+  if (!win) return;
 
   // 1) Hide start menu & deactivate other windows
-  document.getElementById("start-menu").style.display = "none"
-  document.querySelectorAll(".popup-window").forEach((w) => w.classList.remove("active"))
+  document.getElementById("start-menu").style.display = "none";
+  document.querySelectorAll(".popup-window").forEach((w) => w.classList.remove("active"));
 
   // 2) Lazy-load <iframe data-src>
   win.querySelectorAll("iframe[data-src]").forEach((iframe) => {
     if (!iframe.src) {
-      iframe.src = iframe.dataset.src
+      iframe.src = iframe.dataset.src;
     }
-  })
+  });
 
   // 3) Lazy-load <video data-src>
   win.querySelectorAll("video[data-src]").forEach((v) => {
     if (!v.src) {
-      v.src = v.dataset.src
-      v.load()
+      v.src = v.dataset.src;
+      v.load();
       if (!isMobile()) {
-        v.play().catch(() => {})
+        v.play().catch(() => {});
       }
     }
-  })
+  });
 
   // 4) Show & focus
-  win.classList.remove("hidden")
-  win.classList.add("active")
-  win.style.display = "flex"
-  win.style.zIndex = getNextZIndex()
-  win.classList.add("window-opening")
+  win.classList.remove("hidden");
+  win.classList.add("active");
+  win.style.display = "flex";
+  win.style.zIndex = getNextZIndex();
+  win.classList.add("window-opening");
   setTimeout(() => {
-    win.classList.remove("window-opening")
-  }, 500)
+    win.classList.remove("window-opening");
+  }, 500);
 
-  // 5) Restore or clamp bounds
-  const isMobileView = isMobile()
+  // ─── Play the toad hover sound when the Toader window opens ───
+  if (id === "toader") {
+    toadHoverAudio.currentTime = 0;
+    toadHoverAudio.play().catch(() => {});
+  }
+
+  // 5) Restore previous bounds or clamp to viewport
+  const isMobileView = isMobile();
   if (isMobileView) {
     Object.assign(win.style, {
       top: "0",
       left: "0",
       width: "100vw",
-      height: `calc(100vh - 36px)`,
+      height: "calc(100vh - 36px)",
       transform: "none",
-    })
+    });
   } else {
-    const stored = windowStates[id]
-    if (stored) Object.assign(win.style, stored)
+    const stored = windowStates[id];
+    if (stored) Object.assign(win.style, stored);
 
-    const rect = win.getBoundingClientRect()
-    const margin = 20
-    const vw = window.innerWidth
-    const vh = window.innerHeight
-    let newW = rect.width, newH = rect.height, newLeft = rect.left, newTop = rect.top
+    const rect = win.getBoundingClientRect();
+    const margin = 20;
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    let newW = rect.width,
+        newH = rect.height,
+        newLeft = rect.left,
+        newTop = rect.top;
 
-    if (rect.width > vw - margin * 2) newW = vw - margin * 2
-    if (rect.height > vh - margin * 2) newH = vh - margin * 2
-    if (rect.left < margin) newLeft = margin
-    if (rect.top < margin) newTop = margin
-    if (rect.right > vw - margin) newLeft = vw - margin - newW
-    if (rect.bottom > vh - margin) newTop = vh - margin - newH
+    if (rect.width > vw - margin * 2) newW = vw - margin * 2;
+    if (rect.height > vh - margin * 2) newH = vh - margin * 2;
+    if (rect.left < margin) newLeft = margin;
+    if (rect.top < margin) newTop = margin;
+    if (rect.right > vw - margin) newLeft = vw - margin - newW;
+    if (rect.bottom > vh - margin) newTop = vh - margin - newH;
 
     Object.assign(win.style, {
-      width: `${newW}px`,
+      width:  `${newW}px`,
       height: `${newH}px`,
-      left: `${newLeft}px`,
-      top: `${newTop}px`,
-    })
+      left:   `${newLeft}px`,
+      top:    `${newTop}px`,
+    });
   }
 }
-
 // Helper function to detect mobile devices
 function isMobile() {
   return window.innerWidth < 768
@@ -430,17 +438,6 @@ function runBootSequence() {
 
 // 5) DESKTOP ICONS (double-click to open + drag-group)
 function initDesktopIcons() {
-  
-  // Play hover sound on the psychedelic toad icon only
-  const toadIcon = document.querySelector('.desktop-icon[data-window="toader"]')
-if (toadIcon) {
-  toadIcon.addEventListener('mouseenter', () => {
-    toadHoverAudio.currentTime = 0
-    toadHoverAudio.play().catch(() => {})
-  })
-}
-
-
   document.querySelectorAll(".desktop-icon").forEach((icon) => {
     // open on double-click
     icon.addEventListener("dblclick", () => {
