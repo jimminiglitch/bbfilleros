@@ -470,6 +470,8 @@ body {
   border: none;
   display: block; /* avoids weird inline‐iframe gaps */
 }
+
+
 /*─────────────────────────────────────────────────────────────────────────────
    Only override the RESUME & CONTACT embeds
 ─────────────────────────────────────────────────────────────────────────────*/
@@ -933,4 +935,16 @@ body {
   bottom: 0;
   right: 0;
   cursor: nwse-resize;
+}
+/* FULL‐SCREEN MAXIMIZED WINDOWS */
+.popup-window.maximized {
+  position: fixed !important;    /* stick to viewport */
+  top: 0 !important;             /* flush with top */
+  left: 0 !important;            /* flush with left */
+  right: 0 !important;           /* flush with right */
+  bottom: 36px !important;       /* leave your 36px taskbar visible */
+  margin: 0 !important;
+  border-radius: 0 !important;
+  transform: none !important;    /* clear any drag */
+  z-index: 9999 !important;
 }

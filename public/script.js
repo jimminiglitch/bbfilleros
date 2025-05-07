@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const id = win.id;
     const header = win.querySelector(".window-header");
     const btnMin = header.querySelector(".minimize");
+    const btnMax = header.querySelector(".maximize");
     const btnCls = header.querySelector(".close");
 
     if (btnMin) btnMin.addEventListener("click", () => minimizeWindow(id));
@@ -524,6 +525,7 @@ function initWindowControls() {
     });
   });
 }
+
 
 // INIT everything
 document.addEventListener("DOMContentLoaded", () => {
