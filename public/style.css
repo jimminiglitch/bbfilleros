@@ -132,16 +132,16 @@ body {
 #icon-about    { top: 100px; left:  40px; }
 #icon-resume   { top: 100px; left: 140px; }
 #icon-contact  { top: 100px; left:  240px; }
-#icon-tigerrr   { top: 100px; left: 140px; }
+#icon-tigerrr   { top: 100px; left: 340px; }
 #icon-nature   { top: 200px; left: 40px; }
 #icon-video1   { top: 200px; left:  140px; }
 #icon-video2   { top: 200px; left: 240px; }
 #icon-video3   { top: 200px; left: 340px; }
-#icon-music    { top: 300px; left:  140px; }
-#icon-snake    { top: 300px; left: 240px; }
-#icon-toader    { top: 300px; left: 340px; }
-#icon-MILES   { top: 400px; left: 40px; }
-#icon-octavia  { top: 400px; left: 140px; }
+#icon-music    { top: 300px; left:  40px; }
+#icon-octavia  { top: 300px; left: 140px; }
+#icon-toader    { top: 300px; left: 240px; }
+#icon-MILES   { top: 300px; left: 340px; }
+#icon-snake    { top: 400px; left: 40px; }
 
 /* Selected state */
 .desktop-icon.selected {
