@@ -130,7 +130,7 @@ body {
 
 /* Initial positions */
 #icon-about    { top: 100px; left:  40px; }
-#icon-artwork  { top: 100px; left: 140px; }
+#icon-miles  { top: 100px; left: 140px; }
 #icon-resume   { top: 100px; left: 240px; }
 #icon-contact  { top: 200px; left:  40px; }
 #icon-notes    { top: 200px; left: 140px; }
@@ -141,6 +141,8 @@ body {
 #icon-music    { top: 400px; left:  40px; }
 #icon-snake    { top: 400px; left: 140px; }
 #icon-toader    { top: 400px; left: 240px; }
+#icon-octavia   { top: 500px; left: 40px; }
+#icon-tigerrr   { top: 500px; left: 140px; }
 
 /* Selected state */
 .desktop-icon.selected {
@@ -562,5 +564,17 @@ body {
       0 0 30px #00ff66;
     transform: scale(1.05);
   }
+}
+.single-art {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+}
+
+.single-art img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
 }
 
