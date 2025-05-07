@@ -5,26 +5,28 @@
 document.addEventListener("DOMContentLoaded", () => {
   const windows = document.querySelectorAll(".popup-window");
 
-  windows.forEach(win => {
+  windows.forEach((win) => {
     const id = win.id;
     const header = win.querySelector(".window-header");
     const btnMin = header.querySelector(".minimize");
-    const btnMax = header.querySelector(".maximize");
     const btnCls = header.querySelector(".close");
 
     if (btnMin) btnMin.addEventListener("click", () => minimizeWindow(id));
-    if (btnMax) btnMax.addEventListener("click", () => toggleMaximizeWindow(id));
+    if (btnMax)
+      btnMax.addEventListener("click", () => toggleMaximizeWindow(id));
     if (btnCls) btnCls.addEventListener("click", () => closeWindow(id));
 
     // Dragging logic
-    let isDragging = false, offsetX = 0, offsetY = 0;
-    header.addEventListener("mousedown", e => {
+    let isDragging = false,
+      offsetX = 0,
+      offsetY = 0;
+    header.addEventListener("mousedown", (e) => {
       isDragging = true;
       offsetX = e.clientX - win.offsetLeft;
       offsetY = e.clientY - win.offsetTop;
       win.style.zIndex = getNextZIndex();
     });
-    document.addEventListener("mousemove", e => {
+    document.addEventListener("mousemove", (e) => {
       if (isDragging) {
         win.style.left = `${e.clientX - offsetX}px`;
         win.style.top = `${e.clientY - offsetY}px`;
@@ -36,18 +38,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Resizing logic
     const directions = [
-      "top", "right", "bottom", "left",
-      "top-left", "top-right", "bottom-left", "bottom-right"
+      "top",
+      "right",
+      "bottom",
+      "left",
+      "top-left",
+      "top-right",
+      "bottom-left",
+      "bottom-right",
     ];
 
-    directions.forEach(dir => {
+    directions.forEach((dir) => {
       const resizer = document.createElement("div");
       resizer.classList.add("resizer", `resizer-${dir}`);
       win.appendChild(resizer);
 
       let isResizing = false;
 
-      resizer.addEventListener("mousedown", e => {
+      resizer.addEventListener("mousedown", (e) => {
         e.preventDefault();
         e.stopPropagation();
         isResizing = true;
@@ -101,7 +109,6 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-
 // 2) OPEN / MINIMIZE / CLOSE / MAXIMIZE & TASKBAR ICONS
 let currentZIndex = 10;
 const windowStates = {};
@@ -116,37 +123,41 @@ function openWindow(id) {
 
   // 1) Hide start menu & deactivate other windows
   document.getElementById("start-menu").style.display = "none";
-  document.querySelectorAll(".popup-window").forEach(w => w.classList.remove("active"));
+  document
+    .querySelectorAll(".popup-window")
+    .forEach((w) => w.classList.remove("active"));
 
   // 2) Lazy-load any <iframe data-src> in this window
-  win.querySelectorAll("iframe[data-src]").forEach(iframe => {
+  win.querySelectorAll("iframe[data-src]").forEach((iframe) => {
     if (!iframe.src) {
       iframe.src = iframe.dataset.src;
     }
   });
 
- // 3) If this is the Toader window, play hover audio
-if (id === "toader") {
-  const audio = document.getElementById("toader-audio");
-  if (audio && audio.paused) {
-    audio.volume = 0.6;
-    audio.play().catch(() => {});
+  // 3) If this is the Toader window, play hover audio
+  if (id === "toader") {
+    const audio = document.getElementById("toader-audio");
+    if (audio && audio.paused) {
+      audio.volume = 0.6;
+      audio.play().catch(() => {});
+    }
   }
-}
 
-if (id === "TIGERRR") {
-  const audio = document.getElementById("TIGERRR-audio");
-  if (audio && audio.paused) {
-    audio.volume = 0.6;
-    audio.play().catch(() => {});
+  if (id === "TIGERRR") {
+    const audio = document.getElementById("TIGERRR-audio");
+    if (audio && audio.paused) {
+      audio.volume = 0.6;
+      audio.play().catch(() => {});
+    }
   }
-}
   // 4) Lazy-load any <video data-src> in this window
-  win.querySelectorAll("video[data-src]").forEach(v => {
+  win.querySelectorAll("video[data-src]").forEach((v) => {
     if (!v.src) {
       v.src = v.dataset.src;
       v.load();
-      v.play().catch(() => { /* may require user gesture */ });
+      v.play().catch(() => {
+        /* may require user gesture */
+      });
     }
   });
 
@@ -154,41 +165,41 @@ if (id === "TIGERRR") {
   win.classList.remove("hidden");
   win.classList.add("active");
   win.style.display = "flex";
-  win.style.zIndex  = getNextZIndex();
+  win.style.zIndex = getNextZIndex();
 
   // 6) Restore previous bounds
   const stored = windowStates[id];
   if (stored) Object.assign(win.style, stored);
 
   // 7) Clamp window to viewport
-  const rect   = win.getBoundingClientRect();
+  const rect = win.getBoundingClientRect();
   const margin = 20;
-  const vw     = window.innerWidth;
-  const vh     = window.innerHeight;
-  let newW     = rect.width,
-      newH     = rect.height,
-      newLeft  = rect.left,
-      newTop   = rect.top;
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  let newW = rect.width,
+    newH = rect.height,
+    newLeft = rect.left,
+    newTop = rect.top;
 
-  if (rect.width  > vw - margin*2) newW    = vw - margin*2;
-  if (rect.height > vh - margin*2) newH    = vh - margin*2;
-  if (rect.left   < margin)        newLeft = margin;
-  if (rect.top    < margin)        newTop  = margin;
-  if (rect.right  > vw - margin)   newLeft = vw - margin - newW;
-  if (rect.bottom > vh - margin)   newTop  = vh - margin - newH;
+  if (rect.width > vw - margin * 2) newW = vw - margin * 2;
+  if (rect.height > vh - margin * 2) newH = vh - margin * 2;
+  if (rect.left < margin) newLeft = margin;
+  if (rect.top < margin) newTop = margin;
+  if (rect.right > vw - margin) newLeft = vw - margin - newW;
+  if (rect.bottom > vh - margin) newTop = vh - margin - newH;
 
   Object.assign(win.style, {
-    width:  `${newW}px`,
+    width: `${newW}px`,
     height: `${newH}px`,
-    left:   `${newLeft}px`,
-    top:    `${newTop}px`
+    left: `${newLeft}px`,
+    top: `${newTop}px`,
   });
 }
 
 function createTaskbarIcon(id) {
   if (document.getElementById(`taskbar-icon-${id}`)) return;
   const btn = document.createElement("button");
-  btn.id        = `taskbar-icon-${id}`;
+  btn.id = `taskbar-icon-${id}`;
   btn.className = "taskbar-icon";
   btn.textContent = id.toUpperCase();
   btn.addEventListener("click", () => {
@@ -211,17 +222,19 @@ function closeWindow(id) {
   if (win) {
     // pause any <video> inside
     const vid = win.querySelector("video");
-    if (vid) { vid.pause(); vid.currentTime = 0; }
+    if (vid) {
+      vid.pause();
+      vid.currentTime = 0;
+    }
     win.classList.add("hidden");
     win.style.display = "none";
     if (id === "toader") {
-  const audio = document.getElementById("toader-audio");
-  if (audio) {
-    audio.pause();
-    audio.currentTime = 0;
-  }
-}
-
+      const audio = document.getElementById("toader-audio");
+      if (audio) {
+        audio.pause();
+        audio.currentTime = 0;
+      }
+    }
   }
   const icon = document.getElementById(`taskbar-icon-${id}`);
   if (icon) icon.remove();
@@ -233,57 +246,52 @@ function toggleMaximizeWindow(id) {
 
   const isMax = !win.classList.contains("maximized");
   if (isMax) {
-    // save last state & DOM position
-    windowStates[id] = {
+    // save its old parent & styles
+    const prev = windowStates[id] = {
+      parent:    win.parentNode,
+      next:      win.nextSibling,
       position:  win.style.position,
       top:       win.style.top,
       left:      win.style.left,
-      width:     win.style.width,
-      height:    win.style.height,
+      right:     win.style.right,
+      bottom:    win.style.bottom,
       transform: win.style.transform,
-      parent:    win.parentNode,
-      next:      win.nextSibling
     };
 
-    // move it to body so it can truly be fixed to viewport
+    // move it into body so it's never clipped
     document.body.appendChild(win);
     win.classList.add("maximized");
     Object.assign(win.style, {
       position: "fixed",
       top:      "0",
       left:     "0",
-      width:    "100vw",
-      height:   "calc(100vh - 36px)",
+      right:    "0",
+      bottom:   "36px",
+      transform:"none",
       zIndex:   getNextZIndex(),
-      transform:"none"
     });
 
   } else {
     win.classList.remove("maximized");
     const prev = windowStates[id] || {};
-    // restore styles
+
+    // restore its styles
     Object.assign(win.style, {
       position: prev.position || "absolute",
       top:      prev.top      || "",
       left:     prev.left     || "",
-      width:    prev.width    || "",
-      height:   prev.height   || "",
+      right:    prev.right    || "",
+      bottom:   prev.bottom   || "",
+      transform:prev.transform||"",
       zIndex:   getNextZIndex(),
-      transform:prev.transform||""
     });
-    // put it back where it was in the DOM
+
+    // and put it back where it came from
     if (prev.parent) {
       prev.parent.insertBefore(win, prev.next);
     }
   }
 }
-
-
-
-
-
-
-
 
 
 // 3) CLOCK & START MENU TOGGLE
@@ -294,27 +302,26 @@ function updateClock() {
 setInterval(updateClock, 1000);
 updateClock();
 
-document.getElementById("start-button")
-  .addEventListener("click", () => {
-    const m = document.getElementById("start-menu");
-    m.style.display = (m.style.display === "flex" ? "none" : "flex");
-  });
+document.getElementById("start-button").addEventListener("click", () => {
+  const m = document.getElementById("start-menu");
+  m.style.display = m.style.display === "flex" ? "none" : "flex";
+});
 
 // 4) BOOT SEQUENCE (run on DOMContentLoaded)
 function runBootSequence() {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     const bootScreen = document.getElementById("bootScreen");
-    const logEl      = document.getElementById("boot-log");
-    const progress   = document.getElementById("progress-bar");
+    const logEl = document.getElementById("boot-log");
+    const progress = document.getElementById("progress-bar");
     const msgs = [
       "[ OK ] Initializing hardware...",
       "[ OK ] Loading kernel modules...",
       "[ OK ] Mounting filesystems...",
       "[ OK ] Starting system services...",
       "[ OK ] CyberDeck ready.",
-      "[ DONE ] Boot complete."
+      "[ DONE ] Boot complete.",
     ];
-    let idx     = 0;
+    let idx = 0;
     const total = msgs.length;
     const delay = 400;
 
@@ -327,7 +334,7 @@ function runBootSequence() {
         clearInterval(typer);
         setTimeout(() => {
           bootScreen.style.transition = "opacity 0.8s";
-          bootScreen.style.opacity    = "0";
+          bootScreen.style.opacity = "0";
           setTimeout(() => {
             bootScreen.style.display = "none";
             resolve();
@@ -340,22 +347,23 @@ function runBootSequence() {
 
 // 5) DESKTOP ICONS (single-click to open + drag-group)
 function initDesktopIcons() {
-  document.querySelectorAll(".desktop-icon").forEach(icon => {
+  document.querySelectorAll(".desktop-icon").forEach((icon) => {
     // open on single click
     icon.addEventListener("click", () => openWindow(icon.dataset.window));
 
     // drag-group start
-    icon.addEventListener("mousedown", e => {
+    icon.addEventListener("mousedown", (e) => {
       e.preventDefault();
       const parentRect = icon.parentElement.getBoundingClientRect();
-      const clickRect  = icon.getBoundingClientRect();
+      const clickRect = icon.getBoundingClientRect();
 
       let group;
       if (icon.classList.contains("selected")) {
         group = Array.from(document.querySelectorAll(".desktop-icon.selected"));
       } else {
-        document.querySelectorAll(".desktop-icon.selected")
-          .forEach(ic => ic.classList.remove("selected"));
+        document
+          .querySelectorAll(".desktop-icon.selected")
+          .forEach((ic) => ic.classList.remove("selected"));
         icon.classList.add("selected");
         group = [icon];
       }
@@ -363,29 +371,34 @@ function initDesktopIcons() {
       const shiftX = e.clientX - clickRect.left;
       const shiftY = e.clientY - clickRect.top;
 
-      const groupData = group.map(ic => {
+      const groupData = group.map((ic) => {
         const r = ic.getBoundingClientRect();
         const startLeft = r.left - parentRect.left;
-        const startTop  = r.top  - parentRect.top;
-        ic.style.left  = `${startLeft}px`;
-        ic.style.top   = `${startTop}px`;
+        const startTop = r.top - parentRect.top;
+        ic.style.left = `${startLeft}px`;
+        ic.style.top = `${startTop}px`;
         ic.style.zIndex = getNextZIndex();
         return { icon: ic, startLeft, startTop };
       });
 
       function onMouseMove(e) {
-        const dx = (e.clientX - shiftX - parentRect.left) - groupData[0].startLeft;
-        const dy = (e.clientY - shiftY - parentRect.top)  - groupData[0].startTop;
+        const dx =
+          e.clientX - shiftX - parentRect.left - groupData[0].startLeft;
+        const dy = e.clientY - shiftY - parentRect.top - groupData[0].startTop;
         groupData.forEach(({ icon, startLeft, startTop }) => {
           icon.style.left = `${startLeft + dx}px`;
-          icon.style.top  = `${startTop  + dy}px`;
+          icon.style.top = `${startTop + dy}px`;
         });
       }
 
       document.addEventListener("mousemove", onMouseMove);
-      document.addEventListener("mouseup", () => {
-        document.removeEventListener("mousemove", onMouseMove);
-      }, { once: true });
+      document.addEventListener(
+        "mouseup",
+        () => {
+          document.removeEventListener("mousemove", onMouseMove);
+        },
+        { once: true }
+      );
     });
 
     icon.ondragstart = () => false;
@@ -395,14 +408,16 @@ function initDesktopIcons() {
 // 6) CLICK-AND-DRAG MULTI-SELECT (rainbow selector box)
 let selStartX, selStartY, selDiv;
 function onSelectStart(e) {
-  if (e.target.closest(".desktop-icon, .popup-window, #start-bar, #start-menu")) return;
-  selStartX = e.clientX; selStartY = e.clientY;
+  if (e.target.closest(".desktop-icon, .popup-window, #start-bar, #start-menu"))
+    return;
+  selStartX = e.clientX;
+  selStartY = e.clientY;
   selDiv = document.createElement("div");
   selDiv.id = "selection-rect";
-  selDiv.style.left  = `${selStartX}px`;
-  selDiv.style.top   = `${selStartY}px`;
+  selDiv.style.left = `${selStartX}px`;
+  selDiv.style.top = `${selStartY}px`;
   selDiv.style.width = "0px";
-  selDiv.style.height= "0px";
+  selDiv.style.height = "0px";
   document.body.appendChild(selDiv);
   document.addEventListener("mousemove", onSelectMove);
   document.addEventListener("mouseup", onSelectEnd, { once: true });
@@ -411,22 +426,21 @@ function onSelectStart(e) {
 function onSelectMove(e) {
   if (!selDiv) return;
   const x = Math.min(e.clientX, selStartX),
-        y = Math.min(e.clientY, selStartY),
-        w = Math.abs(e.clientX - selStartX),
-        h = Math.abs(e.clientY - selStartY);
-  selDiv.style.left  = `${x}px`;
-  selDiv.style.top   = `${y}px`;
+    y = Math.min(e.clientY, selStartY),
+    w = Math.abs(e.clientX - selStartX),
+    h = Math.abs(e.clientY - selStartY);
+  selDiv.style.left = `${x}px`;
+  selDiv.style.top = `${y}px`;
   selDiv.style.width = `${w}px`;
-  selDiv.style.height= `${h}px`;
+  selDiv.style.height = `${h}px`;
   const box = selDiv.getBoundingClientRect();
-  document.querySelectorAll(".desktop-icon").forEach(icon => {
+  document.querySelectorAll(".desktop-icon").forEach((icon) => {
     const r = icon.getBoundingClientRect();
-    const inside = (
-      r.left   >= box.left &&
-      r.right  <= box.right &&
-      r.top    >= box.top &&
-      r.bottom <= box.bottom
-    );
+    const inside =
+      r.left >= box.left &&
+      r.right <= box.right &&
+      r.top >= box.top &&
+      r.bottom <= box.bottom;
     icon.classList.toggle("selected", inside);
   });
 }
@@ -438,36 +452,39 @@ function onSelectEnd() {
 // 7) STARFIELD BACKGROUND
 function initStarfield() {
   const canvas = document.getElementById("background-canvas");
-  const ctx    = canvas.getContext("2d");
-  function resize(){ canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+  const ctx = canvas.getContext("2d");
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
   window.addEventListener("resize", resize);
   resize();
   const numStars = 300;
   const stars = Array.from({ length: numStars }, () => ({
-    x: Math.random()*canvas.width,
-    y: Math.random()*canvas.height,
-    z: Math.random()*canvas.width,
-    o: Math.random()
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    z: Math.random() * canvas.width,
+    o: Math.random(),
   }));
-  (function animate(){
-    ctx.fillStyle = 'rgba(0,0,0,0.4)';
-    ctx.fillRect(0,0,canvas.width,canvas.height);
+  (function animate() {
+    ctx.fillStyle = "rgba(0,0,0,0.4)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
     for (let s of stars) {
       s.z -= 2;
       if (s.z <= 0) {
         s.z = canvas.width;
-        s.x = Math.random()*canvas.width;
-        s.y = Math.random()*canvas.height;
+        s.x = Math.random() * canvas.width;
+        s.y = Math.random() * canvas.height;
         s.o = Math.random();
       }
-      const k  = 128.0 / s.z;
-      const px = (s.x - canvas.width/2)*k + canvas.width/2;
-      const py = (s.y - canvas.height/2)*k + canvas.height/2;
-      const sz = Math.max(0, (1 - s.z/canvas.width)*3);
+      const k = 128.0 / s.z;
+      const px = (s.x - canvas.width / 2) * k + canvas.width / 2;
+      const py = (s.y - canvas.height / 2) * k + canvas.height / 2;
+      const sz = Math.max(0, (1 - s.z / canvas.width) * 3);
       ctx.globalAlpha = s.o;
-      ctx.fillStyle   = '#fff';
+      ctx.fillStyle = "#fff";
       ctx.beginPath();
-      ctx.arc(px,py,sz,0,Math.PI*2);
+      ctx.arc(px, py, sz, 0, Math.PI * 2);
       ctx.fill();
     }
     ctx.globalAlpha = 1;
@@ -477,29 +494,34 @@ function initStarfield() {
 
 // 8) WINDOW HEADER DRAG & BUTTONS
 function initWindowControls() {
-  document.querySelectorAll(".popup-window").forEach(win => {
-    const id     = win.id;
+  document.querySelectorAll(".popup-window").forEach((win) => {
+    const id = win.id;
     const header = win.querySelector(".window-header");
     const btnMin = header.querySelector(".minimize");
     const btnMax = header.querySelector(".maximize");
     const btnCls = header.querySelector(".close");
     if (btnMin) btnMin.addEventListener("click", () => minimizeWindow(id));
-    if (btnMax) btnMax.addEventListener("click", () => toggleMaximizeWindow(id));
+    if (btnMax)
+      btnMax.addEventListener("click", () => toggleMaximizeWindow(id));
     if (btnCls) btnCls.addEventListener("click", () => closeWindow(id));
-    let isDragging = false, offsetX = 0, offsetY = 0;
-    header.addEventListener("mousedown", e => {
+    let isDragging = false,
+      offsetX = 0,
+      offsetY = 0;
+    header.addEventListener("mousedown", (e) => {
       isDragging = true;
-      offsetX    = e.clientX - win.offsetLeft;
-      offsetY    = e.clientY - win.offsetTop;
+      offsetX = e.clientX - win.offsetLeft;
+      offsetY = e.clientY - win.offsetTop;
       win.style.zIndex = getNextZIndex();
     });
-    document.addEventListener("mousemove", e => {
+    document.addEventListener("mousemove", (e) => {
       if (isDragging) {
         win.style.left = `${e.clientX - offsetX}px`;
-        win.style.top  = `${e.clientY - offsetY}px`;
+        win.style.top = `${e.clientY - offsetY}px`;
       }
     });
-    document.addEventListener("mouseup", () => { isDragging = false; });
+    document.addEventListener("mouseup", () => {
+      isDragging = false;
+    });
   });
 }
 

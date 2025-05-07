@@ -2,13 +2,13 @@
   GLOBAL VARIABLES & RESET
 ─────────────────────────────────────────────────────────────────────────────*/
 :root {
-  --font-press-start: 'Press Start 2P', monospace;
-  --font-vt323:       'VT323', monospace;
-  --neon-purple:      #a9a1ff;
-  --neon-pink:        #f3a1ff;
-  --neon-cyan:        #00f0ff;
-  --neon-yellow:      #fffc00;
-  --neon-green:       #00ff66;
+  --font-press-start: "Press Start 2P", monospace;
+  --font-vt323: "VT323", monospace;
+  --neon-purple: #a9a1ff;
+  --neon-pink: #f3a1ff;
+  --neon-cyan: #00f0ff;
+  --neon-yellow: #fffc00;
+  --neon-green: #00ff66;
 }
 * {
   box-sizing: border-box;
@@ -19,12 +19,14 @@ body {
   background: black;
   color: white;
   font-family: var(--font-vt323);
-  overflow: hidden;
+  /* allow fixed windows to escape the body bounds */
+  overflow: visible !important;
   height: 100vh;
   position: relative;
 }
+
 .desktop-icon img {
-  filter: drop-shadow(0 0 4px rgba(255,141,161,0.3));
+  filter: drop-shadow(0 0 4px rgba(255, 141, 161, 0.3));
 }
 
 /*─────────────────────────────────────────────────────────────────────────────
@@ -32,16 +34,17 @@ body {
 ─────────────────────────────────────────────────────────────────────────────*/
 .scanlines {
   position: fixed;
-  top: 0; left: 0;
-  width: 100vw; height: 100vh;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
   pointer-events: none;
-  background:
-    repeating-linear-gradient(
-      to bottom,
-      rgba(0,0,0,0) 0px,
-      rgba(0,0,0,0.03) 1px,
-      rgba(0,0,0,0) 2px
-    );
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0px,
+    rgba(0, 0, 0, 0.03) 1px,
+    rgba(0, 0, 0, 0) 2px
+  );
 }
 
 /*─────────────────────────────────────────────────────────────────────────────
@@ -60,8 +63,10 @@ body {
 .glitch::after {
   content: attr(data-text);
   position: absolute;
-  left: 0; top: 0;
-  width: 100%; height: 100%;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
   overflow: hidden;
   clip-path: inset(0 0 0 0);
 }
@@ -75,21 +80,57 @@ body {
 }
 
 @keyframes glitch-top {
-  0%   { clip-path: inset(0 0 90% 0); transform: translate(2px, -2px); }
-  5%   { clip-path: inset(0 0 40% 0); transform: translate(-2px, 2px); }
-  10%  { clip-path: inset(0 0 85% 0); transform: translate(2px, 2px); }
-  15%  { clip-path: inset(0 0 20% 0); transform: translate(-2px, -2px); }
-  20%  { clip-path: inset(0 0 90% 0); transform: translate(2px, -2px); }
-  100% { clip-path: inset(0 0 0 0); transform: translate(0,0); }
+  0% {
+    clip-path: inset(0 0 90% 0);
+    transform: translate(2px, -2px);
+  }
+  5% {
+    clip-path: inset(0 0 40% 0);
+    transform: translate(-2px, 2px);
+  }
+  10% {
+    clip-path: inset(0 0 85% 0);
+    transform: translate(2px, 2px);
+  }
+  15% {
+    clip-path: inset(0 0 20% 0);
+    transform: translate(-2px, -2px);
+  }
+  20% {
+    clip-path: inset(0 0 90% 0);
+    transform: translate(2px, -2px);
+  }
+  100% {
+    clip-path: inset(0 0 0 0);
+    transform: translate(0, 0);
+  }
 }
 
 @keyframes glitch-bottom {
-  0%   { clip-path: inset(85% 0 0 0); transform: translate(-2px, 2px); }
-  10%  { clip-path: inset(40% 0 0 0); transform: translate(2px, -2px); }
-  20%  { clip-path: inset(80% 0 0 0); transform: translate(-2px, 2px); }
-  30%  { clip-path: inset(25% 0 0 0); transform: translate(2px, -2px); }
-  40%  { clip-path: inset(85% 0 0 0); transform: translate(-2px, 2px); }
-  100% { clip-path: inset(0 0 0 0); transform: translate(0,0); }
+  0% {
+    clip-path: inset(85% 0 0 0);
+    transform: translate(-2px, 2px);
+  }
+  10% {
+    clip-path: inset(40% 0 0 0);
+    transform: translate(2px, -2px);
+  }
+  20% {
+    clip-path: inset(80% 0 0 0);
+    transform: translate(-2px, 2px);
+  }
+  30% {
+    clip-path: inset(25% 0 0 0);
+    transform: translate(2px, -2px);
+  }
+  40% {
+    clip-path: inset(85% 0 0 0);
+    transform: translate(-2px, 2px);
+  }
+  100% {
+    clip-path: inset(0 0 0 0);
+    transform: translate(0, 0);
+  }
 }
 
 /*─────────────────────────────────────────────────────────────────────────────
@@ -125,27 +166,66 @@ body {
   margin-top: 4px;
   font-size: 0.8rem;
   color: white;
-  text-shadow: 0 0 4px rgba(0,0,0,0.7);
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.7);
 }
 
 /* Initial positions */
-#icon-about    { top: 100px; left:  40px; }
-#icon-resume   { top: 100px; left: 140px; }
-#icon-contact  { top: 100px; left:  240px; }
-#icon-tigerrr   { top: 100px; left: 340px; }
-#icon-nature   { top: 200px; left: 40px; }
-#icon-video1   { top: 200px; left:  140px; }
-#icon-video2   { top: 200px; left: 240px; }
-#icon-video3   { top: 200px; left: 340px; }
-#icon-music    { top: 300px; left:  40px; }
-#icon-octavia  { top: 300px; left: 140px; }
-#icon-toader    { top: 300px; left: 240px; }
-#icon-MILES   { top: 300px; left: 340px; }
-#icon-snake    { top: 400px; left: 40px; }
+#icon-about {
+  top: 100px;
+  left: 40px;
+}
+#icon-resume {
+  top: 100px;
+  left: 140px;
+}
+#icon-contact {
+  top: 100px;
+  left: 240px;
+}
+#icon-tigerrr {
+  top: 100px;
+  left: 340px;
+}
+#icon-nature {
+  top: 200px;
+  left: 40px;
+}
+#icon-video1 {
+  top: 200px;
+  left: 140px;
+}
+#icon-video2 {
+  top: 200px;
+  left: 240px;
+}
+#icon-video3 {
+  top: 200px;
+  left: 340px;
+}
+#icon-music {
+  top: 300px;
+  left: 40px;
+}
+#icon-octavia {
+  top: 300px;
+  left: 140px;
+}
+#icon-toader {
+  top: 300px;
+  left: 240px;
+}
+#icon-MILES {
+  top: 300px;
+  left: 340px;
+}
+#icon-snake {
+  top: 400px;
+  left: 40px;
+}
 
 /* Selected state */
 .desktop-icon.selected {
-  background: rgba(255,255,255,0.1);
+  background: rgba(255, 255, 255, 0.1);
   border: 2px solid var(--neon-cyan);
   border-radius: 4px;
 }
@@ -154,16 +234,16 @@ body {
 #selection-rect {
   position: absolute;
   border: 2px dashed;
-  border-image: 
-    linear-gradient(
+  border-image: linear-gradient(
       45deg,
       var(--neon-pink),
       var(--neon-yellow),
       var(--neon-green),
       var(--neon-cyan),
       var(--neon-purple)
-    ) 1;
-  background: rgba(255,255,255,0.05);
+    )
+    1;
+  background: rgba(255, 255, 255, 0.05);
   pointer-events: none;
   z-index: 999;
 }
@@ -173,7 +253,8 @@ body {
 ─────────────────────────────────────────────────────────────────────────────*/
 .popup-window {
   position: absolute;
-  top: 120px; left: 120px;
+  top: 120px;
+  left: 120px;
   width: 500px;
   height: 60vh;
   background: rgba(0, 0, 0, 0.9);
@@ -268,9 +349,11 @@ body {
 ─────────────────────────────────────────────────────────────────────────────*/
 #start-bar {
   position: fixed;
-  bottom: 0; left: 0; right: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
   height: 30px;
-  background: rgba(0.8,0.8,0.8,0.8);
+  background: rgba(0.8, 0.8, 0.8, 0.8);
   display: flex;
   align-items: center;
   padding: 0 0.5rem;
@@ -292,7 +375,7 @@ body {
   background: black;
   border-top: 2px solid var(--neon-purple);
   box-shadow: 0 -2px 12px var(--neon-purple);
-  height: 36px;                   /* slightly taller for visual weight */
+  height: 36px; /* slightly taller for visual weight */
   padding: 0 1rem;
   display: flex;
   align-items: center;
@@ -317,7 +400,6 @@ body {
   background: var(--neon-purple);
   color: black;
   box-shadow: 0 0 12px var(--neon-purple);
-
 }
 
 #clock {
@@ -330,7 +412,7 @@ body {
   position: fixed;
   bottom: 30px;
   left: 0;
-  background: rgba(0,0,0,0.9);
+  background: rgba(0, 0, 0, 0.9);
   border: 2px solid var(--neon-cyan);
   display: none;
   flex-direction: column;
@@ -344,7 +426,7 @@ body {
   font-size: 0.8rem;
 }
 #start-menu a:hover {
-  background: rgba(255,255,255,0.1);
+  background: rgba(255, 255, 255, 0.1);
 }
 
 /*─────────────────────────────────────────────────────────────────────────────
@@ -352,8 +434,10 @@ body {
 ─────────────────────────────────────────────────────────────────────────────*/
 #background-canvas {
   position: fixed;
-  top: 0; left: 0;
-  width: 100vw; height: 100vh;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
   z-index: -1;
 }
 /*─────────────────────────────────────────────────────────────────────────────
@@ -374,9 +458,9 @@ body {
 
 /* …and the content area fills the rest of the window: */
 .popup-window .window-content {
-  flex: 1 1 auto;    /* grow to fill whatever’s left */
-  padding: 0;        /* remove any default padding */
-  overflow: hidden;  /* hide scrollbars on the container */
+  flex: 1 1 auto; /* grow to fill whatever’s left */
+  padding: 0; /* remove any default padding */
+  overflow: hidden; /* hide scrollbars on the container */
 }
 
 /* now the iframe itself also stretches perfectly: */
@@ -384,14 +468,14 @@ body {
   width: 100%;
   height: 100%;
   border: none;
-  display: block;    /* avoids weird inline‐iframe gaps */
+  display: block; /* avoids weird inline‐iframe gaps */
 }
 /*─────────────────────────────────────────────────────────────────────────────
    Only override the RESUME & CONTACT embeds
 ─────────────────────────────────────────────────────────────────────────────*/
 #resume .window-content,
 #contact .window-content {
-  padding: 0;           /* remove inner padding so iframe can fill */
+  padding: 0; /* remove inner padding so iframe can fill */
 }
 
 #resume .window-content iframe,
@@ -425,8 +509,10 @@ body {
 .popup-window .window-content {
   display: flex;
   flex-direction: column;
-  padding: 0;        /* remove any leftover padding */
-  height: calc(100% - 2.2rem); /* header is ~2.2rem high—adjust if yours differs */
+  padding: 0; /* remove any leftover padding */
+  height: calc(
+    100% - 2.2rem
+  ); /* header is ~2.2rem high—adjust if yours differs */
   overflow: hidden;
 }
 
@@ -474,14 +560,14 @@ body {
 .gallery-controls button {
   margin: 0 0.5rem;
   font-family: var(--font-press-start);
-  background: rgba(0,0,0,0.7);
+  background: rgba(0, 0, 0, 0.7);
   border: 1px solid var(--neon-cyan);
   padding: 0.5rem 1rem;
   cursor: pointer;
   color: var(--neon-cyan);
 }
 .gallery-controls button:hover {
-  background: rgba(0,0,0,0.9);
+  background: rgba(0, 0, 0, 0.9);
 }
 
 .toader-comingsoon {
@@ -494,32 +580,24 @@ body {
 }
 
 .psychedelic-text {
-  font-family: 'Press Start 2P', monospace;
+  font-family: "Press Start 2P", monospace;
   font-size: 1.5rem;
   color: #f3a1ff;
-  text-shadow:
-    0 0 5px #ff00ff,
-    0 0 10px #00f0ff,
-    0 0 15px #fffc00,
+  text-shadow: 0 0 5px #ff00ff, 0 0 10px #00f0ff, 0 0 15px #fffc00,
     0 0 20px #00ff66;
   animation: pulse-glow 1.8s infinite ease-in-out;
   margin-top: 1rem;
 }
 
 @keyframes pulse-glow {
-  0%, 100% {
-    text-shadow:
-      0 0 5px #ff00ff,
-      0 0 10px #00f0ff,
-      0 0 15px #fffc00,
+  0%,
+  100% {
+    text-shadow: 0 0 5px #ff00ff, 0 0 10px #00f0ff, 0 0 15px #fffc00,
       0 0 20px #00ff66;
     transform: scale(1);
   }
   50% {
-    text-shadow:
-      0 0 10px #ff00ff,
-      0 0 20px #00f0ff,
-      0 0 25px #fffc00,
+    text-shadow: 0 0 10px #ff00ff, 0 0 20px #00f0ff, 0 0 25px #fffc00,
       0 0 30px #00ff66;
     transform: scale(1.05);
   }
@@ -534,32 +612,24 @@ body {
 }
 
 .psychedelic-text {
-  font-family: 'Press Start 2P', monospace;
+  font-family: "Press Start 2P", monospace;
   font-size: 1.5rem;
   color: #f3a1ff;
-  text-shadow:
-    0 0 5px #ff00ff,
-    0 0 10px #00f0ff,
-    0 0 15px #fffc00,
+  text-shadow: 0 0 5px #ff00ff, 0 0 10px #00f0ff, 0 0 15px #fffc00,
     0 0 20px #00ff66;
   animation: pulse-glow 1.8s infinite ease-in-out;
   margin-top: 1rem;
 }
 
 @keyframes pulse-glow {
-  0%, 100% {
-    text-shadow:
-      0 0 5px #ff00ff,
-      0 0 10px #00f0ff,
-      0 0 15px #fffc00,
+  0%,
+  100% {
+    text-shadow: 0 0 5px #ff00ff, 0 0 10px #00f0ff, 0 0 15px #fffc00,
       0 0 20px #00ff66;
     transform: scale(1);
   }
   50% {
-    text-shadow:
-      0 0 10px #ff00ff,
-      0 0 20px #00f0ff,
-      0 0 25px #fffc00,
+    text-shadow: 0 0 10px #ff00ff, 0 0 20px #00f0ff, 0 0 25px #fffc00,
       0 0 30px #00ff66;
     transform: scale(1.05);
   }
@@ -814,75 +884,6 @@ body {
 }
 .resizer {
   position: absolute;
-  z-index: 10;
-}
-
-.resizer-top,
-.resizer-bottom {
-  height: 6px;
-  left: 0;
-  right: 0;
-  cursor: ns-resize;
-}
-
-.resizer-top {
-  top: 0;
-}
-
-.resizer-bottom {
-  bottom: 0;
-}
-
-.resizer-left,
-.resizer-right {
-  width: 6px;
-  top: 0;
-  bottom: 0;
-  cursor: ew-resize;
-}
-
-.resizer-left {
-  left: 0;
-}
-
-.resizer-right {
-  right: 0;
-}
-
-.resizer-top-left,
-.resizer-top-right,
-.resizer-bottom-left,
-.resizer-bottom-right {
-  width: 12px;
-  height: 12px;
-  z-index: 15;
-}
-
-.resizer-top-left {
-  top: 0;
-  left: 0;
-  cursor: nwse-resize;
-}
-
-.resizer-top-right {
-  top: 0;
-  right: 0;
-  cursor: nesw-resize;
-}
-
-.resizer-bottom-left {
-  bottom: 0;
-  left: 0;
-  cursor: nesw-resize;
-}
-
-.resizer-bottom-right {
-  bottom: 0;
-  right: 0;
-  cursor: nwse-resize;
-}
-.resizer {
-  position: absolute;
   background: transparent;
   z-index: 10;
 }
@@ -913,78 +914,23 @@ body {
   z-index: 15;
 }
 
-.resizer-top-left     { top: 0; left: 0; cursor: nwse-resize; }
-.resizer-top-right    { top: 0; right: 0; cursor: nesw-resize; }
-.resizer-bottom-left  { bottom: 0; left: 0; cursor: nesw-resize; }
-.resizer-bottom-right { bottom: 0; right: 0; cursor: nwse-resize; }
-
-.popup-window.maximized {
-  top: 0 !important;
-  left: 0 !important;
-  width: 100vw !important;
-  height: calc(100vh - 36px) !important; /* leaves space for taskbar */
-  border-radius: 0 !important;
+.resizer-top-left {
+  top: 0;
+  left: 0;
+  cursor: nwse-resize;
 }
-.popup-window.maximized {
-  width: 100vw !important;
-  height: calc(100vh - 36px) !important;
-  top: 0 !important;
-  left: 0 !important;
+.resizer-top-right {
+  top: 0;
+  right: 0;
+  cursor: nesw-resize;
 }
-
-/* when JS adds .maximized to a window… */
-.popup-window.maximized {
-  position: fixed;            /* stick to the viewport */
-  top: 0 !important;
-  left: 0 !important;
-  width: 100vw !important;
-  height: calc(100vh - 36px) !important; /* leave your 36px taskbar visible */
-  border-radius: 0 !important;
-  z-index: 9999 !important;   /* float above everything else */
+.resizer-bottom-left {
+  bottom: 0;
+  left: 0;
+  cursor: nesw-resize;
 }
-/* hide the little resize handles once maximized */
-.popup-window.maximized .resizer {
-  display: none !important;
+.resizer-bottom-right {
+  bottom: 0;
+  right: 0;
+  cursor: nwse-resize;
 }
-/* FULL-SCREEN POPUP */
-.popup-window.maximized {
-  position: fixed !important;       /* stick to viewport */
-  top: 0 !important;               
-  left: 0 !important;
-  width: 100vw !important;          
-  height: calc(100vh - 36px) !important; /* leave your taskbar space */
-  border-radius: 0 !important;
-  margin: 0 !important;
-  z-index: 9999 !important;
-}
-/* —————————————————————————— */
-/* FULL-SCREEN MAXIMIZED WINDOWS */
-/* —————————————————————————— */
-.popup-window.maximized {
-  position: fixed !important;         /* stick to viewport */
-  top: 0 !important;
-  left: 0 !important;
-  width: 100vw !important;
-  height: calc(100vh - 36px) !important; /* leave taskbar visible */
-  margin: 0 !important;
-  border-radius: 0 !important;
-  /* optional debug outline to see that it’s working: */
-  /* outline: 2px solid yellow !important; */
-  z-index: 9999 !important;
-}
-/* —————————————————————————— */
-/* FULL-SCREEN MAXIMIZED WINDOWS */
-/* —————————————————————————— */
-/* FULL‐SCREEN MAXIMIZED WINDOWS */
-.popup-window.maximized {
-  position: fixed !important;    /* stick to viewport */
-  top: 0 !important;             /* flush with top */
-  left: 0 !important;            /* flush with left */
-  right: 0 !important;           /* flush with right */
-  bottom: 36px !important;       /* leave your 36px taskbar visible */
-  margin: 0 !important;
-  border-radius: 0 !important;
-  transform: none !important;    /* clear any drag */
-  z-index: 9999 !important;
-}
-
