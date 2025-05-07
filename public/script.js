@@ -343,15 +343,13 @@ function runBootSequence() {
       logEl.textContent += msgs[idx] + "\n"
       logEl.scrollTop = logEl.scrollHeight
       progress.style.width = `${((idx+1)/total)*100}%`
-      playSound("type")
-
+      
       idx++
       if (idx === total) {
         clearInterval(typer)
         setTimeout(() => {
           bootScreen.style.transition = "opacity 0.8s"
           bootScreen.style.opacity = "0"
-          playSound("bootComplete")
           setTimeout(() => {
             bootScreen.style.display = "none"
             resolve()
