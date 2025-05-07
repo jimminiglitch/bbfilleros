@@ -1,5 +1,5 @@
 /*─────────────────────────────────────────────────────────────────────────────
-  GLOBAL VARIABLES & RESET - OPTIMIZED VERSION
+  GLOBAL VARIABLES & RESET - ULTIMATE CYBERPUNK UPGRADE
 ─────────────────────────────────────────────────────────────────────────────*/
 :root {
   /* Colors */
@@ -10,7 +10,10 @@
   --neon-cyan: #00f0ff;
   --neon-yellow: #fffc00;
   --neon-green: #00ff66;
-  
+  --neon-red: #ff3366;
+  --neon-orange: #ff9933;
+  --neon-blue: #3366ff;
+
   /* Typography */
   --font-size-sm: 0.8rem;
   --font-size-base: 1rem;
@@ -18,14 +21,14 @@
   --font-size-xl: 1.5rem;
   --font-size-2xl: 2rem;
   --font-size-3xl: 2.5rem;
-  
+
   /* Spacing */
   --spacing-xs: 0.25rem;
   --spacing-sm: 0.5rem;
   --spacing-md: 1rem;
   --spacing-lg: 1.5rem;
   --spacing-xl: 2rem;
-  
+
   /* Z-index layers */
   --z-background: -1;
   --z-desktop: 1;
@@ -65,12 +68,7 @@ body {
   width: 100vw;
   height: 100vh;
   pointer-events: none;
-  background: repeating-linear-gradient(
-    to bottom,
-    rgba(0, 0, 0, 0) 0px,
-    rgba(0, 0, 0, 0.03) 1px,
-    rgba(0, 0, 0, 0) 2px
-  );
+  background: repeating-linear-gradient(to bottom, rgba(0, 0, 0, 0) 0px, rgba(0, 0, 0, 0.03) 1px, rgba(0, 0, 0, 0) 2px);
   z-index: 5;
 }
 
@@ -163,6 +161,75 @@ body {
   }
 }
 
+/* Glitching animation for elements with .glitching class */
+.glitching {
+  animation: glitching 0.2s linear;
+}
+
+@keyframes glitching {
+  0% {
+    transform: translate(0);
+    filter: hue-rotate(0deg);
+  }
+  20% {
+    transform: translate(-3px, 3px);
+    filter: hue-rotate(90deg);
+  }
+  40% {
+    transform: translate(-3px, -3px);
+    filter: hue-rotate(180deg);
+  }
+  60% {
+    transform: translate(3px, 3px);
+    filter: hue-rotate(270deg);
+  }
+  80% {
+    transform: translate(3px, -3px);
+    filter: hue-rotate(360deg);
+  }
+  100% {
+    transform: translate(0);
+    filter: hue-rotate(0deg);
+  }
+}
+
+/* Screen glitch effect */
+.screen-glitch {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(255, 255, 255, 0.03);
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  z-index: 9999;
+  animation: screen-glitch 0.2s linear;
+}
+
+@keyframes screen-glitch {
+  0% {
+    opacity: 0;
+    transform: translateX(0);
+  }
+  25% {
+    opacity: 0.5;
+    transform: translateX(5px);
+  }
+  50% {
+    opacity: 0.7;
+    transform: translateX(-5px);
+  }
+  75% {
+    opacity: 0.5;
+    transform: translateX(5px);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(0);
+  }
+}
+
 /*─────────────────────────────────────────────────────────────────────────────
   DESKTOP ICONS
 ─────────────────────────────────────────────────────────────────────────────*/
@@ -185,6 +252,7 @@ body {
   cursor: pointer;
   user-select: none;
   text-align: center;
+  transition: transform 0.2s ease, filter 0.2s ease;
 }
 
 .desktop-icon img {
@@ -193,6 +261,7 @@ body {
   display: block;
   margin: 0 auto;
   will-change: transform; /* Optimize for animations */
+  transition: transform 0.2s ease;
 }
 
 .desktop-icon span {
@@ -201,6 +270,12 @@ body {
   font-size: var(--font-size-sm);
   color: white;
   text-shadow: 0 0 4px rgba(0, 0, 0, 0.7);
+}
+
+/* Icon hover effect */
+.desktop-icon.icon-hover img {
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 8px var(--neon-cyan));
 }
 
 /* Initial positions */
@@ -260,6 +335,22 @@ body {
   top: 400px;
   left: 140px;
 }
+#icon-tetris {
+  top: 400px;
+  left: 240px;
+}
+#icon-pong {
+  top: 400px;
+  left: 340px;
+}
+#icon-dosbox {
+  top: 500px;
+  left: 40px;
+}
+#icon-emulator {
+  top: 500px;
+  left: 140px;
+}
 
 /* Selected state */
 .desktop-icon.selected {
@@ -304,6 +395,7 @@ body {
   overflow: hidden;
   z-index: var(--z-window);
   will-change: transform, opacity; /* Optimize for animations */
+  transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
 .popup-window.active {
@@ -315,9 +407,87 @@ body {
   display: none !important;
 }
 
+/* Window animations */
+.window-opening {
+  animation: window-open 0.3s ease forwards;
+}
+
+@keyframes window-open {
+  0% {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.window-closing {
+  animation: window-close 0.3s ease forwards;
+}
+
+@keyframes window-close {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+}
+
+.window-minimizing {
+  animation: window-minimize 0.3s ease forwards;
+}
+
+@keyframes window-minimize {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.5) translateY(100vh);
+    opacity: 0;
+  }
+}
+
+.window-maximizing {
+  animation: window-maximize 0.3s ease forwards;
+}
+
+@keyframes window-maximize {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.window-restoring {
+  animation: window-restore 0.3s ease forwards;
+}
+
+@keyframes window-restore {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.98);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
 /* Header bar */
 .popup-window .window-header {
-  background: #111111;
+  background: linear-gradient(to right, #111111, #222222);
   color: var(--neon-green);
   font-family: var(--font-press-start);
   font-size: 0.8rem;
@@ -329,6 +499,11 @@ body {
   cursor: move;
 }
 
+.popup-window .window-header span {
+  flex: 1; /* push the buttons to the right */
+  text-shadow: 0 0 5px var(--neon-green);
+}
+
 .popup-window .window-header button {
   background: none;
   border: none;
@@ -337,6 +512,27 @@ body {
   font-size: 1rem;
   cursor: pointer;
   margin-left: 0.5rem;
+  transition: color 0.2s ease, text-shadow 0.2s ease;
+}
+
+.popup-window .window-header button:hover {
+  color: white;
+  text-shadow: 0 0 5px var(--neon-yellow);
+}
+
+.popup-window .window-header .minimize:hover {
+  color: var(--neon-yellow);
+  text-shadow: 0 0 5px var(--neon-yellow);
+}
+
+.popup-window .window-header .maximize:hover {
+  color: var(--neon-green);
+  text-shadow: 0 0 5px var(--neon-green);
+}
+
+.popup-window .window-header .close:hover {
+  color: var(--neon-red);
+  text-shadow: 0 0 5px var(--neon-red);
 }
 
 /* Content area */
@@ -344,6 +540,28 @@ body {
   flex: 1;
   padding: 1rem;
   overflow: auto;
+  background: rgba(0, 0, 0, 0.8);
+}
+
+/* Dragging and resizing states */
+.popup-window.dragging {
+  opacity: 0.9;
+  box-shadow: 0 0 20px var(--neon-purple);
+}
+
+.popup-window.resizing {
+  opacity: 0.9;
+  box-shadow: 0 0 20px var(--neon-cyan);
+}
+
+/* Maximized state */
+.popup-window.maximized {
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.popup-window.maximized .resizer {
+  display: none;
 }
 
 /*─────────────────────────────────────────────────────────────────────────────
@@ -363,6 +581,19 @@ body {
 .boot-screen .boot-tiger {
   width: 200px;
   margin-bottom: 1rem;
+  filter: drop-shadow(0 0 10px var(--neon-purple));
+  animation: pulse 2s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 10px var(--neon-purple));
+  }
+  50% {
+    transform: scale(1.05);
+    filter: drop-shadow(0 0 15px var(--neon-pink));
+  }
 }
 
 .boot-screen .boot-log {
@@ -375,6 +606,8 @@ body {
   overflow-y: auto;
   border: 1px solid var(--neon-green);
   margin-bottom: 1rem;
+  padding: 0.5rem;
+  box-shadow: 0 0 10px rgba(0, 255, 102, 0.3);
 }
 
 .boot-screen .progress-container {
@@ -382,13 +615,15 @@ body {
   background: #333333;
   height: 8px;
   border-radius: 4px;
+  overflow: hidden;
 }
 
 .boot-screen .progress-bar {
   width: 0;
   height: 100%;
-  background: var(--neon-cyan);
+  background: linear-gradient(to right, var(--neon-cyan), var(--neon-purple));
   transition: width 1s ease;
+  box-shadow: 0 0 10px var(--neon-cyan);
 }
 
 /*─────────────────────────────────────────────────────────────────────────────
@@ -400,7 +635,7 @@ body {
   left: 0;
   right: 0;
   height: 36px;
-  background: black;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.9), rgba(20, 0, 40, 0.9));
   border-top: 2px solid var(--neon-purple);
   box-shadow: 0 -2px 12px var(--neon-purple);
   display: flex;
@@ -410,13 +645,52 @@ body {
   z-index: var(--z-taskbar);
 }
 
+#taskbar-icons {
+  display: flex;
+  align-items: center;
+  margin-left: 1rem;
+  overflow-x: auto;
+  max-width: calc(100vw - 200px);
+  scrollbar-width: none; /* Firefox */
+}
+
+#taskbar-icons::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Edge */
+}
+
 .taskbar-icon {
-  background: cyan;
-  border: violet;
-  color: pink;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--neon-cyan);
+  border-radius: 4px;
+  color: var(--neon-pink);
   margin-right: 0.5rem;
   cursor: pointer;
-  font-size: 0.8rem;
+  font-size: 0.7rem;
+  padding: 0.2rem 0.5rem;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  box-shadow: 0 0 5px rgba(0, 240, 255, 0.3);
+}
+
+.taskbar-icon:hover {
+  background: rgba(0, 0, 0, 0.7);
+  box-shadow: 0 0 10px var(--neon-cyan);
+}
+
+/* Clock pulse animation */
+.clock-pulse {
+  animation: clock-pulse 0.5s ease;
+}
+
+@keyframes clock-pulse {
+  0% {
+    color: var(--neon-cyan);
+    text-shadow: 0 0 10px var(--neon-cyan);
+  }
+  100% {
+    color: white;
+    text-shadow: none;
+  }
 }
 
 /*─────────────────────────────────────────────────────────────────────────────
@@ -433,7 +707,7 @@ body {
   color: var(--neon-purple);
   box-shadow: 0 0 8px var(--neon-purple);
   cursor: pointer;
-  transition: background 0.2s, color 0.2s;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
 }
 
 #start-button:hover {
@@ -445,6 +719,8 @@ body {
 #clock {
   margin-left: auto;
   font-size: 0.8rem;
+  color: white;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
 }
 
 /* Start menu */
@@ -458,17 +734,54 @@ body {
   flex-direction: column;
   font-family: var(--font-press-start);
   z-index: var(--z-startmenu);
+  box-shadow: 0 0 15px var(--neon-cyan);
+  min-width: 200px;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* Start menu animations */
+.menu-showing {
+  animation: menu-show 0.3s ease forwards;
+}
+
+@keyframes menu-show {
+  0% {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.menu-hiding {
+  animation: menu-hide 0.3s ease forwards;
+}
+
+@keyframes menu-hide {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(20px);
+    opacity: 0;
+  }
 }
 
 #start-menu a {
   padding: 0.5rem 1rem;
-  color: pink;
+  color: var(--neon-pink);
   text-decoration: none;
   font-size: 0.8rem;
+  transition: background 0.2s, color 0.2s;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 #start-menu a:hover {
   background: rgba(255, 255, 255, 0.1);
+  color: var(--neon-cyan);
 }
 
 /*─────────────────────────────────────────────────────────────────────────────
@@ -481,6 +794,18 @@ body {
   width: 100vw;
   height: 100vh;
   z-index: var(--z-background);
+}
+
+/* Audio visualizer */
+#audio-visualizer {
+  position: fixed;
+  bottom: 36px;
+  left: 0;
+  width: 100%;
+  height: 100px;
+  z-index: 0;
+  opacity: 0.5;
+  pointer-events: none;
 }
 
 /*─────────────────────────────────────────────────────────────────────────────
@@ -531,35 +856,13 @@ body {
 }
 
 /*─────────────────────────────────────────────────────────────────────────────
-  1) Swap & align the header buttons
-─────────────────────────────────────────────────────────────────────────────*/
-.popup-window .window-header {
-  display: flex;
-  align-items: center;
-}
-
-.popup-window .window-header span {
-  flex: 1; /* push the buttons to the right */
-}
-
-.popup-window .window-header button {
-  background: none;
-  border: none;
-  font-size: 1.2rem;
-  margin-left: 0.5rem;
-  cursor: pointer;
-}
-
-/*─────────────────────────────────────────────────────────────────────────────
   2) Force the content area (and its iframe) to stretch & scroll if needed
 ─────────────────────────────────────────────────────────────────────────────*/
 .popup-window .window-content {
   display: flex;
   flex-direction: column;
   padding: 0; /* remove any leftover padding */
-  height: calc(
-    100% - 2.2rem
-  ); /* header is ~2.2rem high—adjust if yours differs */
+  height: calc(100% - 2.2rem); /* header is ~2.2rem high—adjust if yours differs */
   overflow: hidden;
 }
 
@@ -605,6 +908,8 @@ body {
 
 .gallery-controls {
   margin-top: 0.5rem;
+  display: flex;
+  justify-content: center;
 }
 
 .gallery-controls button {
@@ -615,10 +920,12 @@ body {
   padding: 0.5rem 1rem;
   cursor: pointer;
   color: var(--neon-cyan);
+  transition: all 0.2s ease;
 }
 
 .gallery-controls button:hover {
   background: rgba(0, 0, 0, 0.9);
+  box-shadow: 0 0 10px var(--neon-cyan);
 }
 
 .toader-comingsoon {
@@ -634,8 +941,7 @@ body {
   font-family: "Press Start 2P", monospace;
   font-size: 1.5rem;
   color: #f3a1ff;
-  text-shadow: 0 0 5px #ff00ff, 0 0 10px #00f0ff, 0 0 15px #fffc00,
-    0 0 20px #00ff66;
+  text-shadow: 0 0 5px #ff00ff, 0 0 10px #00f0ff, 0 0 15px #fffc00, 0 0 20px #00ff66;
   animation: pulse-glow 1.8s infinite ease-in-out;
   margin-top: 1rem;
 }
@@ -643,13 +949,11 @@ body {
 @keyframes pulse-glow {
   0%,
   100% {
-    text-shadow: 0 0 5px #ff00ff, 0 0 10px #00f0ff, 0 0 15px #fffc00,
-      0 0 20px #00ff66;
+    text-shadow: 0 0 5px #ff00ff, 0 0 10px #00f0ff, 0 0 15px #fffc00, 0 0 20px #00ff66;
     transform: scale(1);
   }
   50% {
-    text-shadow: 0 0 10px #ff00ff, 0 0 20px #00f0ff, 0 0 25px #fffc00,
-      0 0 30px #00ff66;
+    text-shadow: 0 0 10px #ff00ff, 0 0 20px #00f0ff, 0 0 25px #fffc00, 0 0 30px #00ff66;
     transform: scale(1.05);
   }
 }
@@ -665,6 +969,11 @@ body {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+.single-art img:hover {
+  transform: scale(1.05);
 }
 
 .popup-window.active video,
@@ -678,7 +987,7 @@ body {
 
 .single-art img,
 #nature .window-content img {
-  transition: opacity 0.5s ease;
+  transition: opacity 0.5s ease, transform 0.3s ease;
 }
 
 /* nature gallery container styling */
@@ -692,6 +1001,7 @@ body {
 
 #nature .window-content img {
   position: absolute;
+  transition: opacity 0.5s ease, transform 0.3s ease;
 }
 
 /* Window resizers */
@@ -748,6 +1058,300 @@ body {
   cursor: nwse-resize;
 }
 
+/* Game windows styling */
+.game-window .window-content {
+  background: #000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.game-window canvas {
+  background: #000;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+/* DOS interface styling */
+.dos-interface {
+  width: 100%;
+  height: 100%;
+  background: #000;
+  color: #00ff66;
+  font-family: var(--font-vt323);
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+}
+
+.dos-terminal {
+  flex: 1;
+  overflow-y: auto;
+  margin-bottom: 1rem;
+}
+
+.dos-command-line {
+  display: flex;
+  align-items: center;
+}
+
+.dos-prompt {
+  color: var(--neon-cyan);
+  margin-right: 0.5rem;
+}
+
+.dos-input {
+  background: transparent;
+  border: none;
+  color: var(--neon-green);
+  font-family: var(--font-vt323);
+  font-size: 1rem;
+  flex: 1;
+  outline: none;
+}
+
+.dos-line {
+  margin-bottom: 0.25rem;
+}
+
+.dos-output {
+  color: var(--neon-green);
+  margin: 0.5rem 0;
+  white-space: pre-wrap;
+}
+
+/* Music player styling */
+.music-player-interface {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, #000022, #000000);
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+}
+
+.music-visualizer {
+  width: 100%;
+  height: 150px;
+  background: #000;
+  margin-bottom: 1rem;
+  border: 1px solid var(--neon-purple);
+}
+
+.now-playing {
+  text-align: center;
+  margin-bottom: 1rem;
+  color: var(--neon-cyan);
+}
+
+.now-playing-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 0.25rem;
+  color: var(--neon-pink);
+}
+
+.now-playing-artist {
+  font-size: 1rem;
+  color: var(--neon-cyan);
+}
+
+.player-controls {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.player-button {
+  background: transparent;
+  border: 1px solid var(--neon-purple);
+  color: var(--neon-yellow);
+  font-size: 1.5rem;
+  padding: 0.5rem 1rem;
+  margin: 0 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.player-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 10px var(--neon-purple);
+}
+
+.progress-container {
+  width: 100%;
+  height: 5px;
+  background: #333;
+  margin-bottom: 1rem;
+  cursor: pointer;
+}
+
+.progress-bar {
+  height: 100%;
+  background: var(--neon-cyan);
+  width: 0;
+}
+
+.playlist {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.track-item {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.track-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.track-item.active {
+  background: rgba(0, 240, 255, 0.2);
+}
+
+.track-number {
+  width: 30px;
+  color: var(--neon-yellow);
+}
+
+.track-info {
+  flex: 1;
+}
+
+.track-title {
+  color: var(--neon-pink);
+  margin-bottom: 0.25rem;
+}
+
+.track-artist {
+  color: var(--neon-cyan);
+  font-size: 0.9rem;
+}
+
+.track-duration {
+  color: var(--neon-green);
+}
+
+/* Emulator styling */
+.emulator-interface {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, #000022, #000000);
+  display: flex;
+  flex-direction: column;
+}
+
+.game-selection {
+  display: flex;
+  height: 200px;
+}
+
+.system-tabs {
+  width: 150px;
+  background: rgba(0, 0, 0, 0.5);
+  border-right: 1px solid var(--neon-purple);
+}
+
+.system-tab {
+  padding: 0.75rem 1rem;
+  color: var(--neon-cyan);
+  cursor: pointer;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  transition: background 0.2s ease;
+}
+
+.system-tab:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.system-tab.active {
+  background: rgba(0, 240, 255, 0.2);
+  color: white;
+}
+
+.games-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.5rem;
+}
+
+.game-item {
+  padding: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.game-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.game-title {
+  color: var(--neon-pink);
+  margin-bottom: 0.25rem;
+}
+
+.game-year {
+  color: var(--neon-green);
+  font-size: 0.9rem;
+}
+
+.game-screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: #000;
+}
+
+.game-screen canvas {
+  border: 1px solid var(--neon-purple);
+  margin-bottom: 1rem;
+}
+
+.game-info {
+  color: var(--neon-cyan);
+  text-align: center;
+}
+
+.emulator-controls {
+  display: flex;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.5);
+  border-top: 1px solid var(--neon-purple);
+}
+
+.control-button {
+  background: transparent;
+  border: 1px solid var(--neon-cyan);
+  color: var(--neon-yellow);
+  font-family: var(--font-press-start);
+  font-size: 0.8rem;
+  padding: 0.5rem 1rem;
+  margin: 0 0.25rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.control-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 10px var(--neon-cyan);
+}
+
+.control-button.active {
+  background: rgba(0, 240, 255, 0.2);
+  color: white;
+}
+
 /* Mobile-friendly improvements */
 @media (max-width: 1024px) {
   :root {
@@ -755,7 +1359,7 @@ body {
     --font-size-2xl: 2rem;
     --font-size-3xl: 2.2rem;
   }
-  
+
   .popup-window {
     width: 90vw;
     height: 80vh;
@@ -773,14 +1377,14 @@ body {
     --font-size-2xl: 1.8rem;
     --font-size-3xl: 2rem;
   }
-  
+
   .desktop-icon {
     position: relative;
     display: inline-block;
     width: 25vw;
     margin: 10px;
   }
-  
+
   #desktop-icons {
     display: flex;
     flex-wrap: wrap;
@@ -789,28 +1393,28 @@ body {
     height: auto;
     padding: 1rem 0;
   }
-  
+
   .popup-window {
     width: 95vw;
     height: 85vh;
     top: 7vh;
     left: 2.5vw;
   }
-  
+
   #start-menu {
     font-size: 0.7rem;
   }
-  
+
   #start-bar {
     flex-wrap: wrap;
     height: auto;
     padding: 0.5rem;
   }
-  
+
   #clock {
     font-size: 0.75rem;
   }
-  
+
   /* Add mobile-specific close button for easier window management */
   .mobile-close {
     display: block;
@@ -840,38 +1444,38 @@ body {
     --font-size-2xl: 1.5rem;
     --font-size-3xl: 1.8rem;
   }
-  
+
   .desktop-icon img {
     width: 48px;
     height: 48px;
   }
-  
+
   .desktop-icon span {
     font-size: 0.6rem;
   }
-  
+
   .popup-window .window-header {
     font-size: 0.6rem;
     padding: 0.3rem;
   }
-  
+
   .popup-window .window-header button {
     font-size: 0.8rem;
   }
-  
+
   .popup-window .window-content {
     padding: 0.5rem;
   }
-  
+
   #start-menu a {
     padding: 0.3rem 0.6rem;
   }
-  
+
   #start-button {
     font-size: 0.6rem;
     padding: 0.2rem 0.5rem;
   }
-  
+
   #clock {
     font-size: 0.6rem;
   }

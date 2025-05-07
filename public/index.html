@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Benjamin Filler</title>
+    <title>Benjamin Filler - Cyberpunk Portfolio</title>
 
     <!-- Favicon -->
     <link
@@ -30,6 +30,10 @@
 
     <!-- Main Stylesheet -->
     <link rel="stylesheet" href="/style.css" />
+    
+    <!-- Meta tags for SEO -->
+    <meta name="description" content="Benjamin Filler - Media creator, director, and narrative systems designer. Explore my cyberpunk portfolio featuring films, games, and interactive experiences.">
+    <meta name="keywords" content="Benjamin Filler, media creator, director, narrative design, cyberpunk, experimental documentary, game worlds">
   </head>
   <body>
     <!-- Scanlines -->
@@ -55,6 +59,7 @@
     <div class="container">
       <h1 class="glitch" data-text="Benjamin Filler">Benjamin Filler</h1>
       <div id="desktop-icons">
+        <!-- Original Icons -->
         <div class="desktop-icon" id="icon-about" data-window="about">
           <img
             src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/Benny.png?v=1746392528967"
@@ -168,31 +173,45 @@
           />
           <span>r3d3ch0</span>
         </div>
-      
-        <div class="desktop-icon" id="icon-pong" data-window="pong">
-  <img src="/icons/pong.png" alt="Pong" loading="lazy"/>
-  <span>Pong</span>
-</div>
         
+        <!-- New Game Icons -->
+        <div class="desktop-icon" id="icon-tetris" data-window="tetris">
+          <img
+            src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/tetris-icon.gif"
+            alt="Tetris"
+            loading="lazy"
+          />
+          <span>Tetris</span>
+        </div>
+        
+        <div class="desktop-icon" id="icon-pong" data-window="pong">
+          <img
+            src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/pong-icon.gif"
+            alt="Pong"
+            loading="lazy"
+          />
+          <span>Pong</span>
+        </div>
+        
+        <div class="desktop-icon" id="icon-dosbox" data-window="dosbox">
+          <img
+            src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/dos-icon.gif"
+            alt="DOS Box"
+            loading="lazy"
+          />
+          <span>DOS Box</span>
+        </div>
+        
+        <div class="desktop-icon" id="icon-emulator" data-window="emulator">
+          <img
+            src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/emulator-icon.gif"
+            alt="Emulator"
+            loading="lazy"
+          />
+          <span>Emulator</span>
+        </div>
       </div>
 
-      <!-- PONG.EXE -->
-<div id="pong" class="popup-window hidden">
-  <div class="window-header">
-    <span>PONG.EXE</span>
-    <button class="minimize">_</button>
-    <button class="close">X</button>
-  </div>
-  <div class="window-content">
-    <iframe
-      data-src="/pong.html"
-      style="width:100%; height:100%; border:none;"
-      allowfullscreen
-    ></iframe>
-  </div>
-</div>
-
-      
       <!-- ABOUT.EXE -->
       <div id="about" class="popup-window hidden">
         <div class="window-header">
@@ -228,6 +247,7 @@
         <div class="window-header">
           <span>RESUME.EXE</span>
           <button class="minimize">_</button>
+          <button class="maximize">▭</button>
           <button class="close">X</button>
         </div>
         <div class="window-content">
@@ -240,6 +260,7 @@
         <div class="window-header">
           <span>CONTACT.EXE</span>
           <button class="minimize">_</button>
+          <button class="maximize">▭</button>
           <button class="close">X</button>
         </div>
         <div class="window-content">
@@ -252,6 +273,7 @@
         <div class="window-header">
           <span>NATURE.EXE</span>
           <button class="minimize">_</button>
+          <button class="maximize">▭</button>
           <button class="close">X</button>
         </div>
         <div class="window-content">
@@ -264,6 +286,7 @@
         <div class="window-header">
           <span>JOYFUL.EXE</span>
           <button class="minimize">_</button>
+          <button class="maximize">▭</button>
           <button class="close">X</button>
         </div>
         <div class="window-content">
@@ -283,6 +306,7 @@
         <div class="window-header">
           <span>PAPAZ.EXE</span>
           <button class="minimize">_</button>
+          <button class="maximize">▭</button>
           <button class="close">X</button>
         </div>
         <div class="window-content">
@@ -302,6 +326,7 @@
         <div class="window-header">
           <span>ABSTRACT.EXE</span>
           <button class="minimize">_</button>
+          <button class="maximize">▭</button>
           <button class="close">X</button>
         </div>
         <div class="window-content">
@@ -322,6 +347,7 @@
         <div class="window-header">
           <span>MUSIC.EXE</span>
           <button class="minimize">_</button>
+          <button class="maximize">▭</button>
           <button class="close">X</button>
         </div>
         <div class="window-content">
@@ -337,18 +363,15 @@
       </div>
 
       <!-- SNAKE.EXE -->
-      <div id="snake" class="popup-window hidden">
+      <div id="snake" class="popup-window hidden game-window">
         <div class="window-header">
           <span>SPACEWORM.EXE</span>
           <button class="minimize">_</button>
+          <button class="maximize">▭</button>
           <button class="close">X</button>
         </div>
         <div class="window-content">
-          <iframe
-            data-src="/snake.html"
-            style="width: 100%; height: 100%; border: none; display: block; background: black;"
-            loading="lazy"
-          ></iframe>
+          <canvas id="snake-canvas" width="500" height="400"></canvas>
         </div>
       </div>
       
@@ -357,6 +380,7 @@
         <div class="window-header">
           <span>r3d3ch0.EXE</span>
           <button class="minimize">_</button>
+          <button class="maximize">▭</button>
           <button class="close">X</button>
         </div>
         <div class="window-content">
@@ -374,6 +398,7 @@
         <div class="window-header">
           <span>TOADER.EXE</span>
           <button class="minimize">_</button>
+          <button class="maximize">▭</button>
           <button class="close">X</button>
         </div>
         <div class="window-content toader-comingsoon">
@@ -393,6 +418,7 @@
         <div class="window-header">
           <span>TIGERRR.EXE</span>
           <button class="minimize">_</button>
+          <button class="maximize">▭</button>
           <button class="close">X</button>
         </div>
         <div class="window-content TIGERRR">
@@ -403,6 +429,7 @@
             loading="lazy"
           />
           <h2 class="psychedelic-text">TIGERRR</h2>
+          <audio id="TIGERRR-audio" src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/tiger-roar.mp3" preload="none" loop></audio>
         </div>
       </div>
     
@@ -411,6 +438,7 @@
         <div class="window-header">
           <span>OCTAVIA.EXE</span>
           <button class="minimize">_</button>
+          <button class="maximize">▭</button>
           <button class="close">X</button>
         </div>
         <div class="window-content OCTAVIA">
@@ -429,6 +457,7 @@
         <div class="window-header">
           <span>MILES.EXE</span>
           <button class="minimize">_</button>
+          <button class="maximize">▭</button>
           <button class="close">X</button>
         </div>
         <div class="window-content MILES">
@@ -442,9 +471,63 @@
         </div>
       </div>
 
+      <!-- TETRIS.EXE -->
+      <div id="tetris" class="popup-window hidden game-window">
+        <div class="window-header">
+          <span>TETRIS.EXE</span>
+          <button class="minimize">_</button>
+          <button class="maximize">▭</button>
+          <button class="close">X</button>
+        </div>
+        <div class="window-content">
+          <canvas id="tetris-canvas" width="500" height="400"></canvas>
+        </div>
+      </div>
+
+      <!-- PONG.EXE -->
+      <div id="pong" class="popup-window hidden game-window">
+        <div class="window-header">
+          <span>PONG.EXE</span>
+          <button class="minimize">_</button>
+          <button class="maximize">▭</button>
+          <button class="close">X</button>
+        </div>
+        <div class="window-content">
+          <canvas id="pong-canvas" width="500" height="400"></canvas>
+        </div>
+      </div>
+
+      <!-- DOSBOX.EXE -->
+      <div id="dosbox" class="popup-window hidden">
+        <div class="window-header">
+          <span>DOSBOX.EXE</span>
+          <button class="minimize">_</button>
+          <button class="maximize">▭</button>
+          <button class="close">X</button>
+        </div>
+        <div class="window-content">
+          <!-- DOS interface will be created by JavaScript -->
+        </div>
+      </div>
+
+      <!-- EMULATOR.EXE -->
+      <div id="emulator" class="popup-window hidden">
+        <div class="window-header">
+          <span>EMULATOR.EXE</span>
+          <button class="minimize">_</button>
+          <button class="maximize">▭</button>
+          <button class="close">X</button>
+        </div>
+        <div class="window-content">
+          <!-- Emulator interface will be created by JavaScript -->
+        </div>
+      </div>
     
       <!-- Starfield Background -->
       <canvas id="background-canvas"></canvas>
+
+      <!-- Audio Visualizer -->
+      <canvas id="audio-visualizer"></canvas>
 
       <!-- Taskbar & Clock -->
       <div id="start-bar">
@@ -460,6 +543,10 @@
         <a href="javascript:void(0)" onclick="openWindow('contact')">Contact</a>
         <a href="javascript:void(0)" onclick="openWindow('nature')">Nature</a>
         <a href="javascript:void(0)" onclick="openWindow('snake')">SPACEWORM</a>
+        <a href="javascript:void(0)" onclick="openWindow('tetris')">TETRIS</a>
+        <a href="javascript:void(0)" onclick="openWindow('pong')">PONG</a>
+        <a href="javascript:void(0)" onclick="openWindow('dosbox')">DOS BOX</a>
+        <a href="javascript:void(0)" onclick="openWindow('emulator')">EMULATOR</a>
       </div>
     </div>
     

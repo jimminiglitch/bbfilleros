@@ -1,9 +1,5 @@
-html, body {
-  margin: 0;
+#pong .window-content {
   padding: 0;
-  background: black;
-  overflow: hidden;
-  height: 100%;
 }
 #pong-canvas {
   display: block;
