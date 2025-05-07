@@ -603,3 +603,155 @@ body {
 #nature .window-content img {
   position: absolute;
 }
+
+@media (max-width: 1024px) {
+  .glitch {
+    font-size: 1.8rem;
+  }
+  .popup-window {
+    width: 90vw !important;
+    height: 80vh !important;
+    top: 10vh !important;
+    left: 5vw !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .desktop-icon {
+    position: relative;
+    display: inline-block;
+    width: 25vw;
+    margin: 10px;
+  }
+  #desktop-icons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    height: auto;
+    padding: 1rem 0;
+  }
+  .glitch {
+    font-size: 1.5rem;
+  }
+  .popup-window {
+    width: 95vw !important;
+    height: 85vh !important;
+    top: 7vh !important;
+    left: 2.5vw !important;
+  }
+  #start-menu {
+    font-size: 0.7rem;
+  }
+  #start-bar {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 0.5rem;
+  }
+  #clock {
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .desktop-icon img {
+    width: 48px;
+    height: 48px;
+  }
+  .desktop-icon span {
+    font-size: 0.6rem;
+  }
+  .popup-window .window-header {
+    font-size: 0.6rem;
+    padding: 0.3rem;
+  }
+  .popup-window .window-header button {
+    font-size: 0.8rem;
+  }
+  .glitch {
+    font-size: 1.2rem;
+  }
+}
+/* style.css - responsive tweaks added */
+
+@media (max-width: 1024px) {
+  .glitch {
+    font-size: 1.8rem;
+  }
+  .popup-window {
+    width: 90vw !important;
+    height: 80vh !important;
+    top: 10vh !important;
+    left: 5vw !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .desktop-icon {
+    position: relative;
+    display: inline-block;
+    width: 25vw;
+    margin: 10px;
+  }
+  #desktop-icons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    height: auto;
+    padding: 1rem 0;
+  }
+  .glitch {
+    font-size: 1.5rem;
+  }
+  .popup-window {
+    width: 95vw !important;
+    height: 85vh !important;
+    top: 7vh !important;
+    left: 2.5vw !important;
+  }
+  #start-menu {
+    font-size: 0.7rem;
+  }
+  #start-bar {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 0.5rem;
+  }
+  #clock {
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .desktop-icon img {
+    width: 48px;
+    height: 48px;
+  }
+  .desktop-icon span {
+    font-size: 0.6rem;
+  }
+  .popup-window .window-header {
+    font-size: 0.6rem;
+    padding: 0.3rem;
+  }
+  .popup-window .window-header button {
+    font-size: 0.8rem;
+  }
+  .glitch {
+    font-size: 1.2rem;
+  }
+  .popup-window .window-content {
+    padding: 0.5rem;
+  }
+  #start-menu a {
+    padding: 0.3rem 0.6rem;
+  }
+  #start-button {
+    font-size: 0.6rem;
+    padding: 0.2rem 0.5rem;
+  }
+  #clock {
+    font-size: 0.6rem;
+  }
+}
