@@ -1,4 +1,4 @@
-/*───────────────────────────��─────────────────────────────────────────────────
+/*───────────────────────────  ─────────────────────────────────────────────────
   GLOBAL VARIABLES & RESET - ULTIMATE CYBERPUNK UPGRADE
 ─────────────────────────────────────────────────────────────────────────────*/
 :root {
@@ -1419,5 +1419,42 @@ body {
   to {
     opacity: 0;
     visibility: hidden;
+  }
+}
+
+
+
+/* ─── Maximize Style ───────────────────────────────────────────── */
+.popup-window.maximized {
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: calc(100vh - 36px) !important;
+  border-radius: 0;
+}
+
+/* ─── Mobile Window Handling ───────────────────────────────────── */
+@media screen and (max-width: 768px) {
+  .popup-window {
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: calc(100vh - 36px) !important;
+    border-radius: 0;
+    overflow-y: auto;
+    font-size: var(--font-size-base);
+  }
+
+  .window-header button {
+    font-size: var(--font-size-base);
+    padding: var(--spacing-xs);
+  }
+
+  .desktop-icon {
+    display: none;
+  }
+
+  .scanlines {
+    opacity: 0.2;
   }
 }
