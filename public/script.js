@@ -271,34 +271,60 @@ function createTaskbarIcon(id) {
 }
 
 function minimizeWindow(id) {
-  const win = document.getElementById(id)
-  if (!win) return
+  const win = document.getElementById(id);
+  if (!win) return;
 
-  win.classList.add("window-minimizing")
+  // Add minimizing animation
+  win.classList.add("window-minimizing");
+
   setTimeout(() => {
-    win.classList.remove("window-minimizing")
-    win.classList.add("hidden")
-    win.style.display = "none"
-    createTaskbarIcon(id)
-  }, 300)
+    win.classList.remove("window-minimizing");
+    win.classList.add("hidden");
+    win.style.display = "none";
+
+    // Create taskbar icon
+    createTaskbarIcon(id);
+
+    // Stop toad hover SFX if it’s the toader window
+    if (id === "toader") {
+      toadHoverAudio.pause();
+      toadHoverAudio.currentTime = 0;
+    }
+  }, 300);
 }
 
 function closeWindow(id) {
-  const win = document.getElementById(id)
+  const win = document.getElementById(id);
   if (win) {
-    win.classList.add("window-closing")
+    // Add closing animation
+    win.classList.add("window-closing");
+
     setTimeout(() => {
-      const vid = win.querySelector("video")
-      if (vid) { vid.pause(); vid.currentTime = 0 }
-      win.classList.remove("window-closing")
-      win.classList.add("hidden")
-      win.style.display = "none"
-    }, 300)
+      // Pause/reset any video inside
+      const vid = win.querySelector("video");
+      if (vid) {
+        vid.pause();
+        vid.currentTime = 0;
+      }
+
+      // Hide window
+      win.classList.remove("window-closing");
+      win.classList.add("hidden");
+      win.style.display = "none";
+
+      // Stop toad hover SFX if it’s the toader window
+      if (id === "toader") {
+        toadHoverAudio.pause();
+        toadHoverAudio.currentTime = 0;
+      }
+    }, 300);
   }
 
-  const icon = document.getElementById(`taskbar-icon-${id}`)
-  if (icon) icon.remove()
+  // Remove taskbar icon
+  const icon = document.getElementById(`taskbar-icon-${id}`);
+  if (icon) icon.remove();
 }
+
 
 function toggleMaximizeWindow(id) {
   const win = document.getElementById(id)

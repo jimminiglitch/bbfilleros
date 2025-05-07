@@ -78,8 +78,8 @@ html, body {
   position: absolute;
   top: 60px;    /* leaves room above for HUD */
   bottom: 60px; /* leaves room below for joystick */
-  left: 20px;
-  right: 20px;
+  left: 60px;
+  right: 60px;
   background: transparent;
   z-index: 1;
 }
