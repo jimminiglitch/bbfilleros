@@ -1,10 +1,12 @@
+/* nature.css - single image slideshow with buttons */
+
 body {
   background-color: black;
   color: #00ffcc;
   font-family: 'VT323', monospace;
   margin: 0;
   padding: 0;
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
 .gallery-header {
@@ -13,84 +15,70 @@ body {
   font-size: 1.5rem;
 }
 
-.gallery-container {
+.gallery-wrapper {
   display: flex;
-  flex-wrap: nowrap;
-  overflow-x: auto;
-  gap: 1rem;
-  padding: 1rem;
-  scroll-behavior: smooth;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  height: calc(100vh - 140px); /* leave space for header and window chrome */
+  overflow: hidden;
 }
 
 .gallery-item {
-  position: relative;
-  flex: 0 0 auto;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.gallery-item.active {
+  display: flex;
 }
 
 .gallery-item img {
-  max-height: 80vh;
+  max-height: 70vh;
+  max-width: 90vw;
   border-radius: 12px;
-  cursor: pointer;
   transition: transform 0.3s;
-}
-
-.gallery-item:hover img {
-  transform: scale(1.05);
+  object-fit: contain;
 }
 
 .caption {
-  text-align: center;
   margin-top: 0.5rem;
   font-size: 1rem;
   color: #aaffff;
 }
 
-.lightbox {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.9);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.lightbox.hidden {
-  display: none;
-}
-
-.lightbox img {
-  max-width: 90%;
-  max-height: 80vh;
-  border-radius: 10px;
-}
-
-.lightbox p {
-  color: #aaffff;
+.nav-buttons {
+  text-align: center;
   margin-top: 1rem;
 }
 
-.close-lightbox {
-  position: absolute;
-  top: 20px;
-  right: 30px;
-  font-size: 2rem;
-  color: white;
+.nav-buttons button {
+  background-color: #222;
+  color: #00ffcc;
+  border: 1px solid #00ffcc;
+  font-family: 'VT323', monospace;
+  padding: 0.5rem 1rem;
+  margin: 0 1rem;
   cursor: pointer;
+  font-size: 1.2rem;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.nav-buttons button:hover {
+  background-color: #00ffcc;
+  color: black;
 }
 
 @media (max-width: 600px) {
-  .gallery-container {
-    flex-direction: column;
-    align-items: center;
-  }
-
   .gallery-item img {
-    max-width: 90vw;
-    max-height: unset;
+    max-height: 50vh;
+  }
+  .nav-buttons button {
+    font-size: 1rem;
+    padding: 0.4rem 0.8rem;
   }
 }

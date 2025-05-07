@@ -1,27 +1,24 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const gallery = document.querySelectorAll(".gallery-item img");
-  const lightbox = document.getElementById("lightbox");
-  const lightboxImg = document.getElementById("lightbox-img");
-  const lightboxCaption = document.getElementById("lightbox-caption");
-  const closeBtn = document.querySelector(".close-lightbox");
+  const items = document.querySelectorAll(".gallery-item");
+  const prevBtn = document.getElementById("prevBtn");
+  const nextBtn = document.getElementById("nextBtn");
+  let currentIndex = 0;
 
-  gallery.forEach(img => {
-    img.addEventListener("click", () => {
-      lightboxImg.src = img.src;
-      lightboxCaption.textContent = img.nextElementSibling.textContent;
-      lightbox.classList.remove("hidden");
+  function showSlide(index) {
+    items.forEach((item, i) => {
+      item.classList.toggle("active", i === index);
     });
+  }
+
+  prevBtn.addEventListener("click", () => {
+    currentIndex = (currentIndex - 1 + items.length) % items.length;
+    showSlide(currentIndex);
   });
 
-  closeBtn.addEventListener("click", () => {
-    lightbox.classList.add("hidden");
-    lightboxImg.src = "";
-    lightboxCaption.textContent = "";
+  nextBtn.addEventListener("click", () => {
+    currentIndex = (currentIndex + 1) % items.length;
+    showSlide(currentIndex);
   });
 
-  lightbox.addEventListener("click", (e) => {
-    if (e.target === lightbox) {
-      closeBtn.click();
-    }
-  });
+  showSlide(currentIndex);
 });
