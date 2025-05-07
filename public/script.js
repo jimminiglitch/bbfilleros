@@ -2,14 +2,105 @@
 //   Main Script (public/script.js)
 //────────────────────────────────────────
 
-// 1) BLIP (ignored if no <audio id="blip"> present)
-function playBlip() {
-  const blip = document.getElementById("blip");
-  if (blip) {
-    blip.currentTime = 0;
-    blip.play();
-  }
-}
+document.addEventListener("DOMContentLoaded", () => {
+  const windows = document.querySelectorAll(".popup-window");
+
+  windows.forEach(win => {
+    const id = win.id;
+    const header = win.querySelector(".window-header");
+    const btnMin = header.querySelector(".minimize");
+    const btnMax = header.querySelector(".maximize");
+    const btnCls = header.querySelector(".close");
+
+    if (btnMin) btnMin.addEventListener("click", () => minimizeWindow(id));
+    if (btnMax) btnMax.addEventListener("click", () => toggleMaximizeWindow(id));
+    if (btnCls) btnCls.addEventListener("click", () => closeWindow(id));
+
+    // Dragging logic
+    let isDragging = false, offsetX = 0, offsetY = 0;
+    header.addEventListener("mousedown", e => {
+      isDragging = true;
+      offsetX = e.clientX - win.offsetLeft;
+      offsetY = e.clientY - win.offsetTop;
+      win.style.zIndex = getNextZIndex();
+    });
+    document.addEventListener("mousemove", e => {
+      if (isDragging) {
+        win.style.left = `${e.clientX - offsetX}px`;
+        win.style.top = `${e.clientY - offsetY}px`;
+      }
+    });
+    document.addEventListener("mouseup", () => {
+      isDragging = false;
+    });
+
+    // Resizing logic
+    const directions = [
+      "top", "right", "bottom", "left",
+      "top-left", "top-right", "bottom-left", "bottom-right"
+    ];
+
+    directions.forEach(dir => {
+      const resizer = document.createElement("div");
+      resizer.classList.add("resizer", `resizer-${dir}`);
+      win.appendChild(resizer);
+
+      let isResizing = false;
+
+      resizer.addEventListener("mousedown", e => {
+        e.preventDefault();
+        e.stopPropagation();
+        isResizing = true;
+        const startX = e.clientX;
+        const startY = e.clientY;
+        const startWidth = parseInt(getComputedStyle(win).width, 10);
+        const startHeight = parseInt(getComputedStyle(win).height, 10);
+        const startTop = win.offsetTop;
+        const startLeft = win.offsetLeft;
+
+        function doDrag(e) {
+          if (!isResizing) return;
+          let newWidth = startWidth;
+          let newHeight = startHeight;
+          let newTop = startTop;
+          let newLeft = startLeft;
+
+          if (dir.includes("right")) {
+            newWidth = Math.max(300, startWidth + e.clientX - startX);
+          }
+          if (dir.includes("bottom")) {
+            newHeight = Math.max(200, startHeight + e.clientY - startY);
+          }
+          if (dir.includes("left")) {
+            const dx = e.clientX - startX;
+            newWidth = Math.max(300, startWidth - dx);
+            newLeft = startLeft + dx;
+          }
+          if (dir.includes("top")) {
+            const dy = e.clientY - startY;
+            newHeight = Math.max(200, startHeight - dy);
+            newTop = startTop + dy;
+          }
+
+          win.style.width = `${newWidth}px`;
+          win.style.height = `${newHeight}px`;
+          win.style.top = `${newTop}px`;
+          win.style.left = `${newLeft}px`;
+        }
+
+        function stopDrag() {
+          isResizing = false;
+          window.removeEventListener("mousemove", doDrag);
+          window.removeEventListener("mouseup", stopDrag);
+        }
+
+        window.addEventListener("mousemove", doDrag);
+        window.addEventListener("mouseup", stopDrag);
+      });
+    });
+  });
+});
+
 
 // 2) OPEN / MINIMIZE / CLOSE / MAXIMIZE & TASKBAR ICONS
 let currentZIndex = 10;
@@ -139,30 +230,41 @@ function closeWindow(id) {
 function toggleMaximizeWindow(id) {
   const win = document.getElementById(id);
   if (!win) return;
+
+  const resizers = win.querySelectorAll('.resizer');
+
   if (!win.classList.contains("maximized")) {
     // store previous bounds
     windowStates[id] = {
-      top:    win.style.top,
-      left:   win.style.left,
-      width:  win.style.width,
+      top: win.style.top,
+      left: win.style.left,
+      width: win.style.width,
       height: win.style.height
     };
     win.classList.add("maximized");
     Object.assign(win.style, {
-      top:    "0",
-      left:   "0",
-      width:  "100%",
-      height: "100%"
+      top: "0",
+      left: "0",
+      width: "100vw",
+      height: "100vh"
     });
-    const ic = document.getElementById(`taskbar-icon-${id}`);
-    if (ic) ic.remove();
+
+    // hide resizers
+    resizers.forEach(r => r.style.display = "none");
+
+    const icon = document.getElementById(`taskbar-icon-${id}`);
+    if (icon) icon.remove();
   } else {
-    // restore
-    const s = windowStates[id];
-    if (s) Object.assign(win.style, s);
+    // restore previous size/position
+    const stored = windowStates[id];
+    if (stored) Object.assign(win.style, stored);
     win.classList.remove("maximized");
+
+    // show resizers again
+    resizers.forEach(r => r.style.display = "block");
   }
 }
+
 
 // 3) CLOCK & START MENU TOGGLE
 function updateClock() {
