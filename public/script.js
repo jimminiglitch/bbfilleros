@@ -234,36 +234,40 @@ function toggleMaximizeWindow(id) {
   const resizers = win.querySelectorAll('.resizer');
 
   if (!win.classList.contains("maximized")) {
-    // store previous bounds
+    // Save current inline style as previous state
     windowStates[id] = {
       top: win.style.top,
       left: win.style.left,
       width: win.style.width,
       height: win.style.height
     };
-    win.classList.add("maximized");
-    Object.assign(win.style, {
-      top: "0",
-      left: "0",
-      width: "100vw",
-      height: "100vh"
-    });
 
-    // hide resizers
+    win.classList.add("maximized");
+
+    win.style.top = "0px";
+    win.style.left = "0px";
+    win.style.width = "100vw";
+    win.style.height = "calc(100vh - 36px)";
+    win.style.zIndex = getNextZIndex();
+
     resizers.forEach(r => r.style.display = "none");
 
-    const icon = document.getElementById(`taskbar-icon-${id}`);
-    if (icon) icon.remove();
   } else {
-    // restore previous size/position
-    const stored = windowStates[id];
-    if (stored) Object.assign(win.style, stored);
     win.classList.remove("maximized");
 
-    // show resizers again
+    const prev = windowStates[id];
+    if (prev) {
+      win.style.top = prev.top;
+      win.style.left = prev.left;
+      win.style.width = prev.width;
+      win.style.height = prev.height;
+    }
+
     resizers.forEach(r => r.style.display = "block");
   }
 }
+
+
 
 
 // 3) CLOCK & START MENU TOGGLE
@@ -492,38 +496,3 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 window.addEventListener("load", initWindowControls);
 window.addEventListener("mousedown", onSelectStart);
-function openWindow(id) {
-  const win = document.getElementById(id);
-  if (!win) return;
-
-  // 1) Hide start menu & deactivate other windows
-  document.getElementById("start-menu").style.display = "none";
-  document.querySelectorAll(".popup-window").forEach(w => w.classList.remove("active"));
-
-  // 2) Lazy-load any <iframe data-src> in this window
-  win.querySelectorAll("iframe[data-src]").forEach(iframe => {
-    if (!iframe.src) {
-      iframe.src = iframe.dataset.src;
-      // optionally auto-start TOADER.EXE game:
-      iframe.onload = () => iframe.contentWindow.postMessage({ type: 'START_GAME' }, '*');
-    }
-  });
-
-  // 3) Lazy-load any <video data-src> in this window
-  win.querySelectorAll("video[data-src]").forEach(v => {
-    if (!v.src) {
-      v.src = v.dataset.src;
-      v.load();
-      v.play().catch(() => {});
-    }
-  });
-
-  // 4) Show & focus
-  win.classList.remove("hidden");
-  win.classList.add("active");
-  win.style.display = "flex";
-  win.style.zIndex  = getNextZIndex();
-
-  // 5) Restore previous bounds + 6) clamp to viewport…
-  /* your existing clamp code here */
-}
