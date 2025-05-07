@@ -153,12 +153,7 @@ function openWindow(id) {
     if (!iframe.src) {
       iframe.src = iframe.dataset.src;
       
-      function openWindow(name) {
-  const win = document.getElementById(name)
-  win.classList.remove("hidden")
-  win.dispatchEvent(new Event(`${name}Opened`))
-}
-
+      
     }
   });
 
