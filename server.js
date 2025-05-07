@@ -1,80 +1,65 @@
-
 // server.js
-const path = require("path");
-const fastify = require("fastify")({ logger: true });
-const nodemailer = require("nodemailer");
-const rateLimit = require("@fastify/rate-limit");
-require("dotenv").config();
+const path       = require('path');
+const fastify    = require('fastify')({ logger: true });
+const nodemailer = require('nodemailer');
 
-// ─── Static Assets ─────────────────────────────────────────────────────────────
-fastify.register(require("@fastify/static"), {
-  root: path.join(__dirname, "public"),
-  prefix: "/",
+// ─── 1. Static assets ───────────────────────────────────────────────────────
+fastify.register(require('@fastify/static'), {
+  root:  path.join(__dirname, 'public'),
+  prefix: '/'    // serve everything in public/ at the root URL
 });
 
-// ─── Body Parsing ─────────────────────────────────────────────────────────────
-fastify.register(require("@fastify/formbody"));
+// ─── 2. Body parsing ────────────────────────────────────────────────────────
+// Fastify parses JSON by default; formbody plugin is only needed for urlencoded
+fastify.register(require('@fastify/formbody'));
 
-// ─── Rate Limiting ───────────────────────────────────────────────────────────
-fastify.register(rateLimit, {
-  max: 3,                // 3 requests
-  timeWindow: "1 minute" // per minute per IP
-});
-
-// ─── Mail Transport Setup ─────────────────────────────────────────────────────
+// ─── 3. Mail transporter ───────────────────────────────────────────────────
 const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: Number(process.env.SMTP_PORT) || 587,
-  secure: process.env.SMTP_SECURE === "true",
+  host:   process.env.SMTP_HOST,
+  port:   Number(process.env.SMTP_PORT) || 587,
+  secure: process.env.SMTP_SECURE === 'true',  // use SSL on port 465
   auth: {
     user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
+    pass: process.env.SMTP_PASS
+  }
 });
 
-// ─── Contact Endpoint ─────────────────────────────────────────────────────────
-fastify.post("/contact", async (request, reply) => {
-  const { name, email, message, nickname } = request.body;
+// ─── 4. Contact API route ──────────────────────────────────────────────────
+fastify.post('/contact', async (request, reply) => {
+  // Log for debugging
+  fastify.log.info({ body: request.body }, 'POST /contact payload');
 
-  // 1. Honeypot check
-  if (nickname) {
-    request.log.warn("Spam detected: honeypot triggered");
-    return reply.code(200).send(); // Silently succeed
-  }
-
-  // 2. Basic validation
-  if (!name || !email || !message) {
-    return reply.code(400).send({ error: "Missing fields" });
-  }
-
-  // 3. Sanitize inputs (basic strip)
-  const sanitizedName = name.trim();
-  const sanitizedEmail = email.trim();
-  const sanitizedMessage = message.trim();
-
+  const { name, email, message } = request.body;
   try {
     await transporter.sendMail({
-      from: `"Website Contact" <${process.env.SMTP_USER}>`,
-      to: process.env.CONTACT_EMAIL,
-      subject: `New message from ${sanitizedName}`,
-      text: `Name: ${sanitizedName}\nEmail: ${sanitizedEmail}\n\n${sanitizedMessage}`,
+      from:    `"Website Contact" <${process.env.SMTP_USER}>`,
+      to:      process.env.CONTACT_EMAIL,
+      subject: `New message from ${name}`,
+      text:    `Name: ${name}\nEmail: ${email}\n\n${message}`
     });
     return reply.code(200).send({ success: true });
   } catch (err) {
-    request.log.error(err, "Error sending email");
-    return reply.code(500).send({ error: "Mail send failed" });
+    fastify.log.error(err);
+    return reply.code(500).send({ success: false, error: err.message });
   }
 });
 
-// ─── Start Server ─────────────────────────────────────────────────────────────
+// ─── 5. Serve index.html ──────────────────────────────────────────────────
+fastify.get('/', async (request, reply) => {
+  return reply.sendFile('index.html');
+});
+
+// ─── 6. Start server ───────────────────────────────────────────────────────
 const start = async () => {
   try {
-    await fastify.listen({ port: process.env.PORT || 3000, host: "0.0.0.0" });
-    console.log("Server listening...");
+    await fastify.listen({
+      host: '0.0.0.0',
+      port: process.env.PORT || 3000
+    });
+    fastify.log.info('Server running');
   } catch (err) {
     fastify.log.error(err);
     process.exit(1);
   }
 };
-
 start();
