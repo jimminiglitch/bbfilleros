@@ -13,12 +13,14 @@ function startup() {
   initWindowControls()
   runBootSequence().then(() => {
     initDesktopIcons()
-    initStarfield()
-    initAudioVisualizer()
-    initDOSLoader()
-    initGlitchEffects()
+    initStarfield() 
   })
 }
+
+  // 2) Lazy-load Snake iframe
+  if (id === "snake") {
+    const iframe = win.querySelector("iframe[data-src]");
+    if (iframe && !iframe.src) iframe.src = iframe.dataset.src;
 
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", startup)
@@ -192,10 +194,6 @@ function openWindow(id) {
     if (rect.bottom > vh - margin) t = vh - margin - h
     Object.assign(win.style, { width:`${w}px`, height:`${h}px`, left:`${l}px`, top:`${t}px` })
   }
-
-  if (id === "snake") initSnakeGame()
-  if (id === "tetris") initTetrisGame()
-  if (id === "music") initMusicPlayer()
 }
 
 function minimizeWindow(id) {

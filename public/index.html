@@ -326,19 +326,26 @@
         </div>
       </div>
 
-      <!-- SPACEWORM.EXE -->
-      <div id="SPACEWORM" class="popup-window hidden game-window">
-        <div class="window-header">
-          <span>SPACEWORM.EXE</span>
-          <button class="minimize">_</button>
-          <button class="maximize">▭</button>
-          <button class="close">X</button>
-        </div>
-        <div class="window-content">
-          <canvas id="SPACEWORM-canvas" width="600" height="600"></canvas>
-        </div>
-      </div>
-      
+     <!-- ===== SPACEWORM.EXE popup (in index.html) ===== -->
+<!-- changed id from "SPACEWORM" → "snake" -->
+<div id="snake" class="popup-window hidden game-window">
+  <div class="window-header">
+    <span>SPACEWORM.EXE</span>
+    <button class="minimize">_</button>
+    <button class="maximize">▭</button>
+    <button class="close">X</button>
+  </div>
+  <div class="window-content">
+    <!-- lazy-loaded iframe -->
+    <iframe
+      data-src="/snake.html"
+      style="width:100%; height:100%; border:none; display:block;"
+      loading="lazy"
+    ></iframe>
+  </div>
+</div>
+
+
       <!-- r3d3ch0.EXE -->
       <div id="r3d3ch0" class="popup-window hidden">
         <div class="window-header">
@@ -471,7 +478,7 @@
         <a href="javascript:void(0)" onclick="openWindow('nature')">Nature</a>
         <a href="javascript:void(0)" onclick="openWindow('snake')">SPACEWORM</a>
         <a href="javascript:void(0)" onclick="openWindow('tetris')">TETRIS</a>
-       
+
       </div>
     </div>
     
