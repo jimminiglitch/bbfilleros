@@ -917,3 +917,18 @@ body {
 .resizer-top-right    { top: 0; right: 0; cursor: nesw-resize; }
 .resizer-bottom-left  { bottom: 0; left: 0; cursor: nesw-resize; }
 .resizer-bottom-right { bottom: 0; right: 0; cursor: nwse-resize; }
+
+.popup-window.maximized {
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: calc(100vh - 36px) !important; /* leaves space for taskbar */
+  border-radius: 0 !important;
+}
+.popup-window.maximized {
+  width: 100vw !important;
+  height: calc(100vh - 36px) !important;
+  top: 0 !important;
+  left: 0 !important;
+}
+
