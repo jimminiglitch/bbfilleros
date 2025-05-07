@@ -972,3 +972,19 @@ body {
   /* outline: 2px solid yellow !important; */
   z-index: 9999 !important;
 }
+/* —————————————————————————— */
+/* FULL-SCREEN MAXIMIZED WINDOWS */
+/* —————————————————————————— */
+/* FULL‐SCREEN MAXIMIZED WINDOWS */
+.popup-window.maximized {
+  position: fixed !important;    /* stick to viewport */
+  top: 0 !important;             /* flush with top */
+  left: 0 !important;            /* flush with left */
+  right: 0 !important;           /* flush with right */
+  bottom: 36px !important;       /* leave your 36px taskbar visible */
+  margin: 0 !important;
+  border-radius: 0 !important;
+  transform: none !important;    /* clear any drag */
+  z-index: 9999 !important;
+}
+
