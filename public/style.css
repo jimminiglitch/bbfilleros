@@ -223,6 +223,11 @@ body {
   left: 40px;
 }
 
+#icon-r3d3ch0 {
+  top: 400px;
+  left: 140px;
+}
+
 /* Selected state */
 .desktop-icon.selected {
   background: rgba(255, 255, 255, 0.1);
