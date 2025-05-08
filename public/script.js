@@ -661,3 +661,19 @@ function initGlitchEffects() {
 
 window.addEventListener("mousedown", onSelectStart)
 initGlitchEffects()
+
+// Reload video iframes on modal reopen
+
+document.querySelectorAll('iframe').forEach(iframe => {
+  const originalSrc = iframe.src;
+  const parent = iframe.closest('.modal, .video-container, .popup');
+  if (!parent) return;
+
+  const observer = new MutationObserver(() => {
+    if (parent.style.display !== 'none' && iframe.src !== originalSrc) {
+      iframe.src = originalSrc;  // Reset src to reload the iframe
+    }
+  });
+
+  observer.observe(parent, { attributes: true, attributeFilter: ['style'] });
+});

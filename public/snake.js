@@ -386,42 +386,7 @@ window.addEventListener('load', () => {
     if(e.key.startsWith('Arrow')) speed = baseSpeed;
   });
 
-  // joystick
-  let joyId=null, joyR=50;
-    e.preventDefault();
-    const t = e.changedTouches[0];
-    joyId = t.identifier;
-    joystickBase.classList.add('active');
-  });
-  joystickBase.addEventListener('touchmove', e=>{
-    e.preventDefault();
-    for(const t of e.changedTouches){
-      if(t.identifier!==joyId) continue;
-      const r = joystickBase.getBoundingClientRect();
-      const cx = r.left + r.width/2, cy = r.top + r.height/2;
-      let dxT = t.clientX - cx, dyT = t.clientY - cy;
-      const d = Math.hypot(dxT,dyT);
-      if(d>joyR){ dxT = dxT/d*joyR; dyT = dyT/d*joyR; }
-      joystickStick.style.transform = `translate(${dxT}px,${dyT}px)`;
-      if(d>joyR*0.3){
-        if(Math.abs(dxT)>Math.abs(dyT)){ dx = dxT>0?1:-1; dy=0; }
-        else { dx=0; dy=dyT>0?1:-1; }
-      }
-      speed = baseSpeed*2;
-      break;
-    }
-  });
-  joystickBase.addEventListener('touchend', e=>{
-    for(const t of e.changedTouches){
-      if(t.identifier!==joyId) continue;
-      joyId = null;
-      joystickBase.classList.remove('active');
-      joystickStick.style.transform = 'translate(-50%,-50%)';
-      speed = baseSpeed;
-      break;
-    }
-  });
-
+ 
   // mute
   btnMute.addEventListener('click', ()=>{
     music.muted = !music.muted;
