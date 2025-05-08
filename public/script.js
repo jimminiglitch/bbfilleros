@@ -222,7 +222,7 @@ function openWindow(id) {
 
     const rect = win.getBoundingClientRect();
     const margin = 20;
-    const vw = window.innerWidth;
+    const vw = 1920;
     const vh = window.innerHeight;
     let newW = rect.width,
         newH = rect.height,
@@ -246,7 +246,7 @@ function openWindow(id) {
 }
 // Helper function to detect mobile devices
 function isMobile() {
-  return window.innerWidth < 768
+  return true
 }
 
 function createTaskbarIcon(id) {
@@ -618,13 +618,13 @@ function initStarfield() {
 
   // on resize, recalc canvas + reinit stars
   window.addEventListener('resize', debounce(() => {
-    canvas.width  = window.innerWidth
+    canvas.width  = 1920
     canvas.height = window.innerHeight
     initStars()
   }, 250))
 
   // initial sizing & stars
-  canvas.width  = window.innerWidth
+  canvas.width  = 1920
   canvas.height = window.innerHeight
   initStars()
 

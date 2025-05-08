@@ -70,17 +70,4 @@ audio {
 /*────────────────────────────────────────
   Responsive Design
 ────────────────────────────────────────*/
-@media (max-width: 768px) {
-  body {
-    font-size: 1.1rem;
-    padding: 1rem;
-  }
 
-  .music-controls {
-    flex-direction: column;
-  }
-
-  .music-controls button {
-    width: 100%;
-  }
-}

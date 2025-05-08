@@ -73,12 +73,4 @@ body {
   color: black;
 }
 
-@media (max-width: 600px) {
-  .gallery-item img {
-    max-height: 50vh;
-  }
-  .nav-buttons button {
-    font-size: 1rem;
-    padding: 0.4rem 0.8rem;
-  }
-}
+

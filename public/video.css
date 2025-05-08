@@ -38,12 +38,4 @@ video {
 /*────────────────────────────────────────
   Responsive Adjustments
 ────────────────────────────────────────*/
-@media (max-width: 768px) {
-  video {
-    max-width: 100%;
-  }
 
-  h2 {
-    font-size: 1.3rem;
-  }
-}

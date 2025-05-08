@@ -388,7 +388,6 @@ window.addEventListener('load', () => {
 
   // joystick
   let joyId=null, joyR=50;
-  joystickBase.addEventListener('touchstart', e=>{
     e.preventDefault();
     const t = e.changedTouches[0];
     joyId = t.identifier;
