@@ -120,6 +120,76 @@
       background: var(--neon-green);
     }
     
+    /* Skip link for keyboard users */
+    .skip-link {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      background: var(--neon-cyan);
+      color: black;
+      padding: 8px;
+      z-index: 9999;
+      transition: top 0.3s;
+    }
+
+    .skip-link:focus {
+      top: 0;
+    }
+
+    /* Focus styles */
+    a:focus {
+      outline: 2px solid var(--neon-cyan);
+      outline-offset: 2px;
+    }
+    
+    /* Light mode styles */
+    .light-mode {
+      background: #f0f0f0;
+      color: #333;
+    }
+    
+    .light-mode .container {
+      background: rgba(240, 240, 240, 0.9);
+      border-color: #6a5acd;
+      box-shadow: 0 0 10px #9370db;
+    }
+    
+    .light-mode h1 {
+      color: #6a5acd;
+      text-shadow: 0 0 10px rgba(106, 90, 205, 0.5);
+    }
+    
+    .light-mode .icon {
+      background: #6a5acd;
+    }
+    
+    .light-mode .label {
+      color: #9370db;
+    }
+    
+    .light-mode .value {
+      color: #4b0082;
+    }
+    
+    .light-mode .email-btn {
+      background: #6a5acd;
+      color: white;
+      box-shadow: 0 0 5px #9370db;
+    }
+    
+    .light-mode .email-btn:hover {
+      background: #4b0082;
+    }
+    
+    .light-mode .skip-link {
+      background: #6a5acd;
+      color: white;
+    }
+    
+    .light-mode a:focus {
+      outline-color: #6a5acd;
+    }
+    
     /* Responsive styles */
     @media (max-width: 768px) {
       .contact-grid {
@@ -172,26 +242,28 @@
   </style>
 </head>
 <body>
-  <div class="container">
+  <a href="#contact-content" class="skip-link">Skip to content</a>
+  
+  <div id="contact-content" class="container" role="main">
     <h1>Contact Me</h1>
     <div class="contact-grid">
       <div class="contact-left">
         <div class="contact-item">
-          <span class="icon">📧</span>
+          <span class="icon" role="img" aria-label="Email icon">📧</span>
           <div>
             <p class="label">Email</p>
             <p class="value">bbfiller@umich.edu</p>
           </div>
         </div>
         <div class="contact-item">
-          <span class="icon">📞</span>
+          <span class="icon" role="img" aria-label="Phone icon">📞</span>
           <div>
             <p class="label">Phone</p>
             <p class="value">(248) 212-4644</p>
           </div>
         </div>
         <div class="contact-item">
-          <span class="icon">📍</span>
+          <span class="icon" role="img" aria-label="Location icon">📍</span>
           <div>
             <p class="label">Location</p>
             <p class="value">Birmingham, MI</p>
@@ -199,9 +271,30 @@
         </div>
       </div>
       <div class="contact-right">
-        <a href="mailto:bbfiller@umich.edu" class="email-btn">✉️ Email Me</a>
+        <a href="mailto:bbfiller@umich.edu" class="email-btn" aria-label="Send email to Benjamin Filler">✉️ Email Me</a>
       </div>
     </div>
   </div>
+  
+  <script>
+    // Check for saved theme preference and apply it
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'light') {
+        document.body.classList.add('light-mode');
+      }
+      
+      // Listen for theme changes from parent window
+      window.addEventListener('storage', (event) => {
+        if (event.key === 'theme') {
+          if (event.newValue === 'light') {
+            document.body.classList.add('light-mode');
+          } else {
+            document.body.classList.remove('light-mode');
+          }
+        }
+      });
+    });
+  </script>
 </body>
 </html>
