@@ -1,7 +1,5 @@
 // snake.js – full logic for SPACEWORM.EXE (updated sizing & subtle trails)
 
-console.log("🐍 snake.js is loaded!");
-
 window.addEventListener('load', () => {
   // ─── Element refs ─────────────────────────────────────────────────────────
   const startOvl      = document.getElementById('start-overlay');
@@ -432,8 +430,8 @@ window.addEventListener('load', () => {
   });
 
   // init
-  canvas.width  = canvas.offsetWidth;
-  canvas.height = canvas.offsetHeight;
+  canvas.width  = canvas.clientWidth;
+  canvas.height = canvas.clientHeight;
   initStars();
   resetGame();
 });
