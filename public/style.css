@@ -38,6 +38,21 @@
   --z-boot: 1000;
 }
 
+/* Custom Cursor */
+body {
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%2300f0ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 19 21 12 17 5 21 12 2"></polygon></svg>')
+    12 12, auto;
+}
+
+.window-header,
+button,
+a,
+.desktop-icon,
+.resizer {
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%23f3a1ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3L12 7L16 3"></path><path d="M12 7L12 21"></path></svg>')
+    12 12, pointer;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -1185,4 +1200,251 @@ body {
   #clock {
     font-size: 0.6rem;
   }
+}
+
+/* Text selection color */
+::selection {
+  background: var(--neon-purple);
+  color: black;
+}
+
+/* Add these styles to your style.css file */
+
+/* Theme Toggle Button */
+.theme-toggle {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.7);
+  border: 2px solid var(--neon-cyan);
+  color: var(--neon-cyan);
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 1000;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+}
+
+.theme-toggle:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 15px var(--neon-cyan);
+}
+
+/* Theme Transition */
+.theme-transition {
+  transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+/* Light Mode Styles */
+.light-mode {
+  background: #f0f0f0;
+  color: #333;
+}
+
+.light-mode .scanlines {
+  opacity: 0.1;
+}
+
+.light-mode .popup-window {
+  background: rgba(240, 240, 240, 0.9);
+  color: #333;
+  border-color: #6a5acd;
+  box-shadow: 0 0 20px rgba(106, 90, 205, 0.4);
+}
+
+.light-mode .window-header {
+  background: linear-gradient(to right, #e0e0e0, #d0d0e0);
+  border-bottom: 1px solid #6a5acd;
+}
+
+.light-mode .window-header span {
+  color: #6a5acd;
+  text-shadow: none;
+}
+
+.light-mode .window-content {
+  background: rgba(240, 240, 240, 0.9);
+}
+
+.light-mode .desktop-icon span {
+  color: #333;
+  text-shadow: 0 0 4px rgba(255, 255, 255, 0.7);
+}
+
+.light-mode #start-bar {
+  background: linear-gradient(to right, #e0e0e0, #d0d0e0);
+  border-top: 2px solid #6a5acd;
+  box-shadow: 0 -2px 12px #6a5acd;
+}
+
+.light-mode #start-button {
+  border-color: #6a5acd;
+  color: #6a5acd;
+  box-shadow: 0 0 8px #6a5acd;
+}
+
+.light-mode #start-button:hover {
+  background: #6a5acd;
+  color: white;
+}
+
+.light-mode #start-menu {
+  background: rgba(240, 240, 240, 0.9);
+  border-color: #6a5acd;
+}
+
+.light-mode #start-menu a {
+  color: #6a5acd;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.light-mode #start-menu a:hover {
+  background: rgba(0, 0, 0, 0.1);
+  color: #333;
+}
+
+.light-mode #clock {
+  color: #333;
+}
+
+.light-mode .taskbar-icon {
+  background: rgba(240, 240, 240, 0.5);
+  border-color: #6a5acd;
+  color: #6a5acd;
+}
+
+.light-mode .glitch {
+  color: #6a5acd;
+}
+
+.light-mode .glitch::before {
+  color: #ff69b4;
+}
+
+.light-mode .glitch::after {
+  color: #9370db;
+}
+
+/* Add these styles to your style.css file */
+
+/* Preloader */
+.preloader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.loader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.spinner {
+  width: 60px;
+  height: 60px;
+  border: 4px solid transparent;
+  border-top-color: var(--neon-cyan);
+  border-right-color: var(--neon-pink);
+  border-bottom-color: var(--neon-green);
+  border-left-color: var(--neon-purple);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.loading-text {
+  margin-top: 20px;
+  font-family: var(--font-press-start);
+  color: var(--neon-cyan);
+  font-size: 1rem;
+  letter-spacing: 2px;
+}
+
+.dots {
+  animation: dots 1.5s infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes dots {
+  0%,
+  20% {
+    content: ".";
+  }
+  40% {
+    content: "..";
+  }
+  60%,
+  100% {
+    content: "...";
+  }
+}
+
+/* Light mode for preloader */
+.light-mode .preloader {
+  background: #f0f0f0;
+}
+
+.light-mode .loading-text {
+  color: #6a5acd;
+}
+
+/* Add these styles to your style.css file */
+
+/* Focus styles for better accessibility */
+:focus {
+  outline: 2px solid var(--neon-cyan);
+  outline-offset: 2px;
+}
+
+.light-mode :focus {
+  outline-color: #6a5acd;
+}
+
+.desktop-icon:focus img {
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 8px var(--neon-cyan));
+}
+
+.light-mode .desktop-icon:focus img {
+  filter: drop-shadow(0 0 8px #6a5acd);
+}
+
+/* Skip to content link for keyboard users */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--neon-cyan);
+  color: black;
+  padding: 8px;
+  z-index: 9999;
+  transition: top 0.3s;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
+.light-mode .skip-link {
+  background: #6a5acd;
+  color: white;
 }

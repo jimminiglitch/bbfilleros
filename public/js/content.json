@@ -1,0 +1,69 @@
+{
+  "videos": [
+    {
+      "id": "Joyful",
+      "title": "A Joyful and Meaningful Life",
+      "src": "https://cdn.glitch.me/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/A%20Joyful%20and%20Meaningful%20Life.mp4?v=1746453364188",
+      "poster": "https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/VaporTV.png?v=1746411817932",
+      "description": "A short film about finding joy in everyday moments."
+    },
+    {
+      "id": "Papaz",
+      "title": "SEP Challenge Video 2",
+      "src": "https://cdn.glitch.me/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/SEPChallengeVideo2.mp4?v=1746454142843",
+      "poster": "https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/VaporTV.png?v=1746411817932",
+      "description": "Experimental video exploring visual storytelling techniques."
+    },
+    {
+      "id": "Abstract",
+      "title": "SEP Challenge Video 6",
+      "src": "https://cdn.glitch.me/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/SEP%20Challenge-Video%206.mov?v=1746456155714",
+      "poster": "https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/VaporTV.png?v=1746411817932",
+      "description": "Abstract visual exploration with experimental techniques."
+    }
+  ],
+  "music": [
+    {
+      "title": "Cyberpunk Dreams",
+      "artist": "Neon Pulse",
+      "url": "https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/hover.mp3?v=1746577634973"
+    },
+    {
+      "title": "Digital Horizon",
+      "artist": "Byte Runner",
+      "url": "https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/tiger-roar.mp3"
+    },
+    {
+      "title": "Neon City",
+      "artist": "Synth Wave",
+      "url": "https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/hover.mp3?v=1746577634973"
+    }
+  ],
+  "gallery": [
+    {
+      "src": "https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/VaporTree.png?v=1746411815542",
+      "alt": "Vapor Tree",
+      "caption": "Vapor Tree"
+    },
+    {
+      "src": "https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/octavia.jpg?v=1746412752104",
+      "alt": "Octavia",
+      "caption": "Octavia"
+    },
+    {
+      "src": "https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/MilesSwings2025.jpg?v=1746410914289",
+      "alt": "Miles Swings",
+      "caption": "Miles Swings"
+    },
+    {
+      "src": "https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/Galloway%20Geese%20at%20Sunset.png?v=1746411517025",
+      "alt": "Galloway Sunset",
+      "caption": "Galloway Sunset"
+    },
+    {
+      "src": "https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/GoldenHourGeese.png?v=1746411283749",
+      "alt": "Golden Hour Geese",
+      "caption": "Golden Hour Geese"
+    }
+  ]
+}
