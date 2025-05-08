@@ -1,3 +1,4 @@
+<!-- snake.html -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -15,44 +16,40 @@
     <link rel="stylesheet" href="snake.css" />
   </head>
   <body>
-    <a href="#game-field" class="skip-link">Skip to game</a>
-    
     <!-- START OVERLAY -->
-    <div id="start-overlay" class="overlay" role="dialog" aria-labelledby="start-title">
+    <div id="start-overlay" class="overlay">
       <div class="overlay-content">
-        <h1 id="start-title">SPACEWORM.EXE</h1>
+        <h1>SPACEWORM.EXE</h1>
         <button id="snake-play-button">CLICK TO START</button>
       </div>
     </div>
 
     <!-- GAME OVER OVERLAY -->
-    <div id="game-over-overlay" class="overlay hidden" role="dialog" aria-labelledby="game-over-title">
+    <div id="game-over-overlay" class="overlay hidden">
       <div class="overlay-content">
-        <h1 id="game-over-title">Game Over</h1>
+        <h1>Game Over</h1>
         <p id="final-score">Your score: 0</p>
         <div id="score-entry">
-          <label for="name-input" class="sr-only">Enter your name</label>
           <input
             id="name-input"
             type="text"
             placeholder="Your Name (7 chars)"
             maxlength="7"
-            aria-label="Your name for high score"
           />
           <button id="submit-score">Submit Score</button>
         </div>
-        <ol id="high-scores-list" aria-label="High scores"></ol>
+        <ol id="high-scores-list"></ol>
         <button id="play-again-button">Play Again</button>
       </div>
     </div>
 
     <!-- GAME FIELD -->
-    <div id="game-field" role="application" aria-label="Spaceworm game">
-      <canvas id="snake-canvas" aria-label="Game canvas"></canvas>
+    <div id="game-field">
+      <canvas id="snake-canvas"></canvas>
     </div>
 
     <!-- HUD -->
-    <div id="snake-ui" role="status" aria-live="polite">
+    <div id="snake-ui">
       <span id="snake-score">Score: 0</span> |
       <span id="snake-level">Level: 1</span> |
       <span id="snake-best">Best: 0</span> |
@@ -60,10 +57,10 @@
     </div>
 
     <!-- MUTE BUTTON -->
-    <button id="mute-button" aria-label="Toggle sound">🔊</button>
+    <button id="mute-button">🔊</button>
 
     <!-- JOYSTICK -->
-    <div id="joystick" aria-label="Touch joystick for mobile">
+    <div id="joystick">
       <div id="joystick-base">
         <div id="joystick-stick"></div>
       </div>
@@ -79,25 +76,5 @@
 
     <!-- Main Script -->
     <script src="snake.js"></script>
-    <script>
-      // Check for saved theme preference and apply it
-      document.addEventListener('DOMContentLoaded', () => {
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme === 'light') {
-          document.body.classList.add('light-mode');
-        }
-        
-        // Listen for theme changes from parent window
-        window.addEventListener('storage', (event) => {
-          if (event.key === 'theme') {
-            if (event.newValue === 'light') {
-              document.body.classList.add('light-mode');
-            } else {
-              document.body.classList.remove('light-mode');
-            }
-          }
-        });
-      });
-    </script>
   </body>
 </html>
