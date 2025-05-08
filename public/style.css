@@ -373,32 +373,11 @@ body {
 /*─────────────────────────────────────────────────────────────────────────────
   POPUP WINDOW CHROME
 ─────────────────────────────────────────────────────────────────────────────*/
-.popup-window {
-  position: absolute;
-  top: 120px;
-  left: 120px;
-  width: 750px;
-  height: 60vh;
-  background: rgba(0, 0, 0, .75);
-  border: 2px solid var(--neon-purple);
-  border-radius: 0.5rem;
-  box-shadow: 0 0 10px var(--neon-pink);
-  display: none;
-  flex-direction: column;
-  overflow: hidden;
-  z-index: var(--z-window);
-  will-change: transform, opacity; /* Optimize for animations */
-  transition: transform 0.3s ease, opacity 0.3s ease;
-}
 
-.popup-window.active {
-  display: flex;
-  z-index: 100;
-}
 
-.popup-window.hidden {
-  display: none !important;
-}
+
+
+
 
 /* Window animations */
 .window-opening {
@@ -479,83 +458,32 @@ body {
 }
 
 /* Header bar */
-.popup-window .window-header {
-  background: linear-gradient(to right, #111111, #222222);
-  color: var(--neon-green);
-  font-family: var(--font-press-start);
-  font-size: 0.8rem;
-  padding: 0.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  user-select: none;
-  cursor: move;
-}
 
-.popup-window .window-header span {
-  flex: 1; /* push the buttons to the right */
-  text-shadow: 0 0 5px var(--neon-green);
-}
 
-.popup-window .window-header button {
-  background: none;
-  border: none;
-  color: var(--neon-green);
-  font-family: var(--font-press-start);
-  font-size: 1rem;
-  cursor: pointer;
-  margin-left: 0.5rem;
-  transition: color 0.2s ease, text-shadow 0.2s ease;
-}
 
-.popup-window .window-header button:hover {
-  color: white;
-  text-shadow: 0 0 5px var(--neon-green);
-}
 
-.popup-window .window-header .minimize:hover {
-  color: var(--neon-green);
-  text-shadow: 0 0 5px var(--neon-green);
-}
 
-.popup-window .window-header .maximize:hover {
-  color: var(--neon-green);
-  text-shadow: 0 0 5px var(--neon-green);
-}
 
-.popup-window .window-header .close:hover {
-  color: var(--neon-red);
-  text-shadow: 0 0 5px var(--neon-red);
-}
+
+
+
+
+
+
+
 
 /* Content area */
-.popup-window .window-content {
-  flex: 1;
-  padding: 1rem;
-  overflow: auto;
-  background: rgba(0, 0, 0, 0);
-}
+
 
 /* Dragging and resizing states */
-.popup-window.dragging {
-  opacity: 0.9;
-  box-shadow: 0 0 20px var(--neon-purple);
-}
 
-.popup-window.resizing {
-  opacity: 0.9;
-  box-shadow: 0 0 20px var(--neon-cyan);
-}
+
+
 
 /* Maximized state */
-.popup-window.maximized {
-  border-radius: 0;
-  box-shadow: none;
-}
 
-.popup-window.maximized .resizer {
-  display: none;
-}
+
+
 
 /*─────────────────────────────────────────────────────────────────────────────
   BOOT SCREEN
@@ -809,33 +737,16 @@ body {
 /*─────────────────────────────────────────────────────────────────────────────
   MAKE EMBEDDED IFRAMES FILL THEIR POPUP WINDOWS
 ─────────────────────────────────────────────────────────────────────────────*/
-.popup-window {
-  /* ensure positioning context */
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
+
 
 /* your existing header stays its normal height… */
-.popup-window .window-header {
-  flex: 0 0 auto;
-}
+
 
 /* …and the content area fills the rest of the window: */
-.popup-window .window-content {
-  flex: 1 1 auto; /* grow to fill whatever's left */
-  padding: 0; /* remove any default padding */
-  overflow: hidden; /* hide scrollbars on the container */
-}
+
 
 /* now the iframe itself also stretches perfectly: */
-.popup-window .window-content iframe {
-  width: 100%;
-  height: 100%;
-  border: none;
-  display: block; /* avoids weird inline‐iframe gaps */
-}
+
 
 /*─────────────────────────────────────────────────────────────────────────────
    Only override the RESUME & CONTACT embeds
@@ -856,21 +767,9 @@ body {
 /*─────────────────────────────────────────────────────────────────────────────
   2) Force the content area (and its iframe) to stretch & scroll if needed
 ─────────────────────────────────────────────────────────────────────────────*/
-.popup-window .window-content {
-  display: flex;
-  flex-direction: column;
-  padding: 0; /* remove any leftover padding */
-  height: calc(
-    100% - 2.2rem
-  ); /* header is ~2.2rem high—adjust if yours differs */
-  overflow: hidden;
-}
 
-.popup-window .window-content iframe {
-  flex: 1;
-  width: 100%;
-  border: none;
-}
+
+
 
 /*───────────────────────────────────────────────────────────
   Nature.EXE gallery sizing
@@ -892,19 +791,9 @@ body {
 /*───────────────────────────────────────────────────────────
   GENERIC GALLERY CONSTRAINTS (Nature + Artwork)
 ────────────────────────────────────────────────────────────*/
-.popup-window .window-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
-}
 
-.popup-window .window-content img {
-  max-width: 100%;
-  max-height: calc(100% - 40px); /* leave room for controls */
-  object-fit: contain;
-}
+
+
 
 .gallery-controls {
   margin-top: 0.5rem;
@@ -979,14 +868,7 @@ body {
   transform: scale(flex);
 }
 
-.popup-window.active video,
-.popup-window.active img {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-  display: block;
-  margin: auto;
-}
+
 
 .single-art img,
 #nature .window-content img {
@@ -1201,12 +1083,7 @@ body {
     --font-size-3xl: 2.2rem;
   }
 
-  .popup-window {
-    width: 90vw;
-    height: 80vh;
-    top: 10vh;
-    left: 5vw;
-  }
+  
 }
 
 @media (max-width: 768px) {
@@ -1235,12 +1112,7 @@ body {
     padding: 1rem 0;
   }
 
-  .popup-window {
-    width: 95vw;
-    height: 85vh;
-    top: 7vh;
-    left: 2.5vw;
-  }
+  
 
   #start-menu {
     font-size: 0.7rem;
@@ -1295,18 +1167,11 @@ body {
     font-size: 0.6rem;
   }
 
-  .popup-window .window-header {
-    font-size: 0.6rem;
-    padding: 0.3rem;
-  }
+  
 
-  .popup-window .window-header button {
-    font-size: 0.8rem;
-  }
+  
 
-  .popup-window .window-content {
-    padding: 0.5rem;
-  }
+  
 
   #start-menu a {
     padding: 0.3rem 0.6rem;
@@ -1322,65 +1187,22 @@ body {
   }
 }
 /* target any image inside a popup’s content area */
-.popup-window .window-content img {
-  display: block;
-  max-width: 90vw;   /* up to 90% of the viewport width */
-  max-height: 80vh;  /* up to 80% of the viewport height */
-  width: auto;
-  height: auto;
-  margin: 0 auto;    /* center horizontally */
-}
+
 /* ─── Window Base Style ───────────────────────────────────────────── */
-.popup-window {
-  position: absolute;
-  background: rgba(20, 20, 20, 0.95);
-  border: 2px solid var(--neon-cyan);
-  padding: var(--spacing-md);
-  box-shadow: 0 0 8px var(--neon-cyan);
-  border-radius: 4px;
-  opacity: 0;
-  transform: scale(0.95);
-  transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
-  z-index: var(--z-window);
-}
+
 
 /* ─── On Open ─────────────────────────────────────────────────────── */
-.popup-window.open {
-  opacity: 1;
-  transform: scale(1);
-}
+
 
 /* ─── When Active (Focused) ───────────────────────────────────────── */
-.popup-window.active {
-  box-shadow: 0 0 12px var(--neon-pink), 0 0 24px var(--neon-purple);
-  border-color: var(--neon-pink);
-  z-index: calc(var(--z-window) + 1);
-}
+
 
 /* ─── Minimized (Hidden) ──────────────────────────────────────────── */
-.popup-window.minimized {
-  opacity: 0;
-  pointer-events: none;
-  transform: scale(0.9);
-}
-.popup-window.maximized {
-  top: 0 !important;
-  left: 0 !important;
-  width: 100vw !important;
-  height: 100vh !important;
-  border-radius: 0;
-}
+
+
 /* ─── MOBILE FRIENDLY WINDOW HANDLING ───────────────────────────── */
 @media screen and (max-width: 768px) {
-  .popup-window {
-    top: 0 !important;
-    left: 0 !important;
-    width: 100vw !important;
-    height: 100vh !important;
-    border-radius: 0;
-    overflow-y: auto;
-    font-size: var(--font-size-base);
-  }
+  
 
   .window-header button {
     font-size: var(--font-size-base);
@@ -1425,25 +1247,11 @@ body {
 
 
 /* ─── Maximize Style ───────────────────────────────────────────── */
-.popup-window.maximized {
-  top: 0 !important;
-  left: 0 !important;
-  width: 100vw !important;
-  height: calc(100vh - 36px) !important;
-  border-radius: 0;
-}
+
 
 /* ─── Mobile Window Handling ───────────────────────────────────── */
 @media screen and (max-width: 768px) {
-  .popup-window {
-    top: 0 !important;
-    left: 0 !important;
-    width: 100vw !important;
-    height: calc(100vh - 36px) !important;
-    border-radius: 0;
-    overflow-y: auto;
-    font-size: var(--font-size-base);
-  }
+  
 
   .window-header button {
     font-size: var(--font-size-base);
@@ -1457,4 +1265,20 @@ body {
   .scanlines {
     opacity: 0.2;
   }
+}
+
+/* Fixed popup window styles */
+.popup-window {
+  display: none;
+  position: absolute;
+  flex-direction: column;
+  z-index: var(--z-window);
+}
+
+.popup-window.active {
+  display: flex;
+}
+
+.popup-window.hidden {
+  display: none;
 }
