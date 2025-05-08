@@ -1,67 +1,3 @@
-// Add this to the beginning of your script.js file, before the DOMContentLoaded event
-
-// Preload critical assets
-function preloadAssets() {
-  return new Promise((resolve) => {
-    // List of critical images to preload
-    const criticalImages = [
-      "https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/Benny.png?v=1746392528967",
-      "https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/whodat.gif?v=1746365769069",
-      "https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/octavia.jpg?v=1746412752104",
-      "https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/MilesSwings2025.jpg?v=1746410914289",
-    ]
-
-    let loadedCount = 0
-    const totalAssets = criticalImages.length
-
-    // If no assets to preload, resolve immediately
-    if (totalAssets === 0) {
-      resolve()
-      return
-    }
-
-    // Preload each image
-    criticalImages.forEach((src) => {
-      const img = new Image()
-      img.onload = img.onerror = () => {
-        loadedCount++
-        if (loadedCount === totalAssets) {
-          resolve()
-        }
-      }
-      img.src = src
-    })
-
-    // Fallback in case some assets fail to load
-    setTimeout(resolve, 5000)
-  })
-}
-
-// Modify your DOMContentLoaded event
-document.addEventListener("DOMContentLoaded", () => {
-  // Initialize window controls immediately for better perceived performance
-  initWindowControls()
-
-  // Preload assets and then start boot sequence
-  preloadAssets().then(() => {
-    // Hide preloader
-    const preloader = document.getElementById("preloader")
-    preloader.style.opacity = "0"
-    preloader.style.visibility = "hidden"
-
-    // Continue with boot sequence
-    runBootSequence().then(() => {
-      initDesktopIcons()
-      initStarfield()
-      initGlitchEffects()
-      initMusicPlayer()
-      setupMobileSupport()
-      initThemeToggle()
-      initKeyboardAccessibility() // Add keyboard accessibility
-    })
-  })
-})
-
 // Utility functions
 function debounce(func, wait) {
   let timeout
@@ -72,26 +8,22 @@ function debounce(func, wait) {
   }
 }
 
-const toadHoverAudio = new Audio(
-  "https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/hover.mp3?v=1746577634973",
-)
-toadHoverAudio.volume = 0.5 // Lower volume for better user experience
+const toadHoverAudio = new Audio('https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/hover.mp3?v=1746577634973');
+toadHoverAudio.volume = 1;
+
 
 // DOM ready handler with performance improvements
-// document.addEventListener("DOMContentLoaded", () => {
-//   // Initialize all windows once
-//   initWindowControls()
+document.addEventListener("DOMContentLoaded", () => {
+  // Initialize all windows once
+  initWindowControls()
 
-//   // Start boot sequence
-//   runBootSequence().then(() => {
-//     initDesktopIcons()
-//     initStarfield()
-//     initGlitchEffects()
-//     initMusicPlayer() // Initialize music player
-//     setupMobileSupport() // Add mobile-specific enhancements
-//     initThemeToggle() // Add theme toggle initialization
-//   })
-// })
+  // Start boot sequence
+  runBootSequence().then(() => {
+    initDesktopIcons()
+    initStarfield()
+    initGlitchEffects()
+  })
+})
 
 // 1) WINDOW CONTROLS - Consolidated for better performance
 function initWindowControls() {
@@ -230,57 +162,50 @@ function getNextZIndex() {
   return ++currentZIndex
 }
 
+
 function openWindow(id) {
-  const win = document.getElementById(id)
-  if (!win) return
+  const win = document.getElementById(id);
+  if (!win) return;
 
-  document.getElementById("start-menu").style.display = "none"
-  document.querySelectorAll(".popup-window").forEach((w) => w.classList.remove("active"))
+  document.getElementById("start-menu").style.display = "none";
+  document.querySelectorAll(".popup-window").forEach((w) => w.classList.remove("active"));
 
-  // Center window if it doesn't have position yet
-  if (!win.style.top || !win.style.left) {
-    const winWidth = Math.min(800, window.innerWidth * 0.8)
-    const winHeight = Math.min(600, window.innerHeight * 0.8)
-    win.style.width = `${winWidth}px`
-    win.style.height = `${winHeight}px`
-    win.style.top = `${(window.innerHeight - winHeight) / 2}px`
-    win.style.left = `${(window.innerWidth - winWidth) / 2}px`
-  }
-
-  // Load lazy content
   win.querySelectorAll("iframe[data-src]").forEach((iframe) => {
-    if (!iframe.src) iframe.src = iframe.dataset.src
-  })
+    if (!iframe.src) iframe.src = iframe.dataset.src;
+  });
 
   win.querySelectorAll("video[data-src]").forEach((v) => {
     if (!v.src) {
-      v.src = v.dataset.src
-      v.load()
-      if (!isMobile()) v.play().catch(() => {})
+      v.src = v.dataset.src;
+      v.load();
+      if (!isMobile()) v.play().catch(() => {});
     }
-  })
+  });
 
-  win.classList.remove("hidden")
-  win.classList.add("active")
-  win.style.display = "flex"
-  win.style.zIndex = getNextZIndex()
-  win.classList.add("window-opening")
-  setTimeout(() => win.classList.remove("window-opening"), 500)
+  win.classList.remove("hidden");
+  win.classList.add("active");
+  win.style.display = "flex";
+  win.style.zIndex = getNextZIndex();
+  win.classList.add("window-opening");
+  setTimeout(() => win.classList.remove("window-opening"), 500);
 
-  // Special handling for specific windows
   if (id === "toader") {
-    toadHoverAudio.currentTime = 0
-    toadHoverAudio.play().catch(() => {})
-  } else if (id === "music") {
-    initMusicPlayer()
-  } else if (id === "nature") {
-    initNatureGallery()
+    toadHoverAudio.currentTime = 0;
+    toadHoverAudio.play().catch(() => {});
   }
+
+  Object.assign(win.style, {
+    top: "0",
+    left: "0",
+    width: "100vw",
+    height: "calc(100vh - 36px)",
+    transform: "none",
+  });
 }
 
 // Helper function to detect mobile devices
 function isMobile() {
-  return window.innerWidth < 768 || "ontouchstart" in window
+  return window.innerWidth < 768
 }
 
 function createTaskbarIcon(id) {
@@ -306,59 +231,60 @@ function createTaskbarIcon(id) {
 }
 
 function minimizeWindow(id) {
-  const win = document.getElementById(id)
-  if (!win) return
+  const win = document.getElementById(id);
+  if (!win) return;
 
   // Add minimizing animation
-  win.classList.add("window-minimizing")
+  win.classList.add("window-minimizing");
 
   setTimeout(() => {
-    win.classList.remove("window-minimizing")
-    win.classList.add("hidden")
-    win.style.display = "none"
+    win.classList.remove("window-minimizing");
+    win.classList.add("hidden");
+    win.style.display = "none";
 
     // Create taskbar icon
-    createTaskbarIcon(id)
+    createTaskbarIcon(id);
 
-    // Stop toad hover SFX if it's the toader window
+    // Stop toad hover SFX if it’s the toader window
     if (id === "toader") {
-      toadHoverAudio.pause()
-      toadHoverAudio.currentTime = 0
+      toadHoverAudio.pause();
+      toadHoverAudio.currentTime = 0;
     }
-  }, 300)
+  }, 300);
 }
 
 function closeWindow(id) {
-  const win = document.getElementById(id)
+  const win = document.getElementById(id);
   if (win) {
     // Add closing animation
-    win.classList.add("window-closing")
+    win.classList.add("window-closing");
 
     setTimeout(() => {
       // Pause/reset any video inside
-      const vid = win.querySelector("video")
+      const vid = win.querySelector("video");
       if (vid) {
-        vid.pause()
-        vid.currentTime = 0
+        vid.pause();
+        vid.currentTime = 0;
       }
 
       // Hide window
-      win.classList.remove("window-closing")
-      win.classList.add("hidden")
-      win.style.display = "none"
+      win.classList.remove("window-closing");
+      win.classList.add("hidden");
+      win.style.display = "none";
 
-      // Stop toad hover SFX if it's the toader window
+      // Stop toad hover SFX if it’s the toader window
       if (id === "toader") {
-        toadHoverAudio.pause()
-        toadHoverAudio.currentTime = 0
+        toadHoverAudio.pause();
+        toadHoverAudio.currentTime = 0;
       }
-    }, 300)
+    }, 300);
   }
 
   // Remove taskbar icon
-  const icon = document.getElementById(`taskbar-icon-${id}`)
-  if (icon) icon.remove()
+  const icon = document.getElementById(`taskbar-icon-${id}`);
+  if (icon) icon.remove();
 }
+
 
 function toggleMaximizeWindow(id) {
   const win = document.getElementById(id)
@@ -504,20 +430,6 @@ function initDesktopIcons() {
       openWindow(icon.dataset.window)
     })
 
-    // Single tap for mobile
-    if (isMobile()) {
-      let lastTap = 0
-      icon.addEventListener("touchend", (e) => {
-        const currentTime = new Date().getTime()
-        const tapLength = currentTime - lastTap
-        if (tapLength < 500 && tapLength > 0) {
-          openWindow(icon.dataset.window)
-          e.preventDefault()
-        }
-        lastTap = currentTime
-      })
-    }
-
     // hover effect only
     icon.addEventListener("mouseenter", () => {
       icon.classList.add("icon-hover")
@@ -613,9 +525,10 @@ function onSelectEnd() {
 }
 
 // 7) STARFIELD BACKGROUND - pure white stars
+// ─── STARFIELD (revised) ───────────────────────────────────────────────────
 function initStarfield() {
   const canvas = document.getElementById("background-canvas")
-  const ctx = canvas.getContext("2d")
+  const ctx    = canvas.getContext("2d")
 
   let stars = []
   const STAR_COUNT = 500
@@ -624,16 +537,16 @@ function initStarfield() {
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
       z: Math.random() * canvas.width,
-      o: Math.random(),
+      o: Math.random()
     }))
   }
 
   function drawStars() {
     // full‐opacity background to create motion-blur effect
-    ctx.fillStyle = "rgba(0,0,0,1)"
+    ctx.fillStyle = 'rgba(0,0,0,1)'
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-    for (const s of stars) {
+    for (let s of stars) {
       // twinkle
       s.o += (Math.random() - 0.5) * 0.02
       s.o = Math.max(0.1, Math.min(1, s.o))
@@ -647,13 +560,13 @@ function initStarfield() {
         s.o = Math.random()
       }
 
-      const k = 128.0 / s.z
-      const px = (s.x - canvas.width / 2) * k + canvas.width / 2
+      const k  = 128.0 / s.z
+      const px = (s.x - canvas.width / 2) * k + canvas.width  / 2
       const py = (s.y - canvas.height / 2) * k + canvas.height / 2
-      const sz = Math.max(0.5, (1 - s.z / canvas.width) * 2) // half as big
+      const sz = Math.max(0.5, (1 - s.z / canvas.width) * 2)  // half as big
 
       ctx.globalAlpha = s.o
-      ctx.fillStyle = "#fff"
+      ctx.fillStyle   = '#fff'
       ctx.beginPath()
       ctx.arc(px, py, sz, 0, Math.PI * 2)
       ctx.fill()
@@ -663,17 +576,14 @@ function initStarfield() {
   }
 
   // on resize, recalc canvas + reinit stars
-  window.addEventListener(
-    "resize",
-    debounce(() => {
-      canvas.width = window.innerWidth
-      canvas.height = window.innerHeight
-      initStars()
-    }, 250),
-  )
+  window.addEventListener('resize', debounce(() => {
+    canvas.width  = window.innerWidth
+    canvas.height = window.innerHeight
+    initStars()
+  }, 250))
 
   // initial sizing & stars
-  canvas.width = window.innerWidth
+  canvas.width  = window.innerWidth
   canvas.height = window.innerHeight
   initStars()
 
@@ -685,168 +595,9 @@ function initStarfield() {
   requestAnimationFrame(animate)
 }
 
-// 8) MUSIC PLAYER
-function initMusicPlayer() {
-  const musicPlayer = document.getElementById("music-player")
-  const nowPlaying = document.getElementById("now-playing")
-  const playlist = document.getElementById("playlist")
-  const prevBtn = document.getElementById("prevTrack")
-  const playBtn = document.getElementById("togglePlay")
-  const nextBtn = document.getElementById("nextTrack")
+// 8) AUDIO VISUALIZER removed entirely
 
-  if (!musicPlayer || !playlist) return
-
-  // Sample playlist - replace with your actual tracks
-  const tracks = [
-    {
-      title: "Cyberpunk Dreams",
-      artist: "Neon Pulse",
-      url: "https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/hover.mp3?v=1746577634973",
-    },
-    {
-      title: "Digital Horizon",
-      artist: "Byte Runner",
-      url: "https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/tiger-roar.mp3",
-    },
-    {
-      title: "Neon City",
-      artist: "Synth Wave",
-      url: "https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/hover.mp3?v=1746577634973",
-    },
-  ]
-
-  let currentTrack = 0
-
-  // Build playlist
-  playlist.innerHTML = ""
-  tracks.forEach((track, index) => {
-    const li = document.createElement("li")
-    li.textContent = `${track.title} - ${track.artist}`
-    li.dataset.index = index
-    li.addEventListener("click", () => {
-      currentTrack = index
-      loadTrack()
-      playTrack()
-    })
-    playlist.appendChild(li)
-  })
-
-  // Load initial track
-  loadTrack()
-
-  // Player controls
-  function loadTrack() {
-    musicPlayer.src = tracks[currentTrack].url
-    musicPlayer.load()
-    updateNowPlaying()
-
-    // Update active class
-    document.querySelectorAll("#playlist li").forEach((li, idx) => {
-      li.classList.toggle("active", idx === currentTrack)
-    })
-  }
-
-  function playTrack() {
-    musicPlayer.play().catch((err) => console.log("Playback prevented:", err))
-    playBtn.textContent = "Pause"
-    updateNowPlaying()
-  }
-
-  function pauseTrack() {
-    musicPlayer.pause()
-    playBtn.textContent = "Play"
-  }
-
-  function updateNowPlaying() {
-    nowPlaying.textContent = `▶ ${tracks[currentTrack].title} - ${tracks[currentTrack].artist}`
-  }
-
-  // Event listeners
-  prevBtn.addEventListener("click", () => {
-    currentTrack = (currentTrack - 1 + tracks.length) % tracks.length
-    loadTrack()
-    if (!musicPlayer.paused) playTrack()
-  })
-
-  nextBtn.addEventListener("click", () => {
-    currentTrack = (currentTrack + 1) % tracks.length
-    loadTrack()
-    if (!musicPlayer.paused) playTrack()
-  })
-
-  playBtn.addEventListener("click", () => {
-    if (musicPlayer.paused) {
-      playTrack()
-    } else {
-      pauseTrack()
-    }
-  })
-
-  // Auto-advance to next track when current one ends
-  musicPlayer.addEventListener("ended", () => {
-    currentTrack = (currentTrack + 1) % tracks.length
-    loadTrack()
-    playTrack()
-  })
-}
-
-// 9) NATURE GALLERY
-function initNatureGallery() {
-  const natureWindow = document.getElementById("nature")
-  if (!natureWindow) return
-
-  const content = natureWindow.querySelector(".window-content")
-
-  // Sample images - replace with your actual images
-  const images = [
-    "https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/VaporTree.png?v=1746411815542",
-    "https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/octavia.jpg?v=1746412752104",
-    "https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/MilesSwings2025.jpg?v=1746410914289",
-  ]
-
-  let currentImage = 0
-
-  // Clear existing content
-  content.innerHTML = ""
-
-  // Create image element
-  const img = document.createElement("img")
-  img.src = images[currentImage]
-  img.alt = "Nature Gallery"
-  content.appendChild(img)
-
-  // Create controls
-  const controls = document.createElement("div")
-  controls.className = "gallery-controls"
-
-  const prevBtn = document.createElement("button")
-  prevBtn.textContent = "◀ Previous"
-  prevBtn.addEventListener("click", () => {
-    currentImage = (currentImage - 1 + images.length) % images.length
-    img.style.opacity = 0
-    setTimeout(() => {
-      img.src = images[currentImage]
-      img.style.opacity = 1
-    }, 300)
-  })
-
-  const nextBtn = document.createElement("button")
-  nextBtn.textContent = "Next ▶"
-  nextBtn.addEventListener("click", () => {
-    currentImage = (currentImage + 1) % images.length
-    img.style.opacity = 0
-    setTimeout(() => {
-      img.src = images[currentImage]
-      img.style.opacity = 1
-    }, 300)
-  })
-
-  controls.appendChild(prevBtn)
-  controls.appendChild(nextBtn)
-  content.appendChild(controls)
-}
-
-// 10) GLITCH EFFECTS
+// 9) GLITCH EFFECTS
 function initGlitchEffects() {
   setInterval(() => {
     document.querySelectorAll(".glitch-me").forEach((el) => {
@@ -867,191 +618,5 @@ function initGlitchEffects() {
   }, 10000)
 }
 
-// 11) MOBILE SUPPORT
-function setupMobileSupport() {
-  if (!isMobile()) return
-
-  // Add mobile close button for easier window management
-  const mobileClose = document.createElement("button")
-  mobileClose.className = "mobile-close"
-  mobileClose.textContent = "✕"
-  mobileClose.addEventListener("click", () => {
-    const activeWindow = document.querySelector(".popup-window.active")
-    if (activeWindow) {
-      closeWindow(activeWindow.id)
-    }
-  })
-  document.body.appendChild(mobileClose)
-
-  // Improve touch handling for windows
-  document.querySelectorAll(".popup-window").forEach((win) => {
-    const header = win.querySelector(".window-header")
-
-    // Single tap to bring window to front
-    win.addEventListener("touchstart", () => {
-      win.style.zIndex = getNextZIndex()
-    })
-
-    // Double tap header to maximize
-    let lastTap = 0
-    header.addEventListener("touchend", (e) => {
-      const currentTime = new Date().getTime()
-      const tapLength = currentTime - lastTap
-      if (tapLength < 500 && tapLength > 0) {
-        toggleMaximizeWindow(win.id)
-        e.preventDefault()
-      }
-      lastTap = currentTime
-    })
-  })
-}
-
 window.addEventListener("mousedown", onSelectStart)
 initGlitchEffects()
-
-// 12) THEME TOGGLE
-function initThemeToggle() {
-  // Create theme toggle button if it doesn't exist
-  let themeToggle = document.getElementById("theme-toggle")
-  if (!themeToggle) {
-    themeToggle = document.createElement("button")
-    themeToggle.id = "theme-toggle"
-    themeToggle.innerHTML = "🌙"
-    themeToggle.title = "Toggle Light/Dark Mode"
-    themeToggle.className = "theme-toggle"
-    themeToggle.setAttribute("aria-label", "Toggle light/dark theme")
-    document.body.appendChild(themeToggle)
-  }
-
-  // Check for saved theme preference
-  const savedTheme = localStorage.getItem("theme")
-  if (savedTheme === "light") {
-    document.body.classList.add("light-mode")
-    themeToggle.innerHTML = "☀️"
-  }
-
-  // Toggle theme on click
-  themeToggle.addEventListener("click", () => {
-    document.body.classList.toggle("light-mode")
-    const isLight = document.body.classList.contains("light-mode")
-
-    // Save preference
-    localStorage.setItem("theme", isLight ? "light" : "dark")
-
-    // Update icon
-    themeToggle.innerHTML = isLight ? "☀️" : "🌙"
-
-    // Add transition effect
-    document.body.classList.add("theme-transition")
-    setTimeout(() => {
-      document.body.classList.remove("theme-transition")
-    }, 1000)
-  })
-}
-
-// Add this function to your script.js file
-
-// 13) KEYBOARD ACCESSIBILITY
-function initKeyboardAccessibility() {
-  // Tab index for desktop icons
-  document.querySelectorAll(".desktop-icon").forEach((icon, index) => {
-    icon.setAttribute("tabindex", "0")
-
-    // Enter key to open window
-    icon.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") {
-        openWindow(icon.dataset.window)
-      }
-    })
-
-    // Focus styling
-    icon.addEventListener("focus", () => {
-      icon.classList.add("icon-hover")
-    })
-
-    icon.addEventListener("blur", () => {
-      icon.classList.remove("icon-hover")
-    })
-  })
-
-  // Window controls accessibility
-  document.querySelectorAll(".popup-window").forEach((win) => {
-    const header = win.querySelector(".window-header")
-    const buttons = header.querySelectorAll("button")
-
-    buttons.forEach((btn) => {
-      btn.setAttribute("tabindex", "0")
-
-      // Add aria labels
-      if (btn.classList.contains("minimize")) {
-        btn.setAttribute("aria-label", "Minimize window")
-      } else if (btn.classList.contains("maximize")) {
-        btn.setAttribute("aria-label", "Maximize window")
-      } else if (btn.classList.contains("close")) {
-        btn.setAttribute("aria-label", "Close window")
-      }
-    })
-  })
-
-  // Start menu accessibility
-  const startButton = document.getElementById("start-button")
-  startButton.setAttribute("aria-expanded", "false")
-  startButton.setAttribute("aria-controls", "start-menu")
-
-  startButton.addEventListener("click", () => {
-    const expanded = startButton.getAttribute("aria-expanded") === "true"
-    startButton.setAttribute("aria-expanded", !expanded)
-  })
-
-  // Escape key to close active window
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") {
-      const activeWindow = document.querySelector(".popup-window.active")
-      if (activeWindow) {
-        closeWindow(activeWindow.id)
-      }
-    }
-  })
-}
-
-// Main script file - now just imports the modular system
-// This file is kept for backward compatibility
-
-// Import main module
-import("./js/main.js").catch((err) => {
-  console.error("Error loading modules:", err)
-
-  // Fallback to basic functionality if modules fail to load
-  document.addEventListener("DOMContentLoaded", () => {
-    // Hide preloader
-    const preloader = document.getElementById("preloader")
-    if (preloader) {
-      preloader.style.opacity = "0"
-      preloader.style.visibility = "hidden"
-    }
-
-    // Show error message
-    const errorMsg = document.createElement("div")
-    errorMsg.style.position = "fixed"
-    errorMsg.style.top = "10px"
-    errorMsg.style.left = "10px"
-    errorMsg.style.background = "rgba(255,0,0,0.8)"
-    errorMsg.style.color = "white"
-    errorMsg.style.padding = "10px"
-    errorMsg.style.borderRadius = "5px"
-    errorMsg.style.zIndex = "9999"
-    errorMsg.textContent = "Failed to load modules. Please refresh the page."
-    document.body.appendChild(errorMsg)
-  })
-})
-
-// Export window opening function for backward compatibility
-window.openWindow = (id) => {
-  import("./js/windows.js")
-    .then((module) => {
-      module.openWindow(id)
-    })
-    .catch((err) => {
-      console.error("Error opening window:", err)
-    })
-}

@@ -1,10 +1,11 @@
+
 /* Fonts and reset */
 body {
   margin: 0;
   padding: 0;
   background: black;
   color: white;
-  font-family: "VT323", monospace;
+  font-family: 'VT323', monospace;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -34,8 +35,6 @@ body {
   height: 100%;
   display: block;
   background: black;
-  border: 2px solid rgba(0, 240, 255, 0.5);
-  box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
 }
 
 /* Joystick below the game */
@@ -70,22 +69,11 @@ body {
 }
 
 /* Buttons and input */
-button,
-input {
-  font-family: "VT323", monospace;
+button, input {
+  font-family: 'VT323', monospace;
   font-size: 1.1rem;
   margin: 0.5rem;
   padding: 0.5rem 1rem;
-  background: rgba(0, 0, 0, 0.7);
-  color: #00f0ff;
-  border: 1px solid #00f0ff;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-button:hover {
-  background: rgba(0, 0, 0, 0.9);
-  box-shadow: 0 0 10px #00f0ff;
 }
 
 /* Mute button styling */
@@ -119,145 +107,12 @@ button:hover {
   position: absolute;
   top: 25px;
   left: 25px;
-  transform: translate(-50%, -50%);
 }
 
-/* High scores list */
-#high-scores-list {
-  margin: 1rem 0;
-  padding: 0 2rem;
-  text-align: left;
-  color: #f3a1ff;
-}
-
-#high-scores-list li {
-  margin-bottom: 0.5rem;
-}
-
-/* Score entry */
-#score-entry {
-  margin: 1rem 0;
-}
-
-#name-input {
-  background: rgba(0, 0, 0, 0.7);
-  color: #00f0ff;
-  border: 1px solid #00f0ff;
-  padding: 0.5rem;
-}
-
-/* Skip link for keyboard users */
-.skip-link {
-  position: absolute;
-  top: -40px;
-  left: 0;
-  background: #00f0ff;
-  color: black;
-  padding: 8px;
-  z-index: 9999;
-  transition: top 0.3s;
-}
-
-.skip-link:focus {
-  top: 0;
-}
-
-/* Focus styles */
-button:focus,
-input:focus {
-  outline: 2px solid #00f0ff;
-  outline-offset: 2px;
-}
-
-/* Screen reader only class */
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border-width: 0;
-}
-
-/* Light mode styles */
-.light-mode {
-  background: #f0f0f0;
-  color: #333;
-}
-
-.light-mode #snake-canvas {
-  border-color: #6a5acd;
-  box-shadow: 0 0 10px rgba(106, 90, 205, 0.3);
-}
-
-.light-mode button,
-.light-mode input {
-  background: rgba(240, 240, 240, 0.7);
-  color: #6a5acd;
-  border-color: #6a5acd;
-}
-
-.light-mode button:hover {
-  background: rgba(240, 240, 240, 0.9);
-  box-shadow: 0 0 10px #6a5acd;
-}
-
-.light-mode #mute-button {
-  color: #333;
-  border-color: #333;
-}
-
-.light-mode #joystick-base {
-  background: rgba(0, 100, 0, 0.1);
-  border-color: darkgreen;
-}
-
-.light-mode #joystick-stick {
-  background: green;
-}
-
-.light-mode #high-scores-list {
-  color: #9370db;
-}
-
-.light-mode .overlay {
-  background: rgba(240, 240, 240, 0.85);
-}
-
-.light-mode .overlay-content {
-  color: #333;
-}
-
-.light-mode .skip-link {
-  background: #6a5acd;
-  color: white;
-}
-
-.light-mode button:focus,
-.light-mode input:focus {
-  outline-color: #6a5acd;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  #snake-ui {
-    font-size: 1rem;
-  }
-
-  .overlay-content {
-    font-size: 1.2rem;
-  }
-
-  #joystick {
-    display: block;
-  }
-}
-
-@media (min-width: 769px) {
-  #joystick {
-    display: none;
-  }
+#snake-canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+  background: black;
+  border: 2px solid white;
 }

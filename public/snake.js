@@ -1,787 +1,437 @@
-// SPACEWORM.EXE - A cyberpunk snake game with optimized performance
-document.addEventListener("DOMContentLoaded", () => {
-  // Game canvas setup with proper scaling
-  const canvas = document.getElementById("snake-canvas")
-  const ctx = canvas.getContext("2d")
+// snake.js – full logic for SPACEWORM.EXE (updated sizing & subtle trails)
 
-  // Game state
-  let snake = []
-  let food = {}
-  let powerUps = []
-  let direction = "right"
-  let nextDirection = "right"
-  let score = 0
-  let level = 1
-  const gameSpeed = 150
-  let animationFrameId
-  let lastUpdateTime = 0
-  let updateInterval = 150 // ms
-  let isPaused = false
-  let isMuted = false
-  let highScores = JSON.parse(localStorage.getItem("snakeHighScores")) || []
-  let bestScore = highScores.length > 0 ? Math.max(...highScores.map((s) => s.score)) : 0
+window.addEventListener('load', () => {
+  // ─── Element refs ─────────────────────────────────────────────────────────
+  const startOvl      = document.getElementById('start-overlay');
+  const gameOverOvl   = document.getElementById('game-over-overlay');
+  const btnPlay       = document.getElementById('snake-play-button');
+  const btnSubmit     = document.getElementById('submit-score');
+  const inpName       = document.getElementById('name-input');
+  const elFinalScore  = document.getElementById('final-score');
+  const lstHighScores = document.getElementById('high-scores-list');
+  const btnAgain      = document.getElementById('play-again-button');
 
-  // Game elements size
-  const gridSize = 20
-  let gridWidth, gridHeight
+  const canvas        = document.getElementById('snake-canvas');
+  const ctx           = canvas.getContext('2d');
+  const ui            = {
+    score:  document.getElementById('snake-score'),
+    level:  document.getElementById('snake-level'),
+    best:   document.getElementById('snake-best'),
+    status: document.getElementById('snake-status'),
+  };
+  const music         = document.getElementById('snake-music');
+  const btnMute       = document.getElementById('mute-button');
+  const joystickBase  = document.getElementById('joystick-base');
+  const joystickStick = document.getElementById('joystick-stick');
 
-  // DOM elements
-  const startOverlay = document.getElementById("start-overlay")
-  const gameOverOverlay = document.getElementById("game-over-overlay")
-  const playButton = document.getElementById("snake-play-button")
-  const playAgainButton = document.getElementById("play-again-button")
-  const scoreDisplay = document.getElementById("snake-score")
-  const levelDisplay = document.getElementById("snake-level")
-  const bestDisplay = document.getElementById("snake-best")
-  const statusDisplay = document.getElementById("snake-status")
-  const finalScoreDisplay = document.getElementById("final-score")
-  const nameInput = document.getElementById("name-input")
-  const submitScoreButton = document.getElementById("submit-score")
-  const highScoresList = document.getElementById("high-scores-list")
-  const muteButton = document.getElementById("mute-button")
-  const music = document.getElementById("snake-music")
+  // ─── WebAudio for SFX ───────────────────────────────────────────────────────
+  const audioCtx   = new (window.AudioContext||window.webkitAudioContext)();
+  let eatBuf, powerBuf;
+  const eatURL   = 'https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/power-up-type-1-230548.mp3?v=1746542171704';
+  const powerURL = 'https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/coin-upaif-14631.mp3?v=1746542174524';
 
-  // Mobile joystick elements
-  const joystickBase = document.getElementById("joystick-base")
-  const joystickStick = document.getElementById("joystick-stick")
+  async function loadSound(url) {
+    const res = await fetch(url);
+    const arr = await res.arrayBuffer();
+    return audioCtx.decodeAudioData(arr);
+  }
+  Promise.all([ loadSound(eatURL), loadSound(powerURL) ])
+         .then(([e,p])=>{ eatBuf=e; powerBuf=p; });
 
-  // Sound effects with preloading
-  const eatSound = new Audio("https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/hover.mp3?v=1746577634973")
-  const gameOverSound = new Audio("https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/tiger-roar.mp3")
-
-  // Set volume
-  eatSound.volume = 0.3
-  gameOverSound.volume = 0.3
-  music.volume = 0.2
-
-  // Power-up types
-  const powerUpTypes = [
-    {
-      type: "speed",
-      color: "#fffc00", // Yellow
-      duration: 5000,
-      effect: () => {
-        updateInterval = Math.max(50, updateInterval - 30)
-        setTimeout(() => {
-          updateInterval = 150 - (level - 1) * 10
-        }, 5000)
-      },
-    },
-    {
-      type: "grow",
-      color: "#00ff66", // Green
-      duration: 0,
-      effect: () => {
-        // Add 3 segments to snake
-        for (let i = 0; i < 3; i++) {
-          snake.push({ ...snake[snake.length - 1] })
-        }
-      },
-    },
-    {
-      type: "points",
-      color: "#f3a1ff", // Pink
-      duration: 0,
-      effect: () => {
-        score += 25
-        updateDisplays()
-      },
-    },
-  ]
-
-  // Initialize game
-  function initGame() {
-    // Set canvas size to match container with proper scaling
-    resizeCanvas()
-
-    // Initialize snake
-    snake = [
-      { x: Math.floor(gridWidth / 2), y: Math.floor(gridHeight / 2) },
-      { x: Math.floor(gridWidth / 2) - 1, y: Math.floor(gridHeight / 2) },
-      { x: Math.floor(gridWidth / 2) - 2, y: Math.floor(gridHeight / 2) },
-    ]
-
-    // Generate first food
-    generateFood()
-
-    // Clear power-ups
-    powerUps = []
-
-    // Reset game state
-    direction = "right"
-    nextDirection = "right"
-    score = 0
-    level = 1
-    updateInterval = 150
-    isPaused = false
-
-    // Update displays
-    updateDisplays()
-
-    // Start game loop with requestAnimationFrame for smoother animation
-    cancelAnimationFrame(animationFrameId)
-    lastUpdateTime = performance.now()
-    gameLoop(lastUpdateTime)
-
-    // Play music if not muted
-    if (!isMuted) {
-      music.play().catch((e) => console.log("Audio play prevented:", e))
-    }
-
-    // Announce game start to screen readers
-    announceToScreenReader("Game started. Level 1.")
+  function playSFX(buf) {
+    if (!buf) return;
+    const src = audioCtx.createBufferSource();
+    src.buffer = buf;
+    src.connect(audioCtx.destination);
+    src.start();
   }
 
-  // Resize canvas to fit container with proper scaling
-  function resizeCanvas() {
-    const gameField = document.getElementById("game-field")
-    const width = gameField.clientWidth
-    const height = gameField.clientHeight
+  // ─── Pause music when tab hidden ───────────────────────────────────────────
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      music.pause();
+      music.currentTime = 0;
+    }
+  });
 
-    // Set canvas dimensions with device pixel ratio for sharper rendering
-    const dpr = window.devicePixelRatio || 1
-    canvas.width = width * dpr
-    canvas.height = height * dpr
+  // ─── Starfield ──────────────────────────────────────────────────────────────
+  let stars = [];
+  const STAR_COUNT = 175;
+  function initStars() {
+    stars = Array.from({ length: STAR_COUNT }, () => ({
+      x: Math.random()*canvas.width,
+      y: Math.random()*canvas.height,
+      z: Math.random()*canvas.width,
+      o: Math.random()
+    }));
+  }
+  function drawStars() {
+    // slight motion-blur
+    ctx.fillStyle = 'rgba(0,0,0,1)';
+    ctx.fillRect(0,0,canvas.width,canvas.height);
 
-    // Set display size
-    canvas.style.width = `${width}px`
-    canvas.style.height = `${height}px`
+    for (let s of stars) {
+      // twinkle
+      s.o += (Math.random()-0.5)*0.02;
+      s.o = Math.max(0.1, Math.min(1, s.o));
 
-    // Scale context to match device pixel ratio
-    ctx.scale(dpr, dpr)
+      s.z -= 2;
+      if (s.z <= 0) {
+        s.z = canvas.width;
+        s.x = Math.random()*canvas.width;
+        s.y = Math.random()*canvas.height;
+        s.o = Math.random();
+      }
+      const k  = 128.0/s.z;
+      const px = (s.x - canvas.width/2)*k + canvas.width/2;
+      const py = (s.y - canvas.height/2)*k + canvas.height/2;
+      const sz = Math.max(0.5, (1 - s.z/canvas.width)*2);  // HALF as big as before
 
-    // Calculate grid dimensions
-    gridWidth = Math.floor(width / gridSize)
-    gridHeight = Math.floor(height / gridSize)
+      ctx.globalAlpha = s.o;
+      ctx.fillStyle   = '#fff';
+      ctx.beginPath();
+      ctx.arc(px,py,sz,0,Math.PI*2);
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
   }
 
-  // Generate food at random position
-  function generateFood() {
-    let validPosition = false
-    let newFood
+  // ─── Game state ─────────────────────────────────────────────────────────────
+  const GRID = 17.5;
+  let cols, rows;
+  let snake, dx, dy, apple;
+  let baseSpeed, speed, score, level, best;
+  let paused, gameOver, started, hueOffset;
+  let powerUps, particles, trail;
+  let frameAcc = 0, lastTime = 0;
 
-    while (!validPosition) {
-      newFood = {
-        x: Math.floor(Math.random() * gridWidth),
-        y: Math.floor(Math.random() * gridHeight),
-      }
+  const HS_KEY = 'snakeHighScores';
+  const MAX_HS = 7;
+  const POWER_DEF = {
+    SPEED:      { color:'cyan',    effect:'speed',      duration:5000, value:2,  pts:5  },
+    GROW:       { color:'magenta', effect:'grow',       duration:3000, value:3,  pts:8  },
+    INVINCIBLE: { color:'yellow',  effect:'invincible', duration:5000, value:0,  pts:10 }
+  };
+  const MAX_TRAIL = .5;  
 
-      // Check if food is not on snake or power-ups
-      validPosition = true
-
-      // Check snake
-      for (const segment of snake) {
-        if (segment.x === newFood.x && segment.y === newFood.y) {
-          validPosition = false
-          break
-        }
-      }
-
-      // Check power-ups
-      if (validPosition) {
-        for (const powerUp of powerUps) {
-          if (powerUp.x === newFood.x && powerUp.y === newFood.y) {
-            validPosition = false
-            break
-          }
-        }
-      }
-    }
-
-    food = newFood
+  // ─── High-score helpers ────────────────────────────────────────────────────
+  function loadHS() {
+    const j = localStorage.getItem(HS_KEY);
+    return j ? JSON.parse(j) : [];
+  }
+  function saveHS(list) {
+    localStorage.setItem(HS_KEY, JSON.stringify(list));
+  }
+  function drawHS() {
+    lstHighScores.innerHTML = loadHS()
+      .map(h => `<li>${h.name}: ${h.score}</li>`)
+      .join('');
+  }
+  function addHS(name,val) {
+    const l = loadHS();
+    l.push({ name, score: val });
+    l.sort((a,b)=>b.score-a.score);
+    saveHS(l.slice(0,MAX_HS));
   }
 
-  // Generate power-up at random position
-  function generatePowerUp() {
-    // Limit number of power-ups on screen
-    if (powerUps.length >= 3) return
-
-    // Random chance to generate power-up (10%)
-    if (Math.random() > 0.1) return
-
-    let validPosition = false
-    let newPowerUp
-
-    while (!validPosition) {
-      newPowerUp = {
-        x: Math.floor(Math.random() * gridWidth),
-        y: Math.floor(Math.random() * gridHeight),
-        type: powerUpTypes[Math.floor(Math.random() * powerUpTypes.length)],
-      }
-
-      // Check if power-up is not on snake, food, or other power-ups
-      validPosition = true
-
-      // Check snake
-      for (const segment of snake) {
-        if (segment.x === newPowerUp.x && segment.y === newPowerUp.y) {
-          validPosition = false
-          break
-        }
-      }
-
-      // Check food
-      if (food.x === newPowerUp.x && food.y === newPowerUp.y) {
-        validPosition = false
-      }
-
-      // Check other power-ups
-      if (validPosition) {
-        for (const powerUp of powerUps) {
-          if (powerUp.x === newPowerUp.x && powerUp.y === newPowerUp.y) {
-            validPosition = false
-            break
-          }
-        }
-      }
+  // ─── Game helpers ──────────────────────────────────────────────────────────
+  function placeApple(){
+    do {
+      apple = {
+        x: Math.floor(Math.random()*cols),
+        y: Math.floor(Math.random()*rows)
+      };
+    } while (
+      snake.some(s=>s.x===apple.x&&s.y===apple.y) ||
+      powerUps.some(p=>p.x===apple.x&&p.y===apple.y)
+    );
+  }
+  function createPU(){
+    const types = Object.keys(POWER_DEF);
+    const t     = types[Math.floor(Math.random()*types.length)];
+    const d     = POWER_DEF[t];
+    powerUps.push({
+      x: Math.floor(Math.random()*cols),
+      y: Math.floor(Math.random()*rows),
+      type: t,
+      color: d.color,
+      duration: d.duration,
+      start: Date.now()
+    });
+  }
+  function createParticle(x,y,color){
+    particles.push({
+      x: x*GRID + GRID/2,
+      y: y*GRID + GRID/2,
+      size: Math.random()*3 + 1,  // smaller
+      vx: (Math.random()-0.5)*2,
+      vy: (Math.random()-0.5)*2,
+      color,
+      alpha: 1
+    });
+  }
+  function updateParticles(){
+    for(let i=particles.length-1;i>=0;i--){
+      const p = particles[i];
+      p.x+=p.vx; p.y+=p.vy; p.alpha-=0.02;
+      if(p.alpha<=0) particles.splice(i,1);
     }
-
-    // Add expiration time for power-ups
-    newPowerUp.expires = performance.now() + 10000 // 10 seconds
-
-    powerUps.push(newPowerUp)
+  }
+  function applyPU(pu){
+    const d = POWER_DEF[pu.type];
+    // award points
+    score += d.pts;
+    ui.score.textContent = `Score: ${score}`;
+    if(score > best){
+      best = score;
+      ui.best.textContent = `Best: ${best}`;
+    }
+    switch(d.effect){
+      case 'speed':
+        speed = baseSpeed*1.5;
+        createParticle(snake[0].x, snake[0].y, d.color);
+        break;
+      case 'grow':
+        for(let i=0;i<d.value;i++){
+          const tail = snake[snake.length-1];
+          snake.push({ x: tail.x, y: tail.y });
+        }
+        createParticle(snake[0].x, snake[0].y, d.color);
+        break;
+      case 'invincible':
+        snake.invincible = true;
+        setTimeout(()=>snake.invincible = false, d.duration);
+        createParticle(snake[0].x, snake[0].y, d.color);
+        break;
+    }
   }
 
-  // Game loop with requestAnimationFrame for smoother animation
-  function gameLoop(timestamp) {
-    // Calculate time delta
-    const elapsed = timestamp - lastUpdateTime
+  // ─── Update & draw ─────────────────────────────────────────────────────────
+  function update(dt){
+    if(!started||paused||gameOver) return;
+    frameAcc += dt;
+    if(frameAcc < 1000/speed) return;
+    frameAcc = 0;
 
-    // Update game state at fixed intervals
-    if (elapsed > updateInterval) {
-      lastUpdateTime = timestamp
-      gameStep()
-    }
+    powerUps = powerUps.filter(pu => Date.now() - pu.start < pu.duration);
+    if(Math.random() < 0.01) createPU();
 
-    // Draw game every frame for smooth animation
-    drawGame()
+    const head = { x: snake[0].x + dx, y: snake[0].y + dy };
+    snake.unshift(head);
 
-    // Continue loop
-    animationFrameId = requestAnimationFrame(gameLoop)
-  }
+    trail.unshift({ x: head.x, y: head.y, t: Date.now() });
+    if(trail.length > MAX_TRAIL) trail.pop();
 
-  // Game step - move snake and check collisions
-  function gameStep() {
-    if (isPaused) return
-
-    // Move snake
-    const head = { ...snake[0] }
-
-    // Update direction
-    direction = nextDirection
-
-    // Move head based on direction
-    switch (direction) {
-      case "up":
-        head.y--
-        break
-      case "down":
-        head.y++
-        break
-      case "left":
-        head.x--
-        break
-      case "right":
-        head.x++
-        break
-    }
-
-    // Check wall collision (wrap around)
-    if (head.x < 0) head.x = gridWidth - 1
-    if (head.x >= gridWidth) head.x = 0
-    if (head.y < 0) head.y = gridHeight - 1
-    if (head.y >= gridHeight) head.y = 0
-
-    // Check self collision
-    for (const segment of snake) {
-      if (head.x === segment.x && head.y === segment.y) {
-        gameOver()
-        return
+    powerUps.forEach((pu,i)=>{
+      if(head.x===pu.x&&head.y===pu.y){
+        playSFX(powerBuf);
+        applyPU(pu);
+        powerUps.splice(i,1);
       }
-    }
+    });
 
-    // Add new head
-    snake.unshift(head)
-
-    // Check food collision
-    if (head.x === food.x && head.y === food.y) {
-      // Eat food
-      score += 10
-
-      // Play eat sound
-      if (!isMuted) {
-        eatSound.currentTime = 0
-        eatSound.play().catch((e) => console.log("Audio play prevented:", e))
+    if(head.x===apple.x&&head.y===apple.y){
+      playSFX(eatBuf);
+      score += 10;
+      ui.score.textContent = `Score: ${score}`;
+      if(score > best){
+        best = score;
+        ui.best.textContent = `Best: ${best}`;
       }
-
-      // Generate new food
-      generateFood()
-
-      // Chance to generate power-up
-      generatePowerUp()
-
-      // Level up every 50 points
-      if (score % 50 === 0) {
-        level++
-        updateInterval = Math.max(50, 150 - (level - 1) * 10)
-
-        // Announce level up to screen readers
-        announceToScreenReader(`Level up! Level ${level}.`)
+      for(let i=0;i<8;i++) createParticle(apple.x, apple.y, 'magenta');
+      if(score % 50 === 0){
+        level++;
+        ui.level.textContent = `Level: ${level}`;
+        for(let i=0;i<8;i++) createParticle(head.x, head.y, 'cyan');
       }
-
-      // Update displays
-      updateDisplays()
+      placeApple();
     } else {
-      // Remove tail if not eating
-      snake.pop()
+      snake.pop();
     }
 
-    // Check power-up collisions
-    checkPowerUpCollisions(head)
-
-    // Clean up expired power-ups
-    cleanupPowerUps()
-  }
-
-  // Check for power-up collisions
-  function checkPowerUpCollisions(head) {
-    for (let i = powerUps.length - 1; i >= 0; i--) {
-      const powerUp = powerUps[i]
-      if (head.x === powerUp.x && head.y === powerUp.y) {
-        // Apply power-up effect
-        powerUp.type.effect()
-
-        // Play power-up sound
-        if (!isMuted) {
-          eatSound.currentTime = 0
-          eatSound.play().catch((e) => console.log("Audio play prevented:", e))
-        }
-
-        // Remove power-up
-        powerUps.splice(i, 1)
-
-        // Announce power-up to screen readers
-        announceToScreenReader(`Power up! ${powerUp.type.type}.`)
+    if(!snake.invincible){
+      if(head.x<0||head.y<0||head.x>=cols||head.y>=rows||
+         snake.slice(1).some(s=>s.x===head.x&&s.y===head.y)){
+        gameOver = true;
+        ui.status.textContent = 'Game Over';
+        elFinalScore.textContent = `Your score: ${score}`;
+        gameOverOvl.classList.remove('hidden');
+        music.pause(); music.currentTime=0;
+        for(let i=0;i<20;i++) createParticle(head.x, head.y, 'red');
       }
     }
   }
 
-  // Clean up expired power-ups
-  function cleanupPowerUps() {
-    const now = performance.now()
-    for (let i = powerUps.length - 1; i >= 0; i--) {
-      if (powerUps[i].expires < now) {
-        powerUps.splice(i, 1)
+  function draw(){
+    if(!started) return;
+    drawStars();
+
+    // trails (more subtle)
+    const S = GRID-2, O = 1;
+    trail.forEach((pt, idx)=>{
+      const age = Date.now() - pt.t;
+      const a   = Math.max(0,1 - age/1000)*0.2;  // half the intensity
+      ctx.fillStyle = `hsla(${(hueOffset+idx*20)%360},100%,50%,${a})`;
+      ctx.fillRect(pt.x*GRID+O, pt.y*GRID+O, S, S);
+    });
+
+    // power-ups
+    powerUps.forEach(pu=>{
+      ctx.fillStyle = pu.color;
+      ctx.fillRect(pu.x*GRID+1, pu.y*GRID+1, GRID-2, GRID-2);
+      ctx.fillStyle = 'black';
+      ctx.font = '10px Press Start 2P';
+      ctx.fillText(pu.type[0], pu.x*GRID+3, pu.y*GRID+14);
+    });
+
+    // apple (smaller)
+    const pulse = Math.sin(Date.now()/300)*6;
+    ctx.fillStyle = `hsl(300,100%,${50+pulse}%)`;
+    ctx.fillRect(apple.x*GRID+3, apple.y*GRID+3, GRID-6, GRID-6);
+
+    // snake (smaller)
+    snake.forEach((seg,i)=>{
+      const hue = (hueOffset + i*10 + level*20)%360;
+      ctx.fillStyle = `hsl(${hue},100%,50%)`;
+      ctx.fillRect(seg.x*GRID+3, seg.y*GRID+3, GRID-6, GRID-6);
+    });
+
+    // particles
+    particles.forEach(p=>{
+      ctx.globalAlpha = p.alpha;
+      ctx.fillStyle   = p.color;
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.size,0,2*Math.PI);
+      ctx.fill();
+    });
+    ctx.globalAlpha = 1;
+
+    hueOffset = (hueOffset + 1 + level)%360;
+  }
+
+  function loop(ts){
+    if(!lastTime) lastTime = ts;
+    const dt = ts - lastTime;
+    lastTime = ts;
+    update(dt);
+    draw();
+    updateParticles();
+    requestAnimationFrame(loop);
+  }
+
+  // ─── Controls/UI ───────────────────────────────────────────────────────────
+  function resetGame(){
+    music.pause(); music.currentTime=0;
+    cols = Math.floor(canvas.width/GRID);
+    rows = Math.floor(canvas.height/GRID);
+    snake = [{ x: Math.floor(cols/2), y: Math.floor(rows/2) }];
+    dx=1; dy=0;
+    baseSpeed=5; speed=baseSpeed;
+    score=0; level=1;
+    paused=false; gameOver=false; started=false;
+    hueOffset=0;
+    powerUps=[]; particles=[]; trail=[];
+    ui.score.textContent='Score: 0';
+    ui.level.textContent='Level: 1';
+    best = (loadHS()[0]||{score:0}).score;
+    ui.best.textContent=`Best: ${best}`;
+    ui.status.textContent='Running';
+    startOvl.classList.remove('hidden');
+    gameOverOvl.classList.add('hidden');
+    drawHS();
+    placeApple();
+  }
+
+  btnPlay.addEventListener('click', ()=>{
+    audioCtx.resume();
+    started=true;
+    startOvl.classList.add('hidden');
+    music.play().catch(()=>{});
+    requestAnimationFrame(loop);
+  });
+
+  btnSubmit.addEventListener('click', ()=>{
+    const n = inpName.value.trim()||'ANON';
+    addHS(n,score); drawHS();
+    btnSubmit.disabled=true; inpName.disabled=true;
+  });
+
+  btnAgain.addEventListener('click', ()=>{
+    resetGame();
+    btnSubmit.disabled=false; inpName.disabled=false; inpName.value='';
+    music.pause(); music.currentTime=0;
+    btnPlay.click();
+  });
+
+  // keyboard
+  window.addEventListener('keydown', e=>{
+    if(!started) return;
+    if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key)) e.preventDefault();
+    if(e.key===' '){
+      paused = !paused;
+      ui.status.textContent = paused?'Paused':'Running';
+      paused ? music.pause() : music.play().catch(()=>{});
+      return;
+    }
+    if(paused||gameOver) return;
+    switch(e.key){
+      case 'ArrowUp':    if(dy===0){dx=0;dy=-1;} break;
+      case 'ArrowDown':  if(dy===0){dx=0;dy=1;}  break;
+      case 'ArrowLeft':  if(dx===0){dx=-1;dy=0;} break;
+      case 'ArrowRight': if(dx===0){dx=1;dy=0;}  break;
+    }
+    if(e.key.startsWith('Arrow')) speed = baseSpeed*2;
+  });
+  window.addEventListener('keyup', e=>{
+    if(e.key.startsWith('Arrow')) speed = baseSpeed;
+  });
+
+  // joystick
+  let joyId=null, joyR=50;
+  joystickBase.addEventListener('touchstart', e=>{
+    e.preventDefault();
+    const t = e.changedTouches[0];
+    joyId = t.identifier;
+    joystickBase.classList.add('active');
+  });
+  joystickBase.addEventListener('touchmove', e=>{
+    e.preventDefault();
+    for(const t of e.changedTouches){
+      if(t.identifier!==joyId) continue;
+      const r = joystickBase.getBoundingClientRect();
+      const cx = r.left + r.width/2, cy = r.top + r.height/2;
+      let dxT = t.clientX - cx, dyT = t.clientY - cy;
+      const d = Math.hypot(dxT,dyT);
+      if(d>joyR){ dxT = dxT/d*joyR; dyT = dyT/d*joyR; }
+      joystickStick.style.transform = `translate(${dxT}px,${dyT}px)`;
+      if(d>joyR*0.3){
+        if(Math.abs(dxT)>Math.abs(dyT)){ dx = dxT>0?1:-1; dy=0; }
+        else { dx=0; dy=dyT>0?1:-1; }
       }
+      speed = baseSpeed*2;
+      break;
     }
-  }
-
-  // Draw game elements with optimized rendering
-  function drawGame() {
-    // Clear canvas
-    ctx.fillStyle = "black"
-    ctx.fillRect(0, 0, canvas.width, canvas.height)
-
-    // Draw grid (faint lines)
-    ctx.strokeStyle = "rgba(0, 240, 255, 0.1)"
-    ctx.lineWidth = 0.5
-
-    // Optimize grid drawing by reducing number of lines
-    for (let x = 0; x < gridWidth; x += 2) {
-      ctx.beginPath()
-      ctx.moveTo(x * gridSize, 0)
-      ctx.lineTo(x * gridSize, canvas.height)
-      ctx.stroke()
+  });
+  joystickBase.addEventListener('touchend', e=>{
+    for(const t of e.changedTouches){
+      if(t.identifier!==joyId) continue;
+      joyId = null;
+      joystickBase.classList.remove('active');
+      joystickStick.style.transform = 'translate(-50%,-50%)';
+      speed = baseSpeed;
+      break;
     }
-
-    for (let y = 0; y < gridHeight; y += 2) {
-      ctx.beginPath()
-      ctx.moveTo(0, y * gridSize)
-      ctx.lineTo(canvas.width, canvas.height)
-      ctx.stroke()
-    }
-
-    // Draw food with gradient for better appearance
-    const gradient = ctx.createRadialGradient(
-      food.x * gridSize + gridSize / 2,
-      food.y * gridSize + gridSize / 2,
-      0,
-      food.x * gridSize + gridSize / 2,
-      food.y * gridSize + gridSize / 2,
-      gridSize / 2,
-    )
-    gradient.addColorStop(0, "#f3a1ff") // Neon pink
-    gradient.addColorStop(1, "#a9a1ff") // Neon purple
-
-    ctx.fillStyle = gradient
-    ctx.beginPath()
-    ctx.arc(food.x * gridSize + gridSize / 2, food.y * gridSize + gridSize / 2, gridSize / 2, 0, Math.PI * 2)
-    ctx.fill()
-
-    // Draw power-ups
-    powerUps.forEach((powerUp) => {
-      // Pulsating effect
-      const pulseScale = 0.8 + 0.2 * Math.sin(performance.now() / 200)
-      const size = (gridSize / 2) * pulseScale
-
-      ctx.fillStyle = powerUp.type.color
-      ctx.beginPath()
-      ctx.moveTo(powerUp.x * gridSize + gridSize / 2, powerUp.y * gridSize + gridSize / 2 - size)
-
-      // Draw star shape
-      for (let i = 0; i < 5; i++) {
-        const angle = (Math.PI * 2 * i) / 5 - Math.PI / 2
-        const nextAngle = (Math.PI * 2 * (i + 0.5)) / 5 - Math.PI / 2
-
-        const outerX = powerUp.x * gridSize + gridSize / 2 + Math.cos(angle) * size
-        const outerY = powerUp.y * gridSize + gridSize / 2 + Math.sin(angle) * size
-
-        const innerX = powerUp.x * gridSize + gridSize / 2 + Math.cos(nextAngle) * (size / 2)
-        const innerY = powerUp.y * gridSize + gridSize / 2 + Math.sin(nextAngle) * (size / 2)
-
-        ctx.lineTo(outerX, outerY)
-        ctx.lineTo(innerX, innerY)
-      }
-
-      ctx.closePath()
-      ctx.fill()
-
-      // Add glow effect
-      ctx.shadowColor = powerUp.type.color
-      ctx.shadowBlur = 10
-      ctx.fill()
-      ctx.shadowBlur = 0
-    })
-
-    // Draw snake with optimized rendering
-    // Use a single path for the snake body for better performance
-    ctx.beginPath()
-    snake.forEach((segment, index) => {
-      // Head is cyan, body is gradient from cyan to green
-      const progress = index / snake.length
-      const color =
-        index === 0
-          ? "#00f0ff" // Cyan for head
-          : `rgb(${Math.floor(0 + progress * 0)}, ${Math.floor(240 - progress * 140)}, ${Math.floor(255 - progress * 153)})`
-
-      ctx.fillStyle = color
-      ctx.fillRect(segment.x * gridSize, segment.y * gridSize, gridSize, gridSize)
-
-      // Add glow effect only to head for better performance
-      if (index === 0) {
-        ctx.shadowColor = color
-        ctx.shadowBlur = 10
-        ctx.fillRect(segment.x * gridSize, segment.y * gridSize, gridSize, gridSize)
-        ctx.shadowBlur = 0
-      }
-
-      // Add eyes to head
-      if (index === 0) {
-        ctx.fillStyle = "black"
-
-        // Position eyes based on direction
-        let leftEyeX, leftEyeY, rightEyeX, rightEyeY
-
-        switch (direction) {
-          case "up":
-            leftEyeX = segment.x * gridSize + gridSize * 0.25
-            leftEyeY = segment.y * gridSize + gridSize * 0.25
-            rightEyeX = segment.x * gridSize + gridSize * 0.75
-            rightEyeY = segment.y * gridSize + gridSize * 0.25
-            break
-          case "down":
-            leftEyeX = segment.x * gridSize + gridSize * 0.25
-            leftEyeY = segment.y * gridSize + gridSize * 0.75
-            rightEyeX = segment.x * gridSize + gridSize * 0.75
-            rightEyeY = segment.y * gridSize + gridSize * 0.75
-            break
-          case "left":
-            leftEyeX = segment.x * gridSize + gridSize * 0.25
-            leftEyeY = segment.y * gridSize + gridSize * 0.25
-            rightEyeX = segment.x * gridSize + gridSize * 0.25
-            rightEyeY = segment.y * gridSize + gridSize * 0.75
-            break
-          case "right":
-            leftEyeX = segment.x * gridSize + gridSize * 0.75
-            leftEyeY = segment.y * gridSize + gridSize * 0.25
-            rightEyeX = segment.x * gridSize + gridSize * 0.75
-            rightEyeY = segment.y * gridSize + gridSize * 0.75
-            break
-        }
-
-        ctx.beginPath()
-        ctx.arc(leftEyeX, leftEyeY, gridSize * 0.1, 0, Math.PI * 2)
-        ctx.fill()
-
-        ctx.beginPath()
-        ctx.arc(rightEyeX, rightEyeY, gridSize * 0.1, 0, Math.PI * 2)
-        ctx.fill()
-      }
-    })
-  }
-
-  // Update score and level displays
-  function updateDisplays() {
-    scoreDisplay.textContent = `Score: ${score}`
-    levelDisplay.textContent = `Level: ${level}`
-    bestDisplay.textContent = `Best: ${Math.max(bestScore, score)}`
-    statusDisplay.textContent = isPaused ? "Paused" : "Running"
-  }
-
-  // Game over
-  function gameOver() {
-    cancelAnimationFrame(animationFrameId)
-
-    // Play game over sound
-    if (!isMuted) {
-      music.pause()
-      gameOverSound.play().catch((e) => console.log("Audio play prevented:", e))
-    }
-
-    // Update best score
-    if (score > bestScore) {
-      bestScore = score
-    }
-
-    // Show game over overlay
-    finalScoreDisplay.textContent = `Your score: ${score}`
-    gameOverOverlay.classList.remove("hidden")
-
-    // Focus name input
-    nameInput.focus()
-
-    // Update high scores list
-    updateHighScoresList()
-
-    // Announce game over to screen readers
-    announceToScreenReader(`Game over. Your score: ${score}.`)
-  }
-
-  // Update high scores list
-  function updateHighScoresList() {
-    highScoresList.innerHTML = ""
-
-    // Sort high scores by score (descending)
-    highScores.sort((a, b) => b.score - a.score)
-
-    // Show top 5 scores
-    const topScores = highScores.slice(0, 5)
-
-    topScores.forEach((entry, index) => {
-      const li = document.createElement("li")
-      li.textContent = `${index + 1}. ${entry.name}: ${entry.score}`
-      highScoresList.appendChild(li)
-    })
-  }
-
-  // Submit high score
-  function submitHighScore() {
-    const name = nameInput.value.trim() || "ANON"
-
-    // Add score to high scores
-    highScores.push({ name, score })
-
-    // Sort and limit to top 10
-    highScores.sort((a, b) => b.score - a.score)
-    highScores = highScores.slice(0, 10)
-
-    // Save to localStorage
-    localStorage.setItem("snakeHighScores", JSON.stringify(highScores))
-
-    // Update display
-    updateHighScoresList()
-
-    // Disable submit button
-    submitScoreButton.disabled = true
-
-    // Announce to screen readers
-    announceToScreenReader(`Score submitted. ${name}: ${score}.`)
-  }
-
-  // Toggle mute
-  function toggleMute() {
-    isMuted = !isMuted
-
-    if (isMuted) {
-      music.pause()
-      muteButton.textContent = "🔇"
-      muteButton.setAttribute("aria-label", "Unmute sound")
-    } else {
-      music.play().catch((e) => console.log("Audio play prevented:", e))
-      muteButton.textContent = "🔊"
-      muteButton.setAttribute("aria-label", "Mute sound")
-    }
-  }
-
-  // Handle keyboard input with improved responsiveness
-  function handleKeydown(e) {
-    // Prevent default
-
-    // Prevent default for arrow keys to avoid scrolling
-    if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space"].includes(e.code)) {
-      e.preventDefault()
-    }
-
-    // Change direction
-    switch (e.code) {
-      case "ArrowUp":
-      case "KeyW":
-        if (direction !== "down") nextDirection = "up"
-        break
-      case "ArrowDown":
-      case "KeyS":
-        if (direction !== "up") nextDirection = "down"
-        break
-      case "ArrowLeft":
-      case "KeyA":
-        if (direction !== "right") nextDirection = "left"
-        break
-      case "ArrowRight":
-      case "KeyD":
-        if (direction !== "left") nextDirection = "right"
-        break
-      case "Space":
-        // Toggle pause
-        isPaused = !isPaused
-        updateDisplays()
-        break
-      case "KeyM":
-        // Toggle mute
-        toggleMute()
-        break
-    }
-  }
-
-  // Mobile joystick handling
-  function setupJoystick() {
-    let isDragging = false
-    const baseRect = joystickBase.getBoundingClientRect()
-    const baseX = baseRect.left + baseRect.width / 2
-    const baseY = baseRect.top + baseRect.height / 2
-    const maxDistance = baseRect.width / 2 - 15
-
-    // Touch start
-    joystickBase.addEventListener("touchstart", (e) => {
-      e.preventDefault()
-      isDragging = true
-      updateJoystickPosition(e.touches[0].clientX, e.touches[0].clientY)
-    })
-
-    // Touch move
-    document.addEventListener("touchmove", (e) => {
-      if (!isDragging) return
-      e.preventDefault()
-      updateJoystickPosition(e.touches[0].clientX, e.touches[0].clientY)
-    })
-
-    // Touch end
-    document.addEventListener("touchend", () => {
-      isDragging = false
-      joystickStick.style.left = "25px"
-      joystickStick.style.top = "25px"
-    })
-
-    function updateJoystickPosition(touchX, touchY) {
-      // Calculate distance from center
-      const dx = touchX - baseX
-      const dy = touchY - baseY
-
-      // Calculate angle
-      const angle = Math.atan2(dy, dx)
-
-      // Calculate distance
-      const distance = Math.min(maxDistance, Math.sqrt(dx * dx + dy * dy))
-
-      // Calculate new position
-      const newX = distance * Math.cos(angle)
-      const newY = distance * Math.sin(angle)
-
-      // Update joystick position
-      joystickStick.style.left = `${25 + newX}px`
-      joystickStick.style.top = `${25 + newY}px`
-
-      // Update direction based on angle
-      if (Math.abs(dx) > Math.abs(dy)) {
-        // Horizontal movement
-        if (dx > 10 && direction !== "left") nextDirection = "right"
-        else if (dx < -10 && direction !== "right") nextDirection = "left"
-      } else {
-        // Vertical movement
-        if (dy > 10 && direction !== "up") nextDirection = "down"
-        else if (dy < -10 && direction !== "down") nextDirection = "up"
-      }
-    }
-  }
-
-  // Announce message to screen readers
-  function announceToScreenReader(message) {
-    const announcementElement = document.createElement("div")
-    announcementElement.setAttribute("aria-live", "assertive")
-    announcementElement.classList.add("sr-only") // Use a CSS class to hide the element
-    announcementElement.textContent = message
-    document.body.appendChild(announcementElement)
-
-    // Remove the element after a short delay
-    setTimeout(() => {
-      document.body.removeChild(announcementElement)
-    }, 1000)
-  }
-
-  // Event listeners
-  window.addEventListener("resize", resizeCanvas)
-  document.addEventListener("keydown", handleKeydown)
-  playButton.addEventListener("click", () => {
-    startOverlay.classList.add("hidden")
-    initGame()
-  })
-  playAgainButton.addEventListener("click", () => {
-    gameOverOverlay.classList.add("hidden")
-    initGame()
-  })
-  submitScoreButton.addEventListener("click", submitHighScore)
-  muteButton.addEventListener("click", toggleMute)
-
-  // Setup mobile joystick
-  setupJoystick()
-
-  // Load high scores
-  updateHighScoresList()
-
-  // Initial draw
-  drawGame()
-
-  // Accessibility - make game playable with keyboard
-  playButton.setAttribute("tabindex", "0")
-  playAgainButton.setAttribute("tabindex", "0")
-  submitScoreButton.setAttribute("tabindex", "0")
-  muteButton.setAttribute("tabindex", "0")
-
-  // Add keyboard event for buttons
-  playButton.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault()
-      playButton.click()
-    }
-  })
-
-  playAgainButton.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault()
-      playAgainButton.click()
-    }
-  })
-
-  submitScoreButton.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault()
-      submitScoreButton.click()
-    }
-  })
-
-  muteButton.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault()
-      muteButton.click()
-    }
-  })
-})
+  });
+
+  // mute
+  btnMute.addEventListener('click', ()=>{
+    music.muted = !music.muted;
+    btnMute.textContent = music.muted?'🔇':'🔊';
+  });
+
+  // init
+  canvas.width  = canvas.clientWidth;
+  canvas.height = canvas.clientHeight;
+  initStars();
+  resetGame();
+});

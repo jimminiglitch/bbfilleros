@@ -38,21 +38,6 @@
   --z-boot: 1000;
 }
 
-/* Custom Cursor */
-body {
-  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%2300f0ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 19 21 12 17 5 21 12 2"></polygon></svg>')
-    12 12, auto;
-}
-
-.window-header,
-button,
-a,
-.desktop-icon,
-.resizer {
-  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%23f3a1ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3L12 7L16 3"></path><path d="M12 7L12 21"></path></svg>')
-    12 12, pointer;
-}
-
 * {
   box-sizing: border-box;
   margin: 0;
@@ -83,7 +68,12 @@ body {
   width: 100vw;
   height: 100vh;
   pointer-events: none;
-  background: repeating-linear-gradient(to bottom, rgba(0, 0, 0, 0) 0px, rgba(0, 0, 0, 0.03) 1px, rgba(0, 0, 0, 0) 2px);
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0px,
+    rgba(0, 0, 0, 0.03) 1px,
+    rgba(0, 0, 0, 0) 2px
+  );
   z-index: 5;
 }
 
@@ -383,32 +373,11 @@ body {
 /*─────────────────────────────────────────────────────────────────────────────
   POPUP WINDOW CHROME
 ─────────────────────────────────────────────────────────────────────────────*/
-/* Popup window layout */
-.popup-window {
-  display: none;
-  flex-direction: column;
-  position: absolute;
-  background: rgba(0, 0, 0, 0.85);
-  color: #fff;
-  border: 2px solid var(--neon-purple);
-  border-radius: 6px;
-  box-shadow: 0 0 20px rgba(169, 161, 255, 0.4);
-  z-index: var(--z-window);
-  width: 80vw;
-  height: 80vh;
-  max-width: 800px;
-  max-height: 600px;
-  overflow: hidden;
-  transition: transform 0.3s ease, opacity 0.3s ease;
-}
 
-.popup-window.active {
-  display: flex;
-}
 
-.popup-window.hidden {
-  display: none;
-}
+
+
+
 
 /* Window animations */
 .window-opening {
@@ -489,86 +458,32 @@ body {
 }
 
 /* Header bar */
-.window-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: linear-gradient(to right, rgba(0, 0, 0, 0.9), rgba(20, 0, 40, 0.9));
-  padding: 0.5rem 1rem;
-  font-family: var(--font-press-start);
-  font-size: 0.9rem;
-  border-bottom: 1px solid var(--neon-purple);
-  user-select: none;
-  cursor: move;
-}
 
-.window-header span {
-  color: var(--neon-cyan);
-  text-shadow: 0 0 5px var(--neon-cyan);
-}
 
-.window-header button {
-  background: rgba(0, 0, 0, 0.5);
-  border: 1px solid var(--neon-purple);
-  color: white;
-  width: 24px;
-  height: 24px;
-  margin-left: 5px;
-  cursor: pointer;
-  font-family: var(--font-vt323);
-  transition: all 0.2s ease;
-}
 
-.window-header button:hover {
-  background: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 0 5px var(--neon-purple);
-}
 
-.window-header .close:hover {
-  background: var(--neon-red);
-  color: white;
-}
+
+
+
+
+
+
+
+
+
 
 /* Content area */
-.window-content {
-  flex: 1;
-  padding: 1rem;
-  overflow: auto;
-  background: rgba(0, 0, 0, 0.7);
-  scrollbar-width: thin;
-  scrollbar-color: var(--neon-purple) rgba(0, 0, 0, 0.3);
-}
 
-.window-content::-webkit-scrollbar {
-  width: 8px;
-}
-
-.window-content::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.3);
-}
-
-.window-content::-webkit-scrollbar-thumb {
-  background-color: var(--neon-purple);
-  border-radius: 4px;
-}
 
 /* Dragging and resizing states */
-.popup-window.dragging {
-  opacity: 0.8;
-  box-shadow: 0 0 30px var(--neon-purple);
-}
 
-.popup-window.resizing {
-  opacity: 0.8;
-  box-shadow: 0 0 30px var(--neon-cyan);
-}
+
+
 
 /* Maximized state */
-.popup-window.maximized {
-  border-radius: 0;
-  max-width: none;
-  max-height: none;
-}
+
+
+
 
 /*─────────────────────────────────────────────────────────────────────────────
   BOOT SCREEN
@@ -605,7 +520,6 @@ body {
 
 .boot-screen .boot-log {
   width: 100%;
-  max-width: 600px;
   height: 200px;
   background: black;
   color: var(--neon-green);
@@ -620,7 +534,6 @@ body {
 
 .boot-screen .progress-container {
   width: 100%;
-  max-width: 600px;
   background: #333333;
   height: 8px;
   border-radius: 4px;
@@ -644,7 +557,11 @@ body {
   left: 0;
   right: 0;
   height: 36px;
-  background: linear-gradient(to right, rgba(0, 0, 0, 0.9), rgba(20, 0, 40, 0.9));
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.9),
+    rgba(20, 0, 40, 0.9)
+  );
   border-top: 2px solid var(--neon-purple);
   box-shadow: 0 -2px 12px var(--neon-purple);
   display: flex;
@@ -697,7 +614,7 @@ body {
     text-shadow: 0 0 10px var(--neon-cyan);
   }
   100% {
-    color: white;
+    color: ;
     text-shadow: none;
   }
 }
@@ -820,14 +737,16 @@ body {
 /*─────────────────────────────────────────────────────────────────────────────
   MAKE EMBEDDED IFRAMES FILL THEIR POPUP WINDOWS
 ─────────────────────────────────────────────────────────────────────────────*/
-/* Iframe containers */
-.popup-window .window-content iframe {
-  width: 100%;
-  height: 100%;
-  border: none;
-  display: block;
-  background: black;
-}
+
+
+/* your existing header stays its normal height… */
+
+
+/* …and the content area fills the rest of the window: */
+
+
+/* now the iframe itself also stretches perfectly: */
+
 
 /*─────────────────────────────────────────────────────────────────────────────
    Only override the RESUME & CONTACT embeds
@@ -845,6 +764,13 @@ body {
   display: block;
 }
 
+/*─────────────────────────────────────────────────────────────────────────────
+  2) Force the content area (and its iframe) to stretch & scroll if needed
+─────────────────────────────────────────────────────────────────────────────*/
+
+
+
+
 /*───────────────────────────────────────────────────────────
   Nature.EXE gallery sizing
 ────────────────────────────────────────────────────────────*/
@@ -853,30 +779,26 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
-  position: relative;
 }
 
 #nature .window-content img {
-  position: absolute;
+  /* never grow beyond its container */
   max-width: 100%;
   max-height: calc(100% - 40px); /* leave room for the buttons below */
   object-fit: contain;
-  transition: opacity 0.5s ease, transform 0.3s ease;
 }
 
 /*───────────────────────────────────────────────────────────
-  GENERIC GALLERY CONTROLS
+  GENERIC GALLERY CONSTRAINTS (Nature + Artwork)
 ────────────────────────────────────────────────────────────*/
+
+
+
+
 .gallery-controls {
-  position: absolute;
-  bottom: 10px;
-  left: 0;
-  right: 0;
   margin-top: 0.5rem;
   display: flex;
   justify-content: center;
-  z-index: 5;
 }
 
 .gallery-controls button {
@@ -895,11 +817,7 @@ body {
   box-shadow: 0 0 10px var(--neon-cyan);
 }
 
-/* Special content styling */
-.toader-comingsoon,
-.TIGERRR,
-.OCTAVIA,
-.MILES {
+.toader-comingsoon {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -912,7 +830,8 @@ body {
   font-family: "Press Start 2P", monospace;
   font-size: 1.5rem;
   color: #f3a1ff;
-  text-shadow: 0 0 5px #ff00ff, 0 0 10px #00f0ff, 0 0 15px #fffc00, 0 0 20px #00ff66;
+  text-shadow: 0 0 5px #ff00ff, 0 0 10px #00f0ff, 0 0 15px #fffc00,
+    0 0 20px #00ff66;
   animation: pulse-glow 1.8s infinite ease-in-out;
   margin-top: 1rem;
 }
@@ -920,11 +839,13 @@ body {
 @keyframes pulse-glow {
   0%,
   100% {
-    text-shadow: 0 0 5px #ff00ff, 0 0 10px #00f0ff, 0 0 15px #fffc00, 0 0 20px #00ff66;
+    text-shadow: 0 0 5px #ff00ff, 0 0 10px #00f0ff, 0 0 15px #fffc00,
+      0 0 20px #00ff66;
     transform: scale(1);
   }
   50% {
-    text-shadow: 0 0 10px #ff00ff, 0 0 20px #00f0ff, 0 0 25px #fffc00, 0 0 30px #00ff66;
+    text-shadow: 0 0 10px #ff00ff, 0 0 20px #00f0ff, 0 0 25px #fffc00,
+      0 0 30px #00ff66;
     transform: scale(1.05);
   }
 }
@@ -944,7 +865,28 @@ body {
 }
 
 .single-art img:hover {
-  transform: scale(1.05);
+  transform: scale(flex);
+}
+
+
+
+.single-art img,
+#nature .window-content img {
+  transition: opacity 0.5s ease, transform 0.3s ease;
+}
+
+/* nature gallery container styling */
+#nature .window-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+
+#nature .window-content img {
+  position: absolute;
+  transition: opacity 0.5s ease, transform 0.3s ease;
 }
 
 /* Window resizers */
@@ -1017,61 +959,120 @@ body {
 }
 
 /* Music player styling */
-#music .window-content {
+.music-player-interface {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, #000022, #000000);
   display: flex;
   flex-direction: column;
   padding: 1rem;
 }
 
-#now-playing {
+.music-visualizer {
+  width: 100%;
+  height: 150px;
+  background: #000;
+  margin-bottom: 1rem;
+  border: 1px solid var(--neon-purple);
+}
+
+.now-playing {
   text-align: center;
   margin-bottom: 1rem;
   color: var(--neon-cyan);
-  font-size: 1.2rem;
 }
 
-.music-controls {
+.now-playing-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 0.25rem;
+  color: var(--neon-pink);
+}
+
+.now-playing-artist {
+  font-size: 1rem;
+  color: var(--neon-cyan);
+}
+
+.player-controls {
   display: flex;
   justify-content: center;
-  margin: 1rem 0;
+  margin-bottom: 1rem;
 }
 
-.music-controls button {
-  background: rgba(0, 0, 0, 0.5);
+.player-button {
+  background: transparent;
   border: 1px solid var(--neon-purple);
   color: var(--neon-yellow);
+  font-size: 1.5rem;
   padding: 0.5rem 1rem;
   margin: 0 0.5rem;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
-.music-controls button:hover {
+.player-button:hover {
   background: rgba(255, 255, 255, 0.1);
   box-shadow: 0 0 10px var(--neon-purple);
 }
 
-#playlist {
-  list-style: none;
-  margin-top: 1rem;
-  overflow-y: auto;
-  flex: 1;
+.progress-container {
+  width: 100%;
+  height: 5px;
+  background: #333;
+  margin-bottom: 1rem;
+  cursor: pointer;
 }
 
-#playlist li {
+.progress-bar {
+  height: 100%;
+  background: var(--neon-cyan);
+  width: 0;
+}
+
+.playlist {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.track-item {
+  display: flex;
+  align-items: center;
   padding: 0.5rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   cursor: pointer;
   transition: background 0.2s ease;
 }
 
-#playlist li:hover {
+.track-item:hover {
   background: rgba(255, 255, 255, 0.1);
 }
 
-#playlist li.active {
+.track-item.active {
   background: rgba(0, 240, 255, 0.2);
+}
+
+.track-number {
+  width: 30px;
+  color: var(--neon-yellow);
+}
+
+.track-info {
+  flex: 1;
+}
+
+.track-title {
+  color: var(--neon-pink);
+  margin-bottom: 0.25rem;
+}
+
+.track-artist {
   color: var(--neon-cyan);
+  font-size: 0.9rem;
+}
+
+.track-duration {
+  color: var(--neon-green);
 }
 
 /* Mobile-friendly improvements */
@@ -1082,10 +1083,7 @@ body {
     --font-size-3xl: 2.2rem;
   }
 
-  .popup-window {
-    width: 90vw;
-    height: 80vh;
-  }
+  
 }
 
 @media (max-width: 768px) {
@@ -1114,16 +1112,7 @@ body {
     padding: 1rem 0;
   }
 
-  .popup-window {
-    width: 95vw;
-    height: calc(100vh - 50px);
-    max-width: none;
-    max-height: none;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 36px !important;
-  }
+  
 
   #start-menu {
     font-size: 0.7rem;
@@ -1178,15 +1167,11 @@ body {
     font-size: 0.6rem;
   }
 
-  .window-header {
-    padding: 0.3rem 0.6rem;
-  }
+  
 
-  .window-header button {
-    width: 20px;
-    height: 20px;
-    font-size: 0.7rem;
-  }
+  
+
+  
 
   #start-menu a {
     padding: 0.3rem 0.6rem;
@@ -1201,250 +1186,124 @@ body {
     font-size: 0.6rem;
   }
 }
+/* target any image inside a popup’s content area */
 
-/* Text selection color */
-::selection {
-  background: var(--neon-purple);
-  color: black;
+/* ─── Window Base Style ───────────────────────────────────────────── */
+
+
+/* ─── On Open ─────────────────────────────────────────────────────── */
+
+
+/* ─── When Active (Focused) ───────────────────────────────────────── */
+
+
+/* ─── Minimized (Hidden) ──────────────────────────────────────────── */
+
+
+/* ─── MOBILE FRIENDLY WINDOW HANDLING ───────────────────────────── */
+@media screen and (max-width: 768px) {
+  
+
+  .window-header button {
+    font-size: var(--font-size-base);
+    padding: var(--spacing-xs);
+  }
+
+  .desktop-icon {
+    display: none; /* Hide icons on small screens if layout is too crowded */
+  }
+
+  .scanlines {
+    opacity: 0.2;
+  }
 }
-
-/* Add these styles to your style.css file */
-
-/* Theme Toggle Button */
-.theme-toggle {
+.boot-screen {
   position: fixed;
-  top: 10px;
-  right: 10px;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: rgba(0, 0, 0, 0.7);
-  border: 2px solid var(--neon-cyan);
-  color: var(--neon-cyan);
-  font-size: 1.2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  z-index: 1000;
-  transition: all 0.3s ease;
-  box-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
-}
-
-.theme-toggle:hover {
-  transform: scale(1.1);
-  box-shadow: 0 0 15px var(--neon-cyan);
-}
-
-/* Theme Transition */
-.theme-transition {
-  transition: background-color 0.5s ease, color 0.5s ease;
-}
-
-/* Light Mode Styles */
-.light-mode {
-  background: #f0f0f0;
-  color: #333;
-}
-
-.light-mode .scanlines {
-  opacity: 0.1;
-}
-
-.light-mode .popup-window {
-  background: rgba(240, 240, 240, 0.9);
-  color: #333;
-  border-color: #6a5acd;
-  box-shadow: 0 0 20px rgba(106, 90, 205, 0.4);
-}
-
-.light-mode .window-header {
-  background: linear-gradient(to right, #e0e0e0, #d0d0e0);
-  border-bottom: 1px solid #6a5acd;
-}
-
-.light-mode .window-header span {
-  color: #6a5acd;
-  text-shadow: none;
-}
-
-.light-mode .window-content {
-  background: rgba(240, 240, 240, 0.9);
-}
-
-.light-mode .desktop-icon span {
-  color: #333;
-  text-shadow: 0 0 4px rgba(255, 255, 255, 0.7);
-}
-
-.light-mode #start-bar {
-  background: linear-gradient(to right, #e0e0e0, #d0d0e0);
-  border-top: 2px solid #6a5acd;
-  box-shadow: 0 -2px 12px #6a5acd;
-}
-
-.light-mode #start-button {
-  border-color: #6a5acd;
-  color: #6a5acd;
-  box-shadow: 0 0 8px #6a5acd;
-}
-
-.light-mode #start-button:hover {
-  background: #6a5acd;
-  color: white;
-}
-
-.light-mode #start-menu {
-  background: rgba(240, 240, 240, 0.9);
-  border-color: #6a5acd;
-}
-
-.light-mode #start-menu a {
-  color: #6a5acd;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-}
-
-.light-mode #start-menu a:hover {
-  background: rgba(0, 0, 0, 0.1);
-  color: #333;
-}
-
-.light-mode #clock {
-  color: #333;
-}
-
-.light-mode .taskbar-icon {
-  background: rgba(240, 240, 240, 0.5);
-  border-color: #6a5acd;
-  color: #6a5acd;
-}
-
-.light-mode .glitch {
-  color: #6a5acd;
-}
-
-.light-mode .glitch::before {
-  color: #ff69b4;
-}
-
-.light-mode .glitch::after {
-  color: #9370db;
-}
-
-/* Add these styles to your style.css file */
-
-/* Preloader */
-.preloader {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
   background: black;
+  color: var(--neon-green);
+  font-family: var(--font-vt323);
   display: flex;
+  align-items: center;
   justify-content: center;
-  align-items: center;
-  z-index: 9999;
-  transition: opacity 0.5s ease, visibility 0.5s ease;
+  z-index: var(--z-boot);
+  animation: bootFadeOut 3s ease 2s forwards;
 }
 
-.loader {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.boot-text {
+  font-size: var(--font-size-base);
+  white-space: pre;
+  padding: var(--spacing-md);
 }
 
-.spinner {
-  width: 60px;
-  height: 60px;
-  border: 4px solid transparent;
-  border-top-color: var(--neon-cyan);
-  border-right-color: var(--neon-pink);
-  border-bottom-color: var(--neon-green);
-  border-left-color: var(--neon-purple);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-.loading-text {
-  margin-top: 20px;
-  font-family: var(--font-press-start);
-  color: var(--neon-cyan);
-  font-size: 1rem;
-  letter-spacing: 2px;
-}
-
-.dots {
-  animation: dots 1.5s infinite;
-}
-
-@keyframes spin {
+@keyframes bootFadeOut {
   to {
-    transform: rotate(360deg);
+    opacity: 0;
+    visibility: hidden;
   }
 }
 
-@keyframes dots {
-  0%,
-  20% {
-    content: ".";
+
+
+/* ─── Maximize Style ───────────────────────────────────────────── */
+
+
+/* ─── Mobile Window Handling ───────────────────────────────────── */
+@media screen and (max-width: 768px) {
+  
+
+  .window-header button {
+    font-size: var(--font-size-base);
+    padding: var(--spacing-xs);
   }
-  40% {
-    content: "..";
+
+  .desktop-icon {
+    display: none;
   }
-  60%,
-  100% {
-    content: "...";
+
+  .scanlines {
+    opacity: 0.2;
   }
 }
 
-/* Light mode for preloader */
-.light-mode .preloader {
-  background: #f0f0f0;
-}
-
-.light-mode .loading-text {
-  color: #6a5acd;
-}
-
-/* Add these styles to your style.css file */
-
-/* Focus styles for better accessibility */
-:focus {
-  outline: 2px solid var(--neon-cyan);
-  outline-offset: 2px;
-}
-
-.light-mode :focus {
-  outline-color: #6a5acd;
-}
-
-.desktop-icon:focus img {
-  transform: scale(1.1);
-  filter: drop-shadow(0 0 8px var(--neon-cyan));
-}
-
-.light-mode .desktop-icon:focus img {
-  filter: drop-shadow(0 0 8px #6a5acd);
-}
-
-/* Skip to content link for keyboard users */
-.skip-link {
+/* Optimized popup window layout */
+.popup-window {
+  display: none;
+  flex-direction: column;
   position: absolute;
-  top: -40px;
-  left: 0;
-  background: var(--neon-cyan);
-  color: black;
-  padding: 8px;
-  z-index: 9999;
-  transition: top 0.3s;
+  background: #000;
+  color: #fff;
+  border: 2px solid #fff;
+  border-radius: 6px;
+  box-shadow: 0 0 20px rgba(255,255,255,0.25);
+  z-index: 100;
+  width: 80vw;
+  height: 80vh;
+  overflow: hidden;
 }
 
-.skip-link:focus {
-  top: 0;
+.popup-window.active {
+  display: flex;
 }
 
-.light-mode .skip-link {
-  background: #6a5acd;
-  color: white;
+.popup-window.hidden {
+  display: none;
+}
+
+.popup-window .window-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #111;
+  padding: 0.5rem 1rem;
+  font-family: var(--font-press-start);
+  font-size: 0.9rem;
+  border-bottom: 1px solid #fff;
+}
+
+.popup-window .window-content {
+  flex: 1;
+  padding: 0;
+  overflow: auto;
 }
