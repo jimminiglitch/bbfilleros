@@ -85,6 +85,7 @@ function initWindowControls() {
       if (e.target.tagName !== "BUTTON") {
         toggleMaximizeWindow(id)
       }
+      
     })
 
     // Resizing logic
