@@ -164,6 +164,7 @@ function getNextZIndex() {
 
 
 function openWindow(id) {
+  createTaskbarIcon(id);
   const win = document.getElementById(id);
   if (!win) return;
 
@@ -182,6 +183,7 @@ function openWindow(id) {
     }
   });
 
+  win.classList.remove("hidden");
   win.classList.remove("hidden");
   win.classList.add("active");
   win.style.display = "flex";
