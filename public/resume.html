@@ -6,9 +6,83 @@
   <title>Benjamin Filler - Résumé</title>
   <link rel="stylesheet" href="/resume.css" />
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+  
+  <style>
+    /* Add theme support directly in the file */
+    .light-mode {
+      background: #f0f0f0 !important;
+      color: #333 !important;
+    }
+    
+    .light-mode .container {
+      background: rgba(240, 240, 240, 0.9);
+      border-color: #6a5acd;
+      box-shadow: 0 0 10px #9370db;
+    }
+    
+    .light-mode h1 {
+      color: #6a5acd;
+    }
+    
+    .light-mode .section h2 {
+      color: #9370db;
+    }
+    
+    .light-mode .section p,
+    .light-mode .section li {
+      color: #333;
+    }
+    
+    .light-mode .neon-label {
+      color: #9370db;
+    }
+    
+    .light-mode a {
+      color: #6a5acd;
+    }
+    
+    .light-mode .btn {
+      background: #6a5acd;
+      color: white;
+      border-color: #4b0082;
+    }
+    
+    .light-mode .skip-link {
+      background: #6a5acd;
+      color: white;
+    }
+    
+    /* Skip link for keyboard users */
+    .skip-link {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      background: #00f0ff;
+      color: black;
+      padding: 8px;
+      z-index: 9999;
+      transition: top 0.3s;
+    }
+
+    .skip-link:focus {
+      top: 0;
+    }
+    
+    /* Focus styles */
+    a:focus {
+      outline: 2px solid #00f0ff;
+      outline-offset: 2px;
+    }
+    
+    .light-mode a:focus {
+      outline-color: #6a5acd;
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
+  <a href="#resume-content" class="skip-link">Skip to content</a>
+  
+  <div id="resume-content" class="container" role="main">
     <div class="top-bar">
       <a
         href="https://cdn.glitch.global/0ade3230-a4bb-4d2d-98fc-5cab2591127c/Benjamin%20Filler%20Resume%202025.pdf?v=1744722722267"
@@ -16,6 +90,7 @@
         target="_blank"
         rel="noopener noreferrer"
         style="font-size: 1rem"
+        aria-label="Download resume as PDF"
       >&#x2B07; Download PDF</a>
     </div>
 
@@ -57,7 +132,7 @@
         Wrote, designed, and implemented short story and interactive elements into ArcGIS story map, converted to mobile app and web.</p>
       <p><span class="neon-label">The Illustrious Clyde Cup</span><br>
         Writer, Director, Editor<br>
-        Documentary — “Movies from the Mitten,” Greater Farmington Film Festival (2024)</p>
+        Documentary — "Movies from the Mitten," Greater Farmington Film Festival (2024)</p>
       <p><span class="neon-label">Birding With Brian</span><br>
         Writer, Director, Editor<br>
         Documentary — Planet 9 Film Festival (2024), Wolf Tree Film Festival (2025)<br>
@@ -115,5 +190,26 @@
       </div>
     </div>
   </div>
+  
+  <script>
+    // Check for saved theme preference and apply it
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'light') {
+        document.body.classList.add('light-mode');
+      }
+      
+      // Listen for theme changes from parent window
+      window.addEventListener('storage', (event) => {
+        if (event.key === 'theme') {
+          if (event.newValue === 'light') {
+            document.body.classList.add('light-mode');
+          } else {
+            document.body.classList.remove('light-mode');
+          }
+        }
+      });
+    });
+  </script>
 </body>
 </html>

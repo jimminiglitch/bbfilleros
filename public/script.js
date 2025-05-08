@@ -1,3 +1,67 @@
+// Add this to the beginning of your script.js file, before the DOMContentLoaded event
+
+// Preload critical assets
+function preloadAssets() {
+  return new Promise((resolve) => {
+    // List of critical images to preload
+    const criticalImages = [
+      "https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/Benny.png?v=1746392528967",
+      "https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/whodat.gif?v=1746365769069",
+      "https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/octavia.jpg?v=1746412752104",
+      "https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/MilesSwings2025.jpg?v=1746410914289",
+    ]
+
+    let loadedCount = 0
+    const totalAssets = criticalImages.length
+
+    // If no assets to preload, resolve immediately
+    if (totalAssets === 0) {
+      resolve()
+      return
+    }
+
+    // Preload each image
+    criticalImages.forEach((src) => {
+      const img = new Image()
+      img.onload = img.onerror = () => {
+        loadedCount++
+        if (loadedCount === totalAssets) {
+          resolve()
+        }
+      }
+      img.src = src
+    })
+
+    // Fallback in case some assets fail to load
+    setTimeout(resolve, 5000)
+  })
+}
+
+// Modify your DOMContentLoaded event
+document.addEventListener("DOMContentLoaded", () => {
+  // Initialize window controls immediately for better perceived performance
+  initWindowControls()
+
+  // Preload assets and then start boot sequence
+  preloadAssets().then(() => {
+    // Hide preloader
+    const preloader = document.getElementById("preloader")
+    preloader.style.opacity = "0"
+    preloader.style.visibility = "hidden"
+
+    // Continue with boot sequence
+    runBootSequence().then(() => {
+      initDesktopIcons()
+      initStarfield()
+      initGlitchEffects()
+      initMusicPlayer()
+      setupMobileSupport()
+      initThemeToggle()
+      initKeyboardAccessibility() // Add keyboard accessibility
+    })
+  })
+})
+
 // Utility functions
 function debounce(func, wait) {
   let timeout
@@ -14,19 +78,20 @@ const toadHoverAudio = new Audio(
 toadHoverAudio.volume = 0.5 // Lower volume for better user experience
 
 // DOM ready handler with performance improvements
-document.addEventListener("DOMContentLoaded", () => {
-  // Initialize all windows once
-  initWindowControls()
+// document.addEventListener("DOMContentLoaded", () => {
+//   // Initialize all windows once
+//   initWindowControls()
 
-  // Start boot sequence
-  runBootSequence().then(() => {
-    initDesktopIcons()
-    initStarfield()
-    initGlitchEffects()
-    initMusicPlayer() // Initialize music player
-    setupMobileSupport() // Add mobile-specific enhancements
-  })
-})
+//   // Start boot sequence
+//   runBootSequence().then(() => {
+//     initDesktopIcons()
+//     initStarfield()
+//     initGlitchEffects()
+//     initMusicPlayer() // Initialize music player
+//     setupMobileSupport() // Add mobile-specific enhancements
+//     initThemeToggle() // Add theme toggle initialization
+//   })
+// })
 
 // 1) WINDOW CONTROLS - Consolidated for better performance
 function initWindowControls() {
@@ -843,3 +908,150 @@ function setupMobileSupport() {
 
 window.addEventListener("mousedown", onSelectStart)
 initGlitchEffects()
+
+// 12) THEME TOGGLE
+function initThemeToggle() {
+  // Create theme toggle button if it doesn't exist
+  let themeToggle = document.getElementById("theme-toggle")
+  if (!themeToggle) {
+    themeToggle = document.createElement("button")
+    themeToggle.id = "theme-toggle"
+    themeToggle.innerHTML = "🌙"
+    themeToggle.title = "Toggle Light/Dark Mode"
+    themeToggle.className = "theme-toggle"
+    themeToggle.setAttribute("aria-label", "Toggle light/dark theme")
+    document.body.appendChild(themeToggle)
+  }
+
+  // Check for saved theme preference
+  const savedTheme = localStorage.getItem("theme")
+  if (savedTheme === "light") {
+    document.body.classList.add("light-mode")
+    themeToggle.innerHTML = "☀️"
+  }
+
+  // Toggle theme on click
+  themeToggle.addEventListener("click", () => {
+    document.body.classList.toggle("light-mode")
+    const isLight = document.body.classList.contains("light-mode")
+
+    // Save preference
+    localStorage.setItem("theme", isLight ? "light" : "dark")
+
+    // Update icon
+    themeToggle.innerHTML = isLight ? "☀️" : "🌙"
+
+    // Add transition effect
+    document.body.classList.add("theme-transition")
+    setTimeout(() => {
+      document.body.classList.remove("theme-transition")
+    }, 1000)
+  })
+}
+
+// Add this function to your script.js file
+
+// 13) KEYBOARD ACCESSIBILITY
+function initKeyboardAccessibility() {
+  // Tab index for desktop icons
+  document.querySelectorAll(".desktop-icon").forEach((icon, index) => {
+    icon.setAttribute("tabindex", "0")
+
+    // Enter key to open window
+    icon.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        openWindow(icon.dataset.window)
+      }
+    })
+
+    // Focus styling
+    icon.addEventListener("focus", () => {
+      icon.classList.add("icon-hover")
+    })
+
+    icon.addEventListener("blur", () => {
+      icon.classList.remove("icon-hover")
+    })
+  })
+
+  // Window controls accessibility
+  document.querySelectorAll(".popup-window").forEach((win) => {
+    const header = win.querySelector(".window-header")
+    const buttons = header.querySelectorAll("button")
+
+    buttons.forEach((btn) => {
+      btn.setAttribute("tabindex", "0")
+
+      // Add aria labels
+      if (btn.classList.contains("minimize")) {
+        btn.setAttribute("aria-label", "Minimize window")
+      } else if (btn.classList.contains("maximize")) {
+        btn.setAttribute("aria-label", "Maximize window")
+      } else if (btn.classList.contains("close")) {
+        btn.setAttribute("aria-label", "Close window")
+      }
+    })
+  })
+
+  // Start menu accessibility
+  const startButton = document.getElementById("start-button")
+  startButton.setAttribute("aria-expanded", "false")
+  startButton.setAttribute("aria-controls", "start-menu")
+
+  startButton.addEventListener("click", () => {
+    const expanded = startButton.getAttribute("aria-expanded") === "true"
+    startButton.setAttribute("aria-expanded", !expanded)
+  })
+
+  // Escape key to close active window
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      const activeWindow = document.querySelector(".popup-window.active")
+      if (activeWindow) {
+        closeWindow(activeWindow.id)
+      }
+    }
+  })
+}
+
+// Main script file - now just imports the modular system
+// This file is kept for backward compatibility
+
+// Import main module
+import("./js/main.js").catch((err) => {
+  console.error("Error loading modules:", err)
+
+  // Fallback to basic functionality if modules fail to load
+  document.addEventListener("DOMContentLoaded", () => {
+    // Hide preloader
+    const preloader = document.getElementById("preloader")
+    if (preloader) {
+      preloader.style.opacity = "0"
+      preloader.style.visibility = "hidden"
+    }
+
+    // Show error message
+    const errorMsg = document.createElement("div")
+    errorMsg.style.position = "fixed"
+    errorMsg.style.top = "10px"
+    errorMsg.style.left = "10px"
+    errorMsg.style.background = "rgba(255,0,0,0.8)"
+    errorMsg.style.color = "white"
+    errorMsg.style.padding = "10px"
+    errorMsg.style.borderRadius = "5px"
+    errorMsg.style.zIndex = "9999"
+    errorMsg.textContent = "Failed to load modules. Please refresh the page."
+    document.body.appendChild(errorMsg)
+  })
+})
+
+// Export window opening function for backward compatibility
+window.openWindow = (id) => {
+  import("./js/windows.js")
+    .then((module) => {
+      module.openWindow(id)
+    })
+    .catch((err) => {
+      console.error("Error opening window:", err)
+    })
+}

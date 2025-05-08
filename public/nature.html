@@ -8,57 +8,88 @@
   <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
 </head>
 <body>
+  <a href="#gallery" class="skip-link">Skip to gallery</a>
+  
   <div class="gallery-header">
     <h1>🌿 Nature Gallery</h1>
   </div>
 
-  <div class="gallery-wrapper" id="gallery">
-    <div class="gallery-item active">
+  <div class="gallery-wrapper" id="gallery" role="region" aria-label="Nature image gallery">
+    <div class="gallery-item active" role="img" aria-label="Galloway Sunset">
       <img src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/Galloway%20Geese%20at%20Sunset.png?v=1746411517025" alt="Nature 1" loading="lazy" />
       <div class="caption">Galloway Sunset</div>
     </div>
     
-    <div class="gallery-item">
+    <div class="gallery-item" role="img" aria-label="Galloway Landing">
       <img src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/GoldenHourGeese.png?v=1746411283749" alt="Nature 2" loading="lazy" />
       <div class="caption">Galloway Landing</div>
     </div>
     
-    <div class="gallery-item">
+    <div class="gallery-item" role="img" aria-label="Sandhill Sedge">
       <img src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/A%20Sedge%20of%20Sandhill%20on%20the%20Green.png?v=1746411505927" alt="Nature 3" loading="lazy" />
       <div class="caption">Sandhill Sedge</div>
     </div>
     
-    <div class="gallery-item">
+    <div class="gallery-item" role="img" aria-label="Bombilate Vicissitude">
       <img src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/bombilate%20vicissitude.png?v=1746411262153" alt="Nature 4" loading="lazy" />
       <div class="caption">Bombilate Vicissitude</div>
     </div>
     
-    <div class="gallery-item">
+    <div class="gallery-item" role="img" aria-label="Old Stump Hole">
       <img src="https://cdn.glitch.me/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/SB1012.png?v=1746413539089" alt="Nature 5" loading="lazy" />
       <div class="caption">Old Stump Hole</div>
     </div>
     
-    <div class="gallery-item">
+    <div class="gallery-item" role="img" aria-label="Fall Trail">
       <img src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/LeafTrail.png?v=1746413486576" alt="Nature 6" loading="lazy" />
       <div class="caption">Fall Trail</div>
     </div>
     
-    <div class="gallery-item">
+    <div class="gallery-item" role="img" aria-label="Tree Falls in the Woods">
       <img src="https://cdn.glitch.me/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/HawkTrail.png?v=1746413521889" alt="Nature 7" loading="lazy" />
       <div class="caption">Tree Falls in the Woods</div>
     </div>
     
-    <div class="gallery-item">
+    <div class="gallery-item" role="img" aria-label="Toad in the Hole">
       <img src="https://cdn.glitch.me/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/ToadInTheHole.png?v=1746413566459" alt="Nature 8" loading="lazy" />
       <div class="caption">Toad in the Hole</div>
     </div>
   </div>
 
-  <div class="nav-buttons">
-    <button id="prevBtn">⟵ Prev</button>
-    <button id="nextBtn">Next ⟶</button>
+  <div class="nav-buttons" role="navigation" aria-label="Gallery navigation">
+    <button id="prevBtn" aria-label="Previous image">⟵ Prev</button>
+    <button id="nextBtn" aria-label="Next image">Next ⟶</button>
   </div>
 
   <script src="/nature.js"></script>
+  <script>
+    // Check for saved theme preference and apply it
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'light') {
+        document.body.classList.add('light-mode');
+      }
+      
+      // Listen for theme changes from parent window
+      window.addEventListener('storage', (event) => {
+        if (event.key === 'theme') {
+          if (event.newValue === 'light') {
+            document.body.classList.add('light-mode');
+          } else {
+            document.body.classList.remove('light-mode');
+          }
+        }
+      });
+      
+      // Add keyboard navigation
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') {
+          document.getElementById('prevBtn').click();
+        } else if (e.key === 'ArrowRight') {
+          document.getElementById('nextBtn').click();
+        }
+      });
+    });
+  </script>
 </body>
 </html>
