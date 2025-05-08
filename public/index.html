@@ -139,22 +139,13 @@
           <span>Abstract</span>
         </div>
         
-         <div class="desktop-icon" id="icon-woc" data-window="woc">
+         <div class="desktop-icon" id="icon-weight" data-window="weight">
           <img
             src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/VaporTV.png?v=1746411817932"
-            alt="woc"
+            alt="weight"
             loading="lazy"
           />
-          <span>WOC</span>
-        </div>
-        
-           <div class="desktop-icon" id="icon-critter" data-window="critter">
-          <img
-            src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/VaporTV.png?v=1746411817932"
-            alt="critter"
-            loading="lazy"
-          />
-          <span>Critter</span>
+          <span>Weight</span>
         </div>
       
         <div class="desktop-icon" id="icon-music" data-window="music">
@@ -313,95 +304,6 @@
           ></video>
         </div>
       </div>
-        
-        <!-- VIDEO3.EXE -->
-     <div id="woc" class="popup-window hidden">
-  <div class="window-header">
-    <span>WOC.EXE</span>
-    <button class="minimize">_</button>
-    <button class="maximize">▭</button>
-    <button class="close">X</button>
-  </div>
-  <div class="window-content">
-    <iframe
-      id="woc-player"
-      width="100%"
-      height="100%"
-      data-src="https://www.youtube.com/embed/i3yRphyofs0?autoplay=1&mute=1&rel=0"
-      title="YouTube video player"
-      frameborder="0"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-      allowfullscreen
-    ></iframe>
-  </div>
-</div>
-
-        <div id="critter" class="popup-window hidden">
-  <div class="window-header">
-    <span>CRITTER.EXE</span>
-    <button class="minimize">_</button>
-    <button class="maximize">▭</button>
-    <button class="close">X</button>
-  </div>
-  <div class="window-content" style="position: relative; padding: 56.25% 0 0 0;">
-    
-    <!-- Poster Overlay -->
-    <div id="critter-poster" style="
-      position: absolute;
-      inset: 0;
-      background: url('https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/VaporTV.png?v=1746411817932') center/cover no-repeat;
-      cursor: pointer;
-      z-index: 2;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    ">
-      <span style="
-        font-family: 'Press Start 2P', monospace;
-        background: black;
-        color: cyan;
-        padding: 0.5rem 1rem;
-        border: 2px solid cyan;
-      ">▶ PLAY</span>
-    </div>
-
-    <!-- Vimeo Iframe -->
-    <iframe
-      id="critter-player"
-            data-src="https://player.vimeo.com/video/1082413894?h=1cd32f394c&autoplay=1&muted=1"
-      src=""
-      frameborder="0"
-      allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
-      style="position:absolute;top:0;left:0;width:100%;height:100%; z-index:1;"
-      title="Curious Critter POV"
-      allowfullscreen
-    ></iframe>
-  </div>
-
-  <!-- Vimeo Player API -->
-  <script src="https://player.vimeo.com/api/player.js"></script>
-
-  <!-- Inline JS to trigger autoplay -->
-  <script>
-    document.getElementById("critter-poster").addEventListener("click", function () {
-      this.style.display = "none";
-      const iframe = document.getElementById("critter-player");
-      iframe.src = "https://player.vimeo.com/video/1082413894?h=1cd32f394c&autoplay=1&muted=1";
-    });
-  </script>
-</div>
-        
-        <script>
-  document.querySelector('#critter .close').addEventListener('click', () => {
-    document.querySelector('#critter iframe').src = '';
-  });
-</script>
-
-<script>
-  document.querySelector('#woc .close').addEventListener('click', () => {
-    document.querySelector('#woc iframe').src = '';
-  });
-</script>
 
     
       <!-- MUSIC.EXE -->
@@ -539,6 +441,78 @@
           <h2 class="psychedelic-text">MILES</h2>
         </div>
       </div>
+
+        <div id="weight" class="popup-window hidden">
+  <div class="window-header">
+    <span>WEIGHT.EXE</span>
+    <button class="minimize">_</button>
+    <button class="maximize">▭</button>
+    <button class="close">X</button>
+  </div>
+
+  <div class="window-content" style="position: relative; padding: 56.25% 0 0 0;">
+    <!-- Poster Overlay -->
+    <div id="weight-poster" style="
+      position: absolute;
+      inset: 0;
+      background: url('https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/VaporTV.png?v=1746411817932') center/cover no-repeat;
+      cursor: pointer;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    ">
+      <span style="
+        font-family: 'Press Start 2P', monospace;
+        background: black;
+        color: cyan;
+        padding: 0.5rem 1rem;
+        border: 2px solid cyan;
+      ">▶ PLAY</span>
+    </div>
+
+    <!-- Vimeo Iframe -->
+    <iframe
+      id="weight-player"
+      data-src="https://player.vimeo.com/video/1082536082?h=0f9a8b9e4d&autoplay=1&muted=0"
+      src=""
+      frameborder="0"
+      allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
+      style="position:absolute;top:0;left:0;width:100%;height:100%; z-index:1;"
+      title="The Weight of Care"
+      allowfullscreen
+    ></iframe>
+  </div>
+
+  <!-- Vimeo Player API -->
+  <script src="https://player.vimeo.com/api/player.js"></script>
+
+  <!-- Inline JS: Play on click, stop on close -->
+  <script>
+    const weightPoster = document.getElementById("weight-poster");
+    const weightIframe = document.getElementById("weight-player");
+
+    weightPoster.addEventListener("click", () => {
+      weightPoster.style.display = "none";
+      weightIframe.src = weightIframe.dataset.src;
+    });
+
+    // Reset iframe on close to stop sound
+    document.querySelector('#weight .close').addEventListener('click', () => {
+      weightPoster.style.display = "flex";
+      weightIframe.src = "";
+    });
+
+    // Optional: Reload src if reopened
+    function reopenWeightWindow() {
+      const win = document.getElementById("weight");
+      win.classList.remove("hidden");
+      if (weightPoster.style.display === "none" && weightIframe.dataset.src) {
+        weightIframe.src = weightIframe.dataset.src;
+      }
+    }
+  </script>
+</div>
 
 
      </div>
