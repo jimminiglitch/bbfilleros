@@ -344,6 +344,10 @@ body {
   top: 400px;
   left: 240px;
 }
+#icon-woc {
+  top: 400px;
+  left: 340px;
+}
 
 /* Selected state */
 .desktop-icon.selected {
