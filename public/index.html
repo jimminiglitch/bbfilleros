@@ -1,4 +1,4 @@
-<!DOCTYPE html>  https://studio.youtube.com/video/i3yRphyofs0/edit
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -146,6 +146,15 @@
             loading="lazy"
           />
           <span>WOC</span>
+        </div>
+        
+           <div class="desktop-icon" id="icon-critter" data-window="critter">
+          <img
+            src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/VaporTV.png?v=1746411817932"
+            alt="critter"
+            loading="lazy"
+          />
+          <span>Critter</span>
         </div>
       
         <div class="desktop-icon" id="icon-music" data-window="music">
@@ -305,16 +314,39 @@
         </div>
       </div>
         
-<div id="woc" class="popup-window hidden">
+        <!-- VIDEO3.EXE -->
+     <div id="woc" class="popup-window hidden">
   <div class="window-header">
     <span>WOC.EXE</span>
     <button class="minimize">_</button>
     <button class="maximize">▭</button>
     <button class="close">X</button>
   </div>
-  <div class="window-content" style="position: relative;">
+  <div class="window-content">
+    <iframe
+      id="woc-player"
+      width="100%"
+      height="100%"
+      data-src="https://www.youtube.com/embed/i3yRphyofs0?autoplay=1&mute=1&rel=0"
+      title="YouTube video player"
+      frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen
+    ></iframe>
+  </div>
+</div>
+
+        <div id="critter" class="popup-window hidden">
+  <div class="window-header">
+    <span>CRITTER.EXE</span>
+    <button class="minimize">_</button>
+    <button class="maximize">▭</button>
+    <button class="close">X</button>
+  </div>
+  <div class="window-content" style="position: relative; padding: 56.25% 0 0 0;">
+    
     <!-- Poster Overlay -->
-    <div id="woc-poster-overlay" style="
+    <div id="critter-poster" style="
       position: absolute;
       inset: 0;
       background: url('https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/VaporTV.png?v=1746411817932') center/cover no-repeat;
@@ -333,44 +365,43 @@
       ">▶ PLAY</span>
     </div>
 
-    <!-- YouTube Embed -->
+    <!-- Vimeo Iframe -->
     <iframe
-      id="woc-player"
-      width="100%"
-      height="100%"
-      src="https://www.youtube.com/embed/i3yRphyofs0"
-      title="YouTube video player"
+      id="critter-player"
+            data-src="https://player.vimeo.com/video/1082413894?h=1cd32f394c&autoplay=1&muted=1"
+      src=""
       frameborder="0"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
+      style="position:absolute;top:0;left:0;width:100%;height:100%; z-index:1;"
+      title="Curious Critter POV"
       allowfullscreen
-      style="z-index: 1; position: relative;"
     ></iframe>
   </div>
 
-  <!-- Inline Script to Handle Poster Click -->
+  <!-- Vimeo Player API -->
+  <script src="https://player.vimeo.com/api/player.js"></script>
+
+  <!-- Inline JS to trigger autoplay -->
   <script>
-    document.getElementById("woc-poster-overlay").addEventListener("click", function () {
+    document.getElementById("critter-poster").addEventListener("click", function () {
       this.style.display = "none";
-      document.getElementById("woc-player").src =
-        "https://www.youtube.com/embed/i3yRphyofs0?autoplay=1&mute=1&rel=0";
+      const iframe = document.getElementById("critter-player");
+      iframe.src = "https://player.vimeo.com/video/1082413894?h=1cd32f394c&autoplay=1&muted=1";
     });
   </script>
 </div>
+        
+        <script>
+  document.querySelector('#critter .close').addEventListener('click', () => {
+    document.querySelector('#critter iframe').src = '';
+  });
+</script>
 
-    <!-- YouTube Embed -->
-    <iframe
-      id="woc-player"
-      width="100%"
-      height="100%"
-      src="<iframe src="https://www.youtube.com/embed/i3yRphyofs0"
-      title="YouTube video player"
-      frameborder="0"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-      allowfullscreen
-      style="z-index: 1; position: relative;"
-    ></iframe>
-  </div>
-</div>
+<script>
+  document.querySelector('#woc .close').addEventListener('click', () => {
+    document.querySelector('#woc iframe').src = '';
+  });
+</script>
 
     
       <!-- MUSIC.EXE -->
