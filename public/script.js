@@ -1,3 +1,4 @@
+
 // Utility functions
 function debounce(func, wait) {
   let timeout
@@ -162,49 +163,86 @@ function getNextZIndex() {
   return ++currentZIndex
 }
 
-
 function openWindow(id) {
-  createTaskbarIcon(id);
   const win = document.getElementById(id);
   if (!win) return;
 
+  // 1) Hide start menu & deactivate other windows
   document.getElementById("start-menu").style.display = "none";
   document.querySelectorAll(".popup-window").forEach((w) => w.classList.remove("active"));
 
+  // 2) Lazy-load <iframe data-src>
   win.querySelectorAll("iframe[data-src]").forEach((iframe) => {
-    if (!iframe.src) iframe.src = iframe.dataset.src;
+    if (!iframe.src) {
+      iframe.src = iframe.dataset.src;
+    }
   });
 
+  // 3) Lazy-load <video data-src>
   win.querySelectorAll("video[data-src]").forEach((v) => {
     if (!v.src) {
       v.src = v.dataset.src;
       v.load();
-      if (!isMobile()) v.play().catch(() => {});
+      if (!isMobile()) {
+        v.play().catch(() => {});
+      }
     }
   });
 
-  win.classList.remove("hidden");
+  // 4) Show & focus
   win.classList.remove("hidden");
   win.classList.add("active");
   win.style.display = "flex";
   win.style.zIndex = getNextZIndex();
   win.classList.add("window-opening");
-  setTimeout(() => win.classList.remove("window-opening"), 500);
+  setTimeout(() => {
+    win.classList.remove("window-opening");
+  }, 500);
 
+  // ─── Play the toad hover sound when the Toader window opens ───
   if (id === "toader") {
     toadHoverAudio.currentTime = 0;
     toadHoverAudio.play().catch(() => {});
   }
 
-  Object.assign(win.style, {
-    top: "0",
-    left: "0",
-    width: "100vw",
-    height: "calc(100vh - 36px)",
-    transform: "none",
-  });
-}
+  // 5) Restore previous bounds or clamp to viewport
+  const isMobileView = isMobile();
+  if (isMobileView) {
+    Object.assign(win.style, {
+      top: "0",
+      left: "0",
+      width: "100vw",
+      height: "calc(100vh - 36px)",
+      transform: "none",
+    });
+  } else {
+    const stored = windowStates[id];
+    if (stored) Object.assign(win.style, stored);
 
+    const rect = win.getBoundingClientRect();
+    const margin = 20;
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    let newW = rect.width,
+        newH = rect.height,
+        newLeft = rect.left,
+        newTop = rect.top;
+
+    if (rect.width > vw - margin * 2) newW = vw - margin * 2;
+    if (rect.height > vh - margin * 2) newH = vh - margin * 2;
+    if (rect.left < margin) newLeft = margin;
+    if (rect.top < margin) newTop = margin;
+    if (rect.right > vw - margin) newLeft = vw - margin - newW;
+    if (rect.bottom > vh - margin) newTop = vh - margin - newH;
+
+    Object.assign(win.style, {
+      width:  `${newW}px`,
+      height: `${newH}px`,
+      left:   `${newLeft}px`,
+      top:    `${newTop}px`,
+    });
+  }
+}
 // Helper function to detect mobile devices
 function isMobile() {
   return window.innerWidth < 768
