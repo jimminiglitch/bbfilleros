@@ -1,4 +1,4 @@
-/*───────────────────────────��─────────────────────────────────────────────────
+/*───────────────────────────  ─────────────────────────────────────────────────
   GLOBAL VARIABLES & RESET - ULTIMATE CYBERPUNK UPGRADE
 ─────────────────────────────────────────────────────────────────────────────*/
 :root {
@@ -1198,133 +1198,11 @@ body {
 }
 
 /* Mobile-friendly improvements */
-@media (max-width: 1024px) {
-  :root {
-    --font-size-xl: 1.8rem;
-    --font-size-2xl: 2rem;
-    --font-size-3xl: 2.2rem;
-  }
 
-  .popup-window {
-    width: 90vw;
-    height: 80vh;
-    top: 10vh;
-    left: 5vw;
-  }
-}
 
-@media (max-width: 768px) {
-  :root {
-    --font-size-sm: 0.7rem;
-    --font-size-base: 0.9rem;
-    --font-size-lg: 1.1rem;
-    --font-size-xl: 1.5rem;
-    --font-size-2xl: 1.8rem;
-    --font-size-3xl: 2rem;
-  }
 
-  .desktop-icon {
-    position: relative;
-    display: inline-block;
-    width: 25vw;
-    margin: 10px;
-  }
 
-  #desktop-icons {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    height: auto;
-    padding: 1rem 0;
-  }
 
-  .popup-window {
-    width: 95vw;
-    height: 85vh;
-    top: 7vh;
-    left: 2.5vw;
-  }
-
-  #start-menu {
-    font-size: 0.7rem;
-  }
-
-  #start-bar {
-    flex-wrap: wrap;
-    height: auto;
-    padding: 0.5rem;
-  }
-
-  #clock {
-    font-size: 0.75rem;
-  }
-
-  /* Add mobile-specific close button for easier window management */
-  .mobile-close {
-    display: block;
-    position: fixed;
-    bottom: 50px;
-    right: 20px;
-    background: rgba(0, 0, 0, 0.7);
-    color: var(--neon-cyan);
-    border: 2px solid var(--neon-cyan);
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    font-size: 20px;
-    z-index: 1000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-}
-
-@media (max-width: 480px) {
-  :root {
-    --font-size-sm: 0.6rem;
-    --font-size-base: 0.8rem;
-    --font-size-lg: 1rem;
-    --font-size-xl: 1.2rem;
-    --font-size-2xl: 1.5rem;
-    --font-size-3xl: 1.8rem;
-  }
-
-  .desktop-icon img {
-    width: 48px;
-    height: 48px;
-  }
-
-  .desktop-icon span {
-    font-size: 0.6rem;
-  }
-
-  .popup-window .window-header {
-    font-size: 0.6rem;
-    padding: 0.3rem;
-  }
-
-  .popup-window .window-header button {
-    font-size: 0.8rem;
-  }
-
-  .popup-window .window-content {
-    padding: 0.5rem;
-  }
-
-  #start-menu a {
-    padding: 0.3rem 0.6rem;
-  }
-
-  #start-button {
-    font-size: 0.6rem;
-    padding: 0.2rem 0.5rem;
-  }
-
-  #clock {
-    font-size: 0.6rem;
-  }
-}
 /* target any image inside a popup’s content area */
 .popup-window .window-content img {
   display: block;
