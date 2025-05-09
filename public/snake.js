@@ -543,7 +543,7 @@ window.addEventListener("load", () => {
     if (frameAcc < 1000 / speed) return
     frameAcc = 0
 
-    // Handle key holding speed boost - reduced to a gentler boost
+    // Handle key holding speed boost - proper 50% boost
     if (
       lastKeyDirection &&
       ((lastKeyDirection === "ArrowUp" && dy === -1) ||
@@ -552,8 +552,8 @@ window.addEventListener("load", () => {
         (lastKeyDirection === "ArrowRight" && dx === 1))
     ) {
       keyHoldTime += dt
-      // Gentler speed boost - max 20% increase after 1 second
-      const holdBoost = Math.min(1.2, 1 + (keyHoldTime / 1000) * 0.2)
+      // Full 50% boost after 1 second
+      const holdBoost = Math.min(1.5, 1 + (keyHoldTime / 1000) * 0.5)
       speed = baseSpeed * holdBoost
     } else {
       keyHoldTime = 0
@@ -842,7 +842,7 @@ window.addEventListener("load", () => {
     initStars()
   }
 
-  // Handle window resize
+  // Handle window resize - FIXED to not reset the game
   function handleResize() {
     if (!canvas) return
 
@@ -851,8 +851,14 @@ window.addEventListener("load", () => {
     const wasPaused = paused
     const oldCols = cols
     const oldRows = rows
+    const oldSnake = [...snake]
+    const oldApple = { ...apple }
+    const oldPowerUps = [...powerUps]
+    const oldScore = score
+    const oldLevel = level
+    const oldLives = lives
 
-    // Pause game during resize
+    // Temporarily pause game during resize
     const tempPaused = paused
     paused = true
 
@@ -878,7 +884,10 @@ window.addEventListener("load", () => {
       y: Math.min(segment.y, rows - 1),
     }))
 
-    // Resume game if it was running
+    // Ensure power-ups are within bounds
+    powerUps = powerUps.filter((pu) => pu.x < cols && pu.y < rows)
+
+    // Resume game with the same state
     if (wasStarted) {
       paused = tempPaused
     }

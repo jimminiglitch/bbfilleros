@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MUSIC.EXE</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="music.css">
+</head>
+<body>
+  <h1>MUSIC.EXE</h1>
+  
+  <div class="music-container">
+    <canvas id="visualizer"></canvas>
+    
+    <div id="now-playing">▶ Select a track to play</div>
+    
+    <div class="music-controls">
+      <button id="prevTrack">◀ Prev</button>
+      <button id="togglePlay">▶ Play</button>
+      <button id="nextTrack">Next ▶</button>
+    </div>
+    
+    <h2>Playlist</h2>
+    <ul id="playlist"></ul>
+    
+    <!-- Audio element with preload metadata -->
+    <audio id="music-player" preload="metadata"></audio>
+  </div>
+
+  <script src="music-player.js"></script>
+</body>
+</html>
