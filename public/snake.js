@@ -8,8 +8,8 @@ window.addEventListener("load", () => {
   const ui = {
     status: document.getElementById("status"),
   }
-  const joystickBase = document.getElementById("joystickBase")
-  const joystickStick = document.getElementById("joystickStick")
+  const joystickBase = document.getElementById("joystick-base")
+  const joystickStick = document.getElementById("joystick-stick")
 
   // Touch controls
   let touchStartX = 0
@@ -47,7 +47,7 @@ window.addEventListener("load", () => {
     dieSound = document.getElementById("die")
   }
 
-  // ─── Touch Controls ─────────────────────────────────────────────────────────
+  // ─── Touch Controls - Less Intrusive ─────────────────────────────────────────
   function initTouchControls() {
     // Show joystick on mobile devices
     if (isMobileDevice()) {
@@ -55,9 +55,9 @@ window.addEventListener("load", () => {
     }
 
     // Swipe detection
-    document.addEventListener("touchstart", handleTouchStart, { passive: false })
-    document.addEventListener("touchmove", handleTouchMove, { passive: false })
-    document.addEventListener("touchend", handleTouchEnd, { passive: false })
+    document.addEventListener("touchstart", handleTouchStart, { passive: true })
+    document.addEventListener("touchmove", handleTouchMove, { passive: true })
+    document.addEventListener("touchend", handleTouchEnd, { passive: true })
 
     // Joystick controls
     if (joystickBase && joystickStick) {
@@ -76,20 +76,10 @@ window.addEventListener("load", () => {
 
     touchStartX = e.touches[0].clientX
     touchStartY = e.touches[0].clientY
-
-    // Prevent default only if we're in the game area
-    if (e.target.id === "snake-canvas") {
-      e.preventDefault()
-    }
   }
 
   function handleTouchMove(e) {
     if (!started || gameOver || paused || joystickActive) return
-
-    // Only prevent default if we're in the game area
-    if (e.target.id === "snake-canvas") {
-      e.preventDefault()
-    }
   }
 
   function handleTouchEnd(e) {
@@ -130,12 +120,6 @@ window.addEventListener("load", () => {
           dy = -1
         }
       }
-
-      // Temporarily increase speed on swipe, like with keyboard
-      speed = baseSpeed * 2
-      setTimeout(() => {
-        speed = baseSpeed
-      }, 300)
     }
   }
 
@@ -161,9 +145,6 @@ window.addEventListener("load", () => {
     if (joystickStick) {
       joystickStick.style.transform = "translate(-50%, -50%)"
     }
-
-    // Reset speed
-    speed = baseSpeed
   }
 
   function updateJoystickPosition(touch) {
@@ -191,11 +172,6 @@ window.addEventListener("load", () => {
       joystickAngle = angle
 
       // Convert angle to direction
-      // Right: -π/4 to π/4
-      // Down: π/4 to 3π/4
-      // Left: 3π/4 to -3π/4
-      // Up: -3π/4 to -π/4
-
       const pi = Math.PI
 
       if (angle > -pi / 4 && angle < pi / 4 && dx !== -1) {
@@ -215,9 +191,6 @@ window.addEventListener("load", () => {
         dx = 0
         dy = -1
       }
-
-      // Increase speed while joystick is active
-      speed = baseSpeed * 1.5
     }
   }
 
@@ -393,6 +366,22 @@ window.addEventListener("load", () => {
     }
   })
 
+  // Add mute button functionality
+  const muteButton = document.getElementById("mute-button")
+  if (muteButton) {
+    muteButton.addEventListener("click", () => {
+      if (music) {
+        if (music.paused) {
+          music.play().catch(() => {})
+          muteButton.textContent = "🔊"
+        } else {
+          music.pause()
+          muteButton.textContent = "🔇"
+        }
+      }
+    })
+  }
+
   if (btnPlay) {
     btnPlay.addEventListener("click", () => {
       initAudio()
@@ -413,6 +402,27 @@ window.addEventListener("load", () => {
 
   window.addEventListener("resize", handleResize)
   handleResize()
+
+  // Listen for messages from the parent window
+  window.addEventListener("message", (event) => {
+    if (event.data === "pause" && !paused && started) {
+      // Pause the game
+      paused = true
+      if (ui.status) ui.status.textContent = "Paused"
+      if (music) music.pause()
+    }
+  })
+
+  // Handle visibility changes
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      if (music) music.pause()
+      // Don't pause the game automatically when in an iframe
+      // as it might be due to the window being minimized
+    } else if (started && !paused && !gameOver) {
+      if (music) music.play().catch(() => {})
+    }
+  })
 
   function cleanup() {
     if (animationFrameId) {
