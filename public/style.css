@@ -1208,3 +1208,19 @@ body {
   height: auto;
   margin: 0 auto;    /* center horizontally */
 }
+.music-player {
+  border: 2px solid var(--neon-pink);
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.75);
+  border-radius: 10px;
+  box-shadow: 0 0 12px var(--neon-pink);
+  color: var(--neon-pink);
+  font-family: var(--font-vt323);
+  text-align: center;
+}
+
+.music-player audio {
+  width: 100%;
+  margin-top: 1rem;
+  filter: drop-shadow(0 0 5px var(--neon-pink));
+}
