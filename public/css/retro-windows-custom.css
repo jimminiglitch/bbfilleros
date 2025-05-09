@@ -1,0 +1,113 @@
+/* Additional custom styles for RetroWindows */
+
+/* Custom button styles */
+.retro-button {
+  background-color: #000;
+  color: #0ff;
+  border: 2px solid #0ff;
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+  font-family: "Press Start 2P", cursive;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.retro-button:hover {
+  background-color: #0ff;
+  color: #000;
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.8);
+}
+
+/* Pixel effect for window borders */
+.retro-window::before {
+  content: "";
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  right: -3px;
+  bottom: -3px;
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0.1) 2px,
+    transparent 2px,
+    transparent 4px
+  );
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Glitch animation for window title */
+@keyframes glitch {
+  0% {
+    text-shadow: 0.05em 0 0 rgba(255, 0, 255, 0.75), -0.05em -0.025em 0 rgba(0, 255, 255, 0.75), -0.025em 0.05em 0
+      rgba(0, 255, 0, 0.75);
+  }
+  14% {
+    text-shadow: 0.05em 0 0 rgba(255, 0, 255, 0.75), -0.05em -0.025em 0 rgba(0, 255, 255, 0.75), -0.025em 0.05em 0
+      rgba(0, 255, 0, 0.75);
+  }
+  15% {
+    text-shadow: -0.05em -0.025em 0 rgba(255, 0, 255, 0.75), 0.025em 0.025em 0 rgba(0, 255, 255, 0.75), -0.05em -0.05em
+      0 rgba(0, 255, 0, 0.75);
+  }
+  49% {
+    text-shadow: -0.05em -0.025em 0 rgba(255, 0, 255, 0.75), 0.025em 0.025em 0 rgba(0, 255, 255, 0.75), -0.05em -0.05em
+      0 rgba(0, 255, 0, 0.75);
+  }
+  50% {
+    text-shadow: 0.025em 0.05em 0 rgba(255, 0, 255, 0.75), 0.05em 0 0 rgba(0, 255, 255, 0.75), 0 -0.05em 0
+      rgba(0, 255, 0, 0.75);
+  }
+  99% {
+    text-shadow: 0.025em 0.05em 0 rgba(255, 0, 255, 0.75), 0.05em 0 0 rgba(0, 255, 255, 0.75), 0 -0.05em 0
+      rgba(0, 255, 0, 0.75);
+  }
+  100% {
+    text-shadow: -0.025em 0 0 rgba(255, 0, 255, 0.75), -0.025em -0.025em 0 rgba(0, 255, 255, 0.75), -0.025em -0.05em 0
+      rgba(0, 255, 0, 0.75);
+  }
+}
+
+.retro-window-title:hover {
+  animation: glitch 1s linear infinite;
+}
+
+/* CRT flicker effect */
+@keyframes flicker {
+  0% {
+    opacity: 0.97;
+  }
+  5% {
+    opacity: 0.9;
+  }
+  10% {
+    opacity: 0.97;
+  }
+  15% {
+    opacity: 0.92;
+  }
+
+  20% {
+    opacity: 0.97;
+  }
+  25% {
+    opacity: 0.93;
+  }
+  30% {
+    opacity: 0.97;
+  }
+  35% {
+    opacity: 0.95;
+  }
+  40% {
+    opacity: 0.97;
+  }
+  100% {
+    opacity: 0.97;
+  }
+}
+
+.retro-window-content {
+  animation: flicker 2s infinite;
+}

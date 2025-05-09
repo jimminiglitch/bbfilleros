@@ -1,0 +1,486 @@
+/**
+ * Cyberpunk UI Styles
+ * Enhanced styles for windows, taskbar, and other UI elements
+ */
+
+/* Base styles */
+:root {
+  --neon-cyan: #0ff;
+  --neon-magenta: #f0f;
+  --neon-green: #0f0;
+  --neon-yellow: #ff0;
+  --neon-red: #f00;
+  --neon-blue: #00f;
+  --bg-color: #000;
+  --text-color: #fff;
+  --window-bg: rgba(0, 0, 0, 0.85);
+  --window-border: 2px solid var(--neon-cyan);
+  --window-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+  --titlebar-height: 30px;
+  --taskbar-height: 40px;
+}
+
+/* Fonts */
+@import url("https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap");
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: "VT323", monospace;
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+}
+
+/* Window styles */
+.window {
+  position: absolute;
+  background-color: var(--window-bg);
+  border: var(--window-border);
+  box-shadow: var(--window-shadow);
+  min-width: 300px;
+  min-height: 200px;
+  overflow: hidden;
+  transition: box-shadow 0.3s ease;
+  z-index: 100;
+}
+
+.window.active-window {
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
+}
+
+.window.dragging {
+  opacity: 0.9;
+}
+
+.window.maximized {
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: calc(100% - var(--taskbar-height)) !important;
+  border-width: 0 !important;
+}
+
+.window-titlebar,
+.titlebar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: var(--titlebar-height);
+  background: linear-gradient(90deg, rgba(0, 255, 255, 0.2), rgba(0, 255, 255, 0.4), rgba(0, 255, 255, 0.2));
+  cursor: move;
+  user-select: none;
+  padding: 0 5px;
+}
+
+.window-title,
+.title {
+  font-family: "Press Start 2P", cursive;
+  font-size: 12px;
+  color: var(--neon-cyan);
+  text-shadow: 0 0 5px var(--neon-cyan);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-right: 10px;
+}
+
+.window-controls,
+.controls {
+  display: flex;
+  gap: 5px;
+}
+
+.window-control,
+.control,
+.close-button,
+.minimize-button,
+.maximize-button,
+.close,
+.minimize,
+.maximize {
+  width: 25px;
+  height: 25px;
+  background-color: var(--bg-color);
+  border: 1px solid var(--neon-cyan);
+  color: var(--neon-cyan);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.window-control:hover,
+.control:hover,
+.close-button:hover,
+.minimize-button:hover,
+.maximize-button:hover,
+.close:hover,
+.minimize:hover,
+.maximize:hover {
+  background-color: var(--neon-cyan);
+  color: var(--bg-color);
+}
+
+.close-button,
+.close {
+  border-color: var(--neon-red);
+  color: var(--neon-red);
+}
+
+.close-button:hover,
+.close:hover {
+  background-color: var(--neon-red);
+  color: var(--bg-color);
+}
+
+.window-content,
+.content {
+  padding: 10px;
+  overflow: auto;
+  height: calc(100% - var(--titlebar-height));
+  box-sizing: border-box;
+}
+
+/* Taskbar styles */
+.taskbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: var(--taskbar-height);
+  background-color: rgba(0, 0, 0, 0.8);
+  border-top: 2px solid var(--neon-cyan);
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  box-sizing: border-box;
+  z-index: 1000;
+  box-shadow: 0 -5px 15px rgba(0, 255, 255, 0.3);
+}
+
+.taskbar-start {
+  background-color: var(--bg-color);
+  border: 2px solid var(--neon-cyan);
+  color: var(--neon-cyan);
+  padding: 5px 10px;
+  font-family: "Press Start 2P", cursive;
+  font-size: 12px;
+  cursor: pointer;
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.2s ease;
+}
+
+.taskbar-start:hover {
+  background-color: var(--neon-cyan);
+  color: var(--bg-color);
+}
+
+.taskbar-start img {
+  width: 20px;
+  height: 20px;
+}
+
+.taskbar-items {
+  display: flex;
+  gap: 5px;
+  flex: 1;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--neon-cyan) var(--bg-color);
+}
+
+.taskbar-items::-webkit-scrollbar {
+  height: 5px;
+}
+
+.taskbar-items::-webkit-scrollbar-track {
+  background: var(--bg-color);
+}
+
+.taskbar-items::-webkit-scrollbar-thumb {
+  background-color: var(--neon-cyan);
+}
+
+.taskbar-item {
+  background-color: rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--neon-cyan);
+  color: var(--neon-cyan);
+  padding: 5px 10px;
+  font-family: "VT323", monospace;
+  font-size: 14px;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 150px;
+  transition: all 0.2s ease;
+}
+
+.taskbar-item:hover {
+  background-color: rgba(0, 255, 255, 0.2);
+}
+
+.taskbar-item.active {
+  background-color: rgba(0, 255, 255, 0.3);
+  border-color: var(--neon-cyan);
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+}
+
+.taskbar-clock {
+  background-color: var(--bg-color);
+  border: 1px solid var(--neon-cyan);
+  color: var(--neon-cyan);
+  padding: 5px 10px;
+  font-family: "VT323", monospace;
+  font-size: 16px;
+  margin-left: 10px;
+}
+
+/* Start menu styles */
+.start-menu {
+  position: fixed;
+  bottom: var(--taskbar-height);
+  left: 0;
+  width: 250px;
+  background-color: rgba(0, 0, 0, 0.9);
+  border: 2px solid var(--neon-cyan);
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+  z-index: 1001;
+  display: none;
+}
+
+.start-menu.active {
+  display: block;
+}
+
+.start-menu-header {
+  padding: 10px;
+  border-bottom: 1px solid var(--neon-cyan);
+}
+
+.start-menu-title {
+  font-family: "Press Start 2P", cursive;
+  font-size: 14px;
+  color: var(--neon-cyan);
+  margin-bottom: 5px;
+}
+
+.start-menu-items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.start-menu-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 15px;
+  cursor: pointer;
+  color: var(--neon-cyan);
+  transition: background-color 0.2s ease;
+}
+
+.start-menu-item:hover {
+  background-color: rgba(0, 255, 255, 0.2);
+}
+
+.start-menu-item-icon {
+  margin-right: 10px;
+  font-size: 18px;
+}
+
+/* Desktop icons */
+.desktop-icons {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 80px);
+  grid-gap: 20px;
+  z-index: 10;
+}
+
+.desktop-icon {
+  width: 80px;
+  height: 90px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.desktop-icon:hover {
+  transform: scale(1.05);
+}
+
+.desktop-icon-img {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 5px;
+  filter: drop-shadow(0 0 5px var(--neon-cyan));
+}
+
+.desktop-icon-label {
+  font-family: "VT323", monospace;
+  font-size: 14px;
+  color: var(--text-color);
+  text-align: center;
+  text-shadow: 0 0 5px var(--bg-color);
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 2px 5px;
+  border-radius: 3px;
+  max-width: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Scanlines effect */
+.scanlines {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 50%, rgba(0, 0, 0, 0.3) 50%);
+  background-size: 100% 4px;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.15;
+}
+
+/* CRT flicker animation */
+@keyframes flicker {
+  0% {
+    opacity: 0.97;
+  }
+  5% {
+    opacity: 0.9;
+  }
+  10% {
+    opacity: 0.97;
+  }
+  15% {
+    opacity: 0.92;
+  }
+  20% {
+    opacity: 0.97;
+  }
+  25% {
+    opacity: 0.93;
+  }
+  30% {
+    opacity: 0.97;
+  }
+  35% {
+    opacity: 0.95;
+  }
+  40% {
+    opacity: 0.97;
+  }
+  100% {
+    opacity: 0.97;
+  }
+}
+
+.crt-flicker {
+  animation: flicker 4s infinite;
+}
+
+/* Neon text effect */
+.neon-text {
+  color: var(--neon-cyan);
+  text-shadow: 0 0 5px var(--neon-cyan), 0 0 10px var(--neon-cyan), 0 0 20px var(--neon-cyan);
+}
+
+.neon-text-magenta {
+  color: var(--neon-magenta);
+  text-shadow: 0 0 5px var(--neon-magenta), 0 0 10px var(--neon-magenta), 0 0 20px var(--neon-magenta);
+}
+
+.neon-text-green {
+  color: var(--neon-green);
+  text-shadow: 0 0 5px var(--neon-green), 0 0 10px var(--neon-green), 0 0 20px var(--neon-green);
+}
+
+.neon-text-yellow {
+  color: var(--neon-yellow);
+  text-shadow: 0 0 5px var(--neon-yellow), 0 0 10px var(--neon-yellow), 0 0 20px var(--neon-yellow);
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .window {
+    min-width: 280px !important;
+    width: 90% !important;
+  }
+
+  .window-titlebar,
+  .titlebar {
+    height: 40px !important;
+  }
+
+  .window-control,
+  .control,
+  .close-button,
+  .minimize-button,
+  .maximize-button,
+  .close,
+  .minimize,
+  .maximize {
+    width: 35px !important;
+    height: 35px !important;
+    font-size: 18px !important;
+  }
+
+  .taskbar {
+    height: 50px !important;
+  }
+
+  .taskbar-item {
+    max-width: 120px !important;
+  }
+
+  .desktop-icons {
+    grid-template-columns: repeat(auto-fill, 70px) !important;
+  }
+
+  .desktop-icon {
+    width: 70px !important;
+  }
+}
+
+/* Accessibility improvements */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Focus styles for keyboard navigation */
+button:focus-visible,
+[role="button"]:focus-visible,
+.window-control:focus-visible,
+.taskbar-item:focus-visible,
+.desktop-icon:focus-visible {
+  outline: 2px solid var(--neon-yellow);
+  outline-offset: 2px;
+}
