@@ -25,32 +25,58 @@ window.addEventListener('load', () => {
   const joystickStick = document.getElementById('joystick-stick');
 
   // ─── WebAudio for SFX ───────────────────────────────────────────────────────
-  const audioCtx   = new (window.AudioContext||window.webkitAudioContext)();
+  let audioCtx;
   let eatBuf, powerBuf;
   const eatURL   = 'https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/power-up-type-1-230548.mp3?v=1746542171704';
   const powerURL = 'https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/coin-upaif-14631.mp3?v=1746542174524';
 
-  async function loadSound(url) {
-    const res = await fetch(url);
-    const arr = await res.arrayBuffer();
-    return audioCtx.decodeAudioData(arr);
+  // Initialize audio context on user interaction to avoid autoplay restrictions
+  function initAudio() {
+    if (audioCtx) return;
+    
+    try {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      
+      async function loadSound(url) {
+        try {
+          const res = await fetch(url);
+          const arr = await res.arrayBuffer();
+          return audioCtx.decodeAudioData(arr);
+        } catch (err) {
+          console.error("Error loading sound:", err);
+          return null;
+        }
+      }
+      
+      Promise.all([loadSound(eatURL), loadSound(powerURL)])
+        .then(([e, p]) => { 
+          eatBuf = e; 
+          powerBuf = p; 
+        })
+        .catch(err => console.error("Error loading sounds:", err));
+    } catch (err) {
+      console.error("WebAudio not supported:", err);
+    }
   }
-  Promise.all([ loadSound(eatURL), loadSound(powerURL) ])
-         .then(([e,p])=>{ eatBuf=e; powerBuf=p; });
 
   function playSFX(buf) {
-    if (!buf) return;
-    const src = audioCtx.createBufferSource();
-    src.buffer = buf;
-    src.connect(audioCtx.destination);
-    src.start();
+    if (!audioCtx || !buf) return;
+    try {
+      const src = audioCtx.createBufferSource();
+      src.buffer = buf;
+      src.connect(audioCtx.destination);
+      src.start();
+    } catch (err) {
+      console.error("Error playing sound:", err);
+    }
   }
 
   // ─── Pause music when tab hidden ───────────────────────────────────────────
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
       music.pause();
-      music.currentTime = 0;
+    } else if (started && !paused && !gameOver) {
+      music.play().catch(() => {});
     }
   });
 
@@ -101,9 +127,10 @@ window.addEventListener('load', () => {
   let cols, rows;
   let snake, dx, dy, apple;
   let baseSpeed, speed, score, level, best;
-  let paused, gameOver, started, hueOffset;
-  let powerUps, particles, trail;
+  let paused = false, gameOver = false, started = false, hueOffset = 0;
+  let powerUps = [], particles = [], trail = [];
   let frameAcc = 0, lastTime = 0;
+  let animationFrameId = null;
 
   const HS_KEY = 'snakeHighScores';
   const MAX_HS = 7;
@@ -112,17 +139,27 @@ window.addEventListener('load', () => {
     GROW:       { color:'magenta', effect:'grow',       duration:3000, value:3,  pts:8  },
     INVINCIBLE: { color:'yellow',  effect:'invincible', duration:5000, value:0,  pts:10 }
   };
-  const MAX_TRAIL = .5;  
+  const MAX_TRAIL = 50;  // Increased from 0.5 to 50 to fix trail length
 
   // ─── High-score helpers ────────────────────────────────────────────────────
   function loadHS() {
-    const j = localStorage.getItem(HS_KEY);
-    return j ? JSON.parse(j) : [];
+    try {
+      const j = localStorage.getItem(HS_KEY);
+      return j ? JSON.parse(j) : [];
+    } catch (err) {
+      console.error("Error loading high scores:", err);
+      return [];
+    }
   }
   function saveHS(list) {
-    localStorage.setItem(HS_KEY, JSON.stringify(list));
+    try {
+      localStorage.setItem(HS_KEY, JSON.stringify(list));
+    } catch (err) {
+      console.error("Error saving high scores:", err);
+    }
   }
   function drawHS() {
+    if (!lstHighScores) return;
     lstHighScores.innerHTML = loadHS()
       .map(h => `<li>${h.name}: ${h.score}</li>`)
       .join('');
@@ -136,6 +173,8 @@ window.addEventListener('load', () => {
 
   // ─── Game helpers ──────────────────────────────────────────────────────────
   function placeApple(){
+    if (!cols || !rows) return;
+    
     do {
       apple = {
         x: Math.floor(Math.random()*cols),
@@ -147,6 +186,8 @@ window.addEventListener('load', () => {
     );
   }
   function createPU(){
+    if (!cols || !rows) return;
+    
     const types = Object.keys(POWER_DEF);
     const t     = types[Math.floor(Math.random()*types.length)];
     const d     = POWER_DEF[t];
@@ -181,10 +222,10 @@ window.addEventListener('load', () => {
     const d = POWER_DEF[pu.type];
     // award points
     score += d.pts;
-    ui.score.textContent = `Score: ${score}`;
+    if (ui.score) ui.score.textContent = `Score: ${score}`;
     if(score > best){
       best = score;
-      ui.best.textContent = `Best: ${best}`;
+      if (ui.best) ui.best.textContent = `Best: ${best}`;
     }
     switch(d.effect){
       case 'speed':
@@ -233,15 +274,15 @@ window.addEventListener('load', () => {
     if(head.x===apple.x&&head.y===apple.y){
       playSFX(eatBuf);
       score += 10;
-      ui.score.textContent = `Score: ${score}`;
+      if (ui.score) ui.score.textContent = `Score: ${score}`;
       if(score > best){
         best = score;
-        ui.best.textContent = `Best: ${best}`;
+        if (ui.best) ui.best.textContent = `Best: ${best}`;
       }
       for(let i=0;i<8;i++) createParticle(apple.x, apple.y, 'magenta');
       if(score % 50 === 0){
         level++;
-        ui.level.textContent = `Level: ${level}`;
+        if (ui.level) ui.level.textContent = `Level: ${level}`;
         for(let i=0;i<8;i++) createParticle(head.x, head.y, 'cyan');
       }
       placeApple();
@@ -253,17 +294,17 @@ window.addEventListener('load', () => {
       if(head.x<0||head.y<0||head.x>=cols||head.y>=rows||
          snake.slice(1).some(s=>s.x===head.x&&s.y===head.y)){
         gameOver = true;
-        ui.status.textContent = 'Game Over';
-        elFinalScore.textContent = `Your score: ${score}`;
-        gameOverOvl.classList.remove('hidden');
-        music.pause(); music.currentTime=0;
+        if (ui.status) ui.status.textContent = 'Game Over';
+        if (elFinalScore) elFinalScore.textContent = `Your score: ${score}`;
+        if (gameOverOvl) gameOverOvl.classList.remove('hidden');
+        if (music) { music.pause(); music.currentTime=0; }
         for(let i=0;i<20;i++) createParticle(head.x, head.y, 'red');
       }
     }
   }
 
   function draw(){
-    if(!started) return;
+    if(!started || !ctx) return;
     drawStars();
 
     // trails (more subtle)
@@ -285,9 +326,11 @@ window.addEventListener('load', () => {
     });
 
     // apple (smaller)
-    const pulse = Math.sin(Date.now()/300)*6;
-    ctx.fillStyle = `hsl(300,100%,${50+pulse}%)`;
-    ctx.fillRect(apple.x*GRID+3, apple.y*GRID+3, GRID-6, GRID-6);
+    if (apple) {
+      const pulse = Math.sin(Date.now()/300)*6;
+      ctx.fillStyle = `hsl(300,100%,${50+pulse}%)`;
+      ctx.fillRect(apple.x*GRID+3, apple.y*GRID+3, GRID-6, GRID-6);
+    }
 
     // snake (smaller)
     snake.forEach((seg,i)=>{
@@ -316,14 +359,28 @@ window.addEventListener('load', () => {
     update(dt);
     draw();
     updateParticles();
-    requestAnimationFrame(loop);
+    animationFrameId = requestAnimationFrame(loop);
   }
 
   // ─── Controls/UI ───────────────────────────────────────────────────────────
   function resetGame(){
-    music.pause(); music.currentTime=0;
-    cols = Math.floor(canvas.width/GRID);
-    rows = Math.floor(canvas.height/GRID);
+    if (music) { music.pause(); music.currentTime=0; }
+    
+    // Cancel any existing animation frame
+    if (animationFrameId) {
+      cancelAnimationFrame(animationFrameId);
+      animationFrameId = null;
+    }
+    
+    // Reset canvas dimensions
+    if (canvas) {
+      canvas.width = canvas.clientWidth;
+      canvas.height = canvas.clientHeight;
+    }
+    
+    cols = canvas && Math.floor(canvas.width/GRID) || 0;
+    rows = canvas && Math.floor(canvas.height/GRID) || 0;
+    
     snake = [{ x: Math.floor(cols/2), y: Math.floor(rows/2) }];
     dx=1; dy=0;
     baseSpeed=5; speed=baseSpeed;
@@ -331,37 +388,94 @@ window.addEventListener('load', () => {
     paused=false; gameOver=false; started=false;
     hueOffset=0;
     powerUps=[]; particles=[]; trail=[];
-    ui.score.textContent='Score: 0';
-    ui.level.textContent='Level: 1';
+    
+    if (ui.score) ui.score.textContent='Score: 0';
+    if (ui.level) ui.level.textContent='Level: 1';
+    
     best = (loadHS()[0]||{score:0}).score;
-    ui.best.textContent=`Best: ${best}`;
-    ui.status.textContent='Running';
-    startOvl.classList.remove('hidden');
-    gameOverOvl.classList.add('hidden');
+    if (ui.best) ui.best.textContent=`Best: ${best}`;
+    if (ui.status) ui.status.textContent='Running';
+    
+    if (startOvl) startOvl.classList.remove('hidden');
+    if (gameOverOvl) gameOverOvl.classList.add('hidden');
+    
     drawHS();
     placeApple();
+    initStars();
   }
 
-  btnPlay.addEventListener('click', ()=>{
-    audioCtx.resume();
-    started=true;
-    startOvl.classList.add('hidden');
-    music.play().catch(()=>{});
-    requestAnimationFrame(loop);
-  });
+  // Handle window resize
+  function handleResize() {
+    if (!canvas) return;
+    
+    // Store current game state
+    const wasStarted = started;
+    const wasPaused = paused;
+    
+    // Pause game during resize
+    paused = true;
+    
+    // Resize canvas
+    canvas.width = canvas.clientWidth;
+    canvas.height = canvas.clientHeight;
+    
+    // Recalculate grid
+    cols = Math.floor(canvas.width/GRID);
+    rows = Math.floor(canvas.height/GRID);
+    
+    // Reinitialize stars
+    initStars();
+    
+    // Ensure apple is within bounds
+    if (apple && (apple.x >= cols || apple.y >= rows)) {
+      placeApple();
+    }
+    
+    // Ensure snake is within bounds
+    snake = snake.map(segment => ({
+      x: Math.min(segment.x, cols-1),
+      y: Math.min(segment.y, rows-1)
+    }));
+    
+    // Resume game if it was running
+    if (wasStarted && !wasPaused) {
+      paused = false;
+    }
+  }
 
-  btnSubmit.addEventListener('click', ()=>{
-    const n = inpName.value.trim()||'ANON';
-    addHS(n,score); drawHS();
-    btnSubmit.disabled=true; inpName.disabled=true;
-  });
+  // Add resize event listener
+  window.addEventListener('resize', handleResize);
 
-  btnAgain.addEventListener('click', ()=>{
-    resetGame();
-    btnSubmit.disabled=false; inpName.disabled=false; inpName.value='';
-    music.pause(); music.currentTime=0;
-    btnPlay.click();
-  });
+  // Event listeners
+  if (btnPlay) {
+    btnPlay.addEventListener('click', ()=>{
+      initAudio();
+      started=true;
+      if (startOvl) startOvl.classList.add('hidden');
+      if (music) music.play().catch(()=>{});
+      animationFrameId = requestAnimationFrame(loop);
+    });
+  }
+
+  if (btnSubmit) {
+    btnSubmit.addEventListener('click', ()=>{
+      const n = inpName && inpName.value.trim() || 'ANON';
+      addHS(n,score); 
+      drawHS();
+      if (btnSubmit) btnSubmit.disabled=true; 
+      if (inpName) inpName.disabled=true;
+    });
+  }
+
+  if (btnAgain) {
+    btnAgain.addEventListener('click', ()=>{
+      resetGame();
+      if (btnSubmit) btnSubmit.disabled=false; 
+      if (inpName) { inpName.disabled=false; inpName.value=''; }
+      if (music) { music.pause(); music.currentTime=0; }
+      if (btnPlay) btnPlay.click();
+    });
+  }
 
   // keyboard
   window.addEventListener('keydown', e=>{
@@ -369,8 +483,10 @@ window.addEventListener('load', () => {
     if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key)) e.preventDefault();
     if(e.key===' '){
       paused = !paused;
-      ui.status.textContent = paused?'Paused':'Running';
-      paused ? music.pause() : music.play().catch(()=>{});
+      if (ui.status) ui.status.textContent = paused?'Paused':'Running';
+      if (music) {
+        paused ? music.pause() : music.play().catch(()=>{});
+      }
       return;
     }
     if(paused||gameOver) return;
@@ -382,20 +498,40 @@ window.addEventListener('load', () => {
     }
     if(e.key.startsWith('Arrow')) speed = baseSpeed*2;
   });
+  
   window.addEventListener('keyup', e=>{
     if(e.key.startsWith('Arrow')) speed = baseSpeed;
   });
 
- 
   // mute
-  btnMute.addEventListener('click', ()=>{
-    music.muted = !music.muted;
-    btnMute.textContent = music.muted?'🔇':'🔊';
-  });
+  if (btnMute) {
+    btnMute.addEventListener('click', ()=>{
+      if (!music) return;
+      music.muted = !music.muted;
+      btnMute.textContent = music.muted?'🔇':'🔊';
+    });
+  }
 
-  // init
-  canvas.width  = canvas.clientWidth;
-  canvas.height = canvas.clientHeight;
-  initStars();
-  resetGame();
+  // Cleanup function to prevent memory leaks
+  function cleanup() {
+    if (animationFrameId) {
+      cancelAnimationFrame(animationFrameId);
+    }
+    window.removeEventListener('resize', handleResize);
+    if (music) {
+      music.pause();
+      music.src = '';
+    }
+  }
+
+  // Handle iframe unload
+  window.addEventListener('beforeunload', cleanup);
+
+  // Initialize the game
+  if (canvas) {
+    canvas.width = canvas.clientWidth;
+    canvas.height = canvas.clientHeight;
+    initStars();
+    resetGame();
+  }
 });

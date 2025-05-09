@@ -328,22 +328,24 @@
       </div>
 
       <!-- ===== SPACEWORM.EXE popup (in index.html) ===== -->
-      <div id="snake" class="popup-window hidden game-window">
-        <div class="window-header">
-          <span>SPACEWORM.EXE</span>
-          <button class="minimize">_</button>
-          <button class="maximize">▭</button>
-          <button class="close">X</button>
-        </div>
-        <div class="window-content">
-          <!-- lazy-loaded iframe -->
-          <iframe
-            data-src="/snake.html"
-            style="width:100%; height:100%; border:none; display:block;"
-            loading="lazy"
-          ></iframe>
-        </div>
-      </div>
+<div id="snake" class="popup-window hidden game-window">
+  <div class="window-header">
+    <span>SPACEWORM.EXE</span>
+    <button class="minimize">_</button>
+    <button class="maximize">▭</button>
+    <button class="close">X</button>
+  </div>
+  <div class="window-content">
+    <!-- Changed from lazy-loaded iframe to a direct iframe with proper attributes -->
+    <iframe
+      src="/snake.html"
+      style="width:100%; height:100%; border:none; display:block;"
+      allowfullscreen
+      allow="autoplay"
+      id="snake-iframe"
+    ></iframe>
+  </div>
+</div>
 
       <!-- r3d3ch0.EXE -->
       <div id="r3d3ch0" class="popup-window hidden">
