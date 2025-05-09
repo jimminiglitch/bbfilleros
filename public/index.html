@@ -2,6 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <title>W3lc0m3 t0 My D1g174l L41R</title>
 
@@ -40,12 +41,12 @@
     <div class="scanlines"></div>
 
     <!-- Boot Screen -->
-      <div id="bootScreen" class="boot-screen">
-    <pre id="boot-log" class="boot-log"></pre>
-    <div class="progress-container">
-      <div id="progress-bar" class="progress-bar"></div>
+    <div id="bootScreen" class="boot-screen">
+      <pre id="boot-log" class="boot-log"></pre>
+      <div class="progress-container">
+        <div id="progress-bar" class="progress-bar"></div>
+      </div>
     </div>
-  </div>
 
     <!-- Desktop Container -->
     <div class="container">
@@ -139,7 +140,7 @@
           <span>Abstract</span>
         </div>
         
-         <div class="desktop-icon" id="icon-weight" data-window="weight">
+        <div class="desktop-icon" id="icon-weight" data-window="weight">
           <img
             src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/VaporTV.png?v=1746411817932"
             alt="weight"
@@ -174,7 +175,7 @@
           />
           <span>r3d3ch0</span>
         </div>
-        
+      </div>
         
       <!-- ABOUT.EXE -->
       <div id="about" class="popup-window hidden">
@@ -228,7 +229,7 @@
           <button class="close">X</button>
         </div>
         <div class="window-content">
-          <iframe src="/contact.html" allowfullscreen loading="lazy"></iframe>
+          <iframe src="/contact.html" allowfullscreen loading="lazy" style="width: 100%; height: 100%; border: none;"></iframe>
         </div>
       </div>
 
@@ -305,48 +306,44 @@
         </div>
       </div>
 
-    
-     <!-- MUSIC.EXE -->
-<div id="music" class="popup-window hidden">
-  <div class="window-header">
-    <span>MUSIC.EXE</span>
-    <button class="minimize">_</button>
-    <button class="maximize">▭</button>
-    <button class="close">X</button>
-  </div>
-  <div class="window-content music-content">
-    <canvas id="visualizer"></canvas>
-    <audio id="music-player" preload="none"></audio>
-    <div id="now-playing">▶ Loading…</div>
-    <div class="music-controls">
-      <button id="prevTrack">◀ Prev</button>
-      <button id="togglePlay">▶/⏸</button>
-      <button id="nextTrack">Next ▶</button>
-    </div>
-    <ul id="playlist"></ul>
-  </div>
-</div>
+      <!-- MUSIC.EXE -->
+      <div id="music" class="popup-window hidden">
+        <div class="window-header">
+          <span>MUSIC.EXE</span>
+          <button class="minimize">_</button>
+          <button class="maximize">▭</button>
+          <button class="close">X</button>
+        </div>
+        <div class="window-content music-content">
+          <canvas id="visualizer"></canvas>
+          <audio id="music-player" preload="none"></audio>
+          <div id="now-playing">▶ Loading…</div>
+          <div class="music-controls">
+            <button id="prevTrack">◀ Prev</button>
+            <button id="togglePlay">▶/⏸</button>
+            <button id="nextTrack">Next ▶</button>
+          </div>
+          <ul id="playlist"></ul>
+        </div>
+      </div>
 
-
-     <!-- ===== SPACEWORM.EXE popup (in index.html) ===== -->
-<!-- changed id from "SPACEWORM" → "snake" -->
-<div id="snake" class="popup-window hidden game-window">
-  <div class="window-header">
-    <span>SPACEWORM.EXE</span>
-    <button class="minimize">_</button>
-    <button class="maximize">▭</button>
-    <button class="close">X</button>
-  </div>
-  <div class="window-content">
-    <!-- lazy-loaded iframe -->
-    <iframe
-      data-src="/snake.html"
-      style="width:100%; height:100%; border:none; display:block;"
-      loading="lazy"
-    ></iframe>
-  </div>
-</div>
-
+      <!-- ===== SPACEWORM.EXE popup (in index.html) ===== -->
+      <div id="snake" class="popup-window hidden game-window">
+        <div class="window-header">
+          <span>SPACEWORM.EXE</span>
+          <button class="minimize">_</button>
+          <button class="maximize">▭</button>
+          <button class="close">X</button>
+        </div>
+        <div class="window-content">
+          <!-- lazy-loaded iframe -->
+          <iframe
+            data-src="/snake.html"
+            style="width:100%; height:100%; border:none; display:block;"
+            loading="lazy"
+          ></iframe>
+        </div>
+      </div>
 
       <!-- r3d3ch0.EXE -->
       <div id="r3d3ch0" class="popup-window hidden">
@@ -365,7 +362,6 @@
         </div>
       </div>
 
-    
       <!-- TOADER.EXE -->
       <div id="toader" class="popup-window hidden">
         <div class="window-header">
@@ -402,7 +398,7 @@
             loading="lazy"
           />
           <h2 class="psychedelic-text">TIGERRR</h2>
-          <audio id="TIGERRR-audio" src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/tiger-roar.mp3" preload="none" loop></audio>
+          <audio id="TIGERRR-audio" src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/tiger-roar.mp3?v=1746577634973" preload="none" loop></audio>
         </div>
       </div>
     
@@ -444,104 +440,98 @@
         </div>
       </div>
 
-        <div id="weight" class="popup-window hidden">
-  <div class="window-header">
-    <span>WEIGHT.EXE</span>
-    <button class="minimize">_</button>
-    <button class="maximize">▭</button>
-    <button class="close">X</button>
-  </div>
+      <!-- WEIGHT.EXE -->
+      <div id="weight" class="popup-window hidden">
+        <div class="window-header">
+          <span>WEIGHT.EXE</span>
+          <button class="minimize">_</button>
+          <button class="maximize">▭</button>
+          <button class="close">X</button>
+        </div>
 
-  <div class="window-content" style="position: relative; padding: 56.25% 0 0 0;">
-    <!-- Poster Overlay -->
-    <div id="weight-poster" style="
-      position: absolute;
-      inset: 0;
-      background: url('https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/VaporTV.png?v=1746411817932') center/cover no-repeat;
-      cursor: pointer;
-      z-index: 2;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    ">
-      <span style="
-        font-family: 'Press Start 2P', monospace;
-        background: black;
-        color: cyan;
-        padding: 0.5rem 1rem;
-        border: 2px solid cyan;
-      ">▶ PLAY</span>
+        <div class="window-content" style="position: relative; padding: 56.25% 0 0 0;">
+          <!-- Poster Overlay -->
+          <div id="weight-poster" style="
+            position: absolute;
+            inset: 0;
+            background: url('https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/VaporTV.png?v=1746411817932') center/cover no-repeat;
+            cursor: pointer;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          ">
+            <span style="
+              font-family: 'Press Start 2P', monospace;
+              background: black;
+              color: cyan;
+              padding: 0.5rem 1rem;
+              border: 2px solid cyan;
+            ">▶ PLAY</span>
+          </div>
+
+          <!-- Vimeo Iframe - Fixed the video ID -->
+          <iframe
+            id="weight-player"
+            data-src="https://player.vimeo.com/video/1082536082?h=0f9a8b9e4d&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479"
+            src="https://player.vimeo.com/video/1082536082?h=0f9a8b9e4d&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479"
+            frameborder="0"
+            allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
+            style="position:absolute;top:0;left:0;width:100%;height:100%; z-index:1;"
+            title="The Weight of Care"
+            allowfullscreen
+          ></iframe>
+        </div>
+
+        <!-- Vimeo Player API -->
+        <script src="https://player.vimeo.com/api/player.js"></script>
+
+        <!-- Inline JS: Play on click, stop on close -->
+        <script>
+          document.addEventListener("DOMContentLoaded", function() {
+            const weightPoster = document.getElementById("weight-poster");
+            const weightIframe = document.getElementById("weight-player");
+            
+            if (weightPoster && weightIframe) {
+              weightPoster.addEventListener("click", () => {
+                weightPoster.style.display = "none";
+                weightIframe.src = weightIframe.dataset.src;
+              });
+
+              // Reset iframe on close to stop sound
+              const closeBtn = document.querySelector('#weight .close');
+              if (closeBtn) {
+                closeBtn.addEventListener('click', () => {
+                  weightPoster.style.display = "flex";
+                  weightIframe.src = "";
+                });
+              }
+            }
+          });
+        </script>
+      </div>
+    </div>
+    
+    <!-- Starfield Background -->
+    <canvas id="background-canvas"></canvas>
+
+    <!-- Audio Visualizer -->
+    <canvas id="audio-visualizer"></canvas>
+
+    <!-- Taskbar & Clock -->
+    <div id="start-bar">
+      <button id="start-button">START</button>
+      <div id="taskbar-icons"></div>
+      <span id="clock"></span>
     </div>
 
-    <!-- Vimeo Iframe -->
-    <iframe
-      id="weight-player"
-      data-src="https://player.vimeo.com/video/1082536082?h=0f9a8b9e4d&autoplay=1&muted=0"
-      src=""
-      frameborder="0"
-      allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
-      style="position:absolute;top:0;left:0;width:100%;height:100%; z-index:1;"
-      title="The Weight of Care"
-      allowfullscreen
-    ></iframe>
-  </div>
-
-  <!-- Vimeo Player API -->
-  <script src="https://player.vimeo.com/api/player.js"></script>
-
-  <!-- Inline JS: Play on click, stop on close -->
-  <script>
-    const weightPoster = document.getElementById("weight-poster");
-    const weightIframe = document.getElementById("weight-player");
-
-    weightPoster.addEventListener("click", () => {
-      weightPoster.style.display = "none";
-      weightIframe.src = weightIframe.dataset.src;
-    });
-
-    // Reset iframe on close to stop sound
-    document.querySelector('#weight .close').addEventListener('click', () => {
-      weightPoster.style.display = "flex";
-      weightIframe.src = "";
-    });
-
-    // Optional: Reload src if reopened
-    function reopenWeightWindow() {
-      const win = document.getElementById("weight");
-      win.classList.remove("hidden");
-      if (weightPoster.style.display === "none" && weightIframe.dataset.src) {
-        weightIframe.src = weightIframe.dataset.src;
-      }
-    }
-  </script>
-</div>
-
-
-     </div>
-    
-      <!-- Starfield Background -->
-      <canvas id="background-canvas"></canvas>
-
-      <!-- Audio Visualizer -->
-      <canvas id="audio-visualizer"></canvas>
-
-      <!-- Taskbar & Clock -->
-      <div id="start-bar">
-        <button id="start-button">START</button>
-        <div id="taskbar-icons"></div>
-        <span id="clock"></span>
-      </div>
-
-      <!-- Start Menu -->
-      <div id="start-menu">
-        <a href="javascript:void(0)" onclick="openWindow('about')">About</a>
-        <a href="javascript:void(0)" onclick="openWindow('resume')">Resume</a>
-        <a href="javascript:void(0)" onclick="openWindow('contact')">Contact</a>
-        <a href="javascript:void(0)" onclick="openWindow('nature')">Nature</a>
-        <a href="javascript:void(0)" onclick="openWindow('snake')">SPACEWORM</a>
-        
-
-      </div>
+    <!-- Start Menu -->
+    <div id="start-menu">
+      <a href="javascript:void(0)" onclick="openWindow('about')">About</a>
+      <a href="javascript:void(0)" onclick="openWindow('resume')">Resume</a>
+      <a href="javascript:void(0)" onclick="openWindow('contact')">Contact</a>
+      <a href="javascript:void(0)" onclick="openWindow('nature')">Nature</a>
+      <a href="javascript:void(0)" onclick="openWindow('snake')">SPACEWORM</a>
     </div>
     
     <!-- Main Script -->

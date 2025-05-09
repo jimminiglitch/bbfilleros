@@ -622,7 +622,7 @@ body {
 
 /*─────────────────────────────────────────────────────────────────────────────
   TASKBAR & START MENU
-─────────────────────────────────────────────────────────────────────────────*/
+────────────────────────────────────────────────────────────��────────────────*/
 #start-bar {
   position: fixed;
   bottom: 0;
@@ -686,7 +686,7 @@ body {
     text-shadow: 0 0 10px var(--neon-cyan);
   }
   100% {
-    color: ;
+    color: white;
     text-shadow: none;
   }
 }
@@ -976,7 +976,7 @@ body {
 }
 
 .single-art img:hover {
-  transform: scale(flex);
+  transform: scale(1.05); /* Fixed: Changed 'flex' to a numeric value */
 }
 
 .popup-window.active video,
@@ -1179,6 +1179,15 @@ body {
   flex: 1;
 }
 
+.track-number {
+  width: 30px;
+  color: var(--neon-yellow);
+}
+
+.track-info {
+  flex: 1;
+}
+
 .track-title {
   color: var(--neon-pink);
   margin-bottom: 0.25rem;
@@ -1194,12 +1203,37 @@ body {
 }
 
 /* Mobile-friendly improvements */
+@media (max-width: 768px) {
+  .popup-window {
+    width: 95vw;
+    height: 80vh;
+    top: 10vh;
+    left: 2.5vw;
+  }
+  
+  .desktop-icon {
+    width: 70px;
+  }
+  
+  .desktop-icon img {
+    width: 48px;
+    height: 48px;
+  }
+  
+  .desktop-icon span {
+    font-size: 0.7rem;
+  }
+  
+  #start-bar {
+    height: 40px;
+  }
+  
+  .container {
+    height: calc(100vh - 40px);
+  }
+}
 
-
-
-
-
-/* target any image inside a popup’s content area */
+/* target any image inside a popup's content area */
 .popup-window .window-content img {
   display: block;
   max-width: 90vw;   /* up to 90% of the viewport width */
@@ -1263,4 +1297,31 @@ body {
   color: #fffc00;
   font-weight: bold;
   text-shadow: 0 0 8px #ff0, 0 0 16px #f0f;
+}
+
+/* Accessibility improvements */
+.popup-window .window-header button:focus,
+#start-button:focus,
+.desktop-icon:focus,
+.music-controls button:focus {
+  outline: 2px solid var(--neon-cyan);
+  box-shadow: 0 0 10px var(--neon-cyan);
+}
+
+/* Add keyboard focus styles for desktop icons */
+.desktop-icon {
+  outline: none;
+}
+
+.desktop-icon:focus img {
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 8px var(--neon-cyan));
+}
+
+/* Fix for video elements */
+.popup-window .window-content video {
+  max-width: 100%;
+  max-height: 100%;
+  display: block;
+  margin: 0 auto;
 }
