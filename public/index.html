@@ -306,25 +306,27 @@
       </div>
 
     
-      <!-- MUSIC.EXE -->
-      <div id="music" class="popup-window hidden">
-        <div class="window-header">
-          <span>MUSIC.EXE</span>
-          <button class="minimize">_</button>
-          <button class="maximize">▭</button>
-          <button class="close">X</button>
-        </div>
-        <div class="window-content">
-          <audio id="music-player" preload="none"></audio>
-          <div id="now-playing">▶ Loading…</div>
-          <div class="music-controls">
-            <button id="prevTrack">◀ Prev</button>
-            <button id="togglePlay">Play/Pause</button>
-            <button id="nextTrack">Next ▶</button>
-          </div>
-          <ul id="playlist"></ul>
-        </div>
-      </div>
+     <!-- MUSIC.EXE -->
+<div id="music" class="popup-window hidden">
+  <div class="window-header">
+    <span>MUSIC.EXE</span>
+    <button class="minimize">_</button>
+    <button class="maximize">▭</button>
+    <button class="close">X</button>
+  </div>
+  <div class="window-content music-content">
+    <canvas id="visualizer"></canvas>
+    <audio id="music-player" preload="none"></audio>
+    <div id="now-playing">▶ Loading…</div>
+    <div class="music-controls">
+      <button id="prevTrack">◀ Prev</button>
+      <button id="togglePlay">▶/⏸</button>
+      <button id="nextTrack">Next ▶</button>
+    </div>
+    <ul id="playlist"></ul>
+  </div>
+</div>
+
 
      <!-- ===== SPACEWORM.EXE popup (in index.html) ===== -->
 <!-- changed id from "SPACEWORM" → "snake" -->

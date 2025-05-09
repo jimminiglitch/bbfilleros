@@ -1208,3 +1208,59 @@ body {
   height: auto;
   margin: 0 auto;    /* center horizontally */
 }
+
+#playlist li.playing {
+  color: var(--neon-cyan);
+  font-weight: bold;
+  text-shadow: 0 0 5px var(--neon-pink);
+}
+
+#music .window-content {
+  background: linear-gradient(135deg, #000010, #0f001f);
+  color: #fff;
+  padding: 1rem;
+  font-family: 'VT323', monospace;
+  border: 2px solid #f3a1ff;
+  box-shadow: 0 0 25px #ff00ffaa, inset 0 0 20px #00ffeebb;
+  position: relative;
+}
+
+#music canvas#visualizer {
+  width: 100%;
+  height: 100px;
+  display: block;
+  background: black;
+  border: 1px solid #fff;
+  margin-bottom: 1rem;
+}
+
+.music-controls button {
+  background: black;
+  border: 2px solid #f3a1ff;
+  color: #00f0ff;
+  padding: 0.3rem 0.8rem;
+  margin: 0 0.3rem;
+  font-family: 'Press Start 2P', monospace;
+  text-shadow: 0 0 3px #0ff;
+  box-shadow: 0 0 8px #0ff;
+  cursor: pointer;
+}
+
+#playlist {
+  list-style: none;
+  padding: 0.5rem 0;
+  max-height: 120px;
+  overflow-y: auto;
+}
+
+#playlist li {
+  padding: 0.3rem;
+  cursor: pointer;
+}
+
+#playlist li.playing {
+  background: #1f001f;
+  color: #fffc00;
+  font-weight: bold;
+  text-shadow: 0 0 8px #ff0, 0 0 16px #f0f;
+}

@@ -747,3 +747,51 @@ document.querySelectorAll('iframe').forEach(iframe => {
 
   observer.observe(parent, { attributes: true, attributeFilter: ['style'] });
 });
+
+const canvas = document.getElementById("visualizer");
+const ctx = canvas.getContext("2d");
+let audioCtx, analyser, source, dataArray, bufferLength;
+
+function initVisualizer() {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    analyser = audioCtx.createAnalyser();
+    source = audioCtx.createMediaElementSource(player);
+    source.connect(analyser);
+    analyser.connect(audioCtx.destination);
+    analyser.fftSize = 256;
+    bufferLength = analyser.frequencyBinCount;
+    dataArray = new Uint8Array(bufferLength);
+    drawVisualizer();
+  }
+}
+
+function drawVisualizer() {
+  requestAnimationFrame(drawVisualizer);
+  analyser.getByteFrequencyData(dataArray);
+
+  const width = canvas.width;
+  const height = canvas.height;
+  const barWidth = width / bufferLength;
+  let x = 0;
+
+  ctx.clearRect(0, 0, width, height);
+  for (let i = 0; i < bufferLength; i++) {
+    const barHeight = dataArray[i];
+    const hue = (i * 2 + barHeight) % 360;
+    ctx.fillStyle = `hsl(${hue}, 100%, 50%)`;
+    ctx.fillRect(x, height - barHeight, barWidth, barHeight);
+    x += barWidth;
+  }
+}
+
+player.addEventListener("play", () => {
+  initVisualizer();
+});
+
+window.addEventListener('resize', () => {
+  canvas.width = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight;
+});
+canvas.width = canvas.offsetWidth;
+canvas.height = canvas.offsetHeight;
