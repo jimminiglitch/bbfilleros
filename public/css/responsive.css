@@ -1,0 +1,88 @@
+/* Mobile Responsiveness */
+@media (max-width: 1024px) {
+  #desktop-icons {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+  }
+  
+  .popup-window {
+    width: 90%;
+    max-width: 90%;
+    height: 80%;
+  }
+}
+
+@media (max-width: 768px) {
+  #desktop-icons {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+  
+  .popup-window {
+    width: 95%;
+    max-width: 95%;
+    height: 75%;
+  }
+  
+  h1.glitch {
+    font-size: 2.2rem;
+  }
+  
+  .desktop-icon img {
+    width: 48px;
+    height: 48px;
+  }
+  
+  .desktop-icon span {
+    font-size: 0.8rem;
+  }
+  
+  #start-bar {
+    height: 40px;
+  }
+  
+  #start-button {
+    font-size: 0.8rem;
+    padding: 5px 10px;
+  }
+  
+  #clock {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  #desktop-icons {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    padding: 10px;
+  }
+  
+  h1.glitch {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+  }
+  
+  .window-content {
+    padding: 10px;
+  }
+  
+  .window-header {
+    padding: 5px 8px;
+  }
+  
+  .window-header button {
+    width: 20px;
+    height: 20px;
+    font-size: 0.7rem;
+  }
+  
+  #start-menu {
+    width: 200px;
+  }
+  
+  #start-menu a {
+    padding: 8px 15px;
+    font-size: 0.9rem;
+  }
+}
