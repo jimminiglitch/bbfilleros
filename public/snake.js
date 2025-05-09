@@ -17,6 +17,7 @@ window.addEventListener("load", () => {
   const btnMute = document.getElementById("mute-button")
   const joystickBase = document.getElementById("joystick-base")
   const joystickStick = document.getElementById("joystick-stick")
+  const powerUpIndicators = document.getElementById("power-up-indicators")
 
   // ─── Touch controls variables ───────────────────────────────────────────────
   let touchStartX = 0
@@ -25,6 +26,9 @@ window.addEventListener("load", () => {
   let touchEndY = 0
   let joystickActive = false
   let joystickAngle = 0
+
+  // ─── Active power-ups tracking ───────────────────────────────────────────────
+  let activePowerUps = []
 
   // ─── WebAudio for SFX ───────────────────────────────────────────────────────
   let audioCtx
@@ -72,6 +76,47 @@ window.addEventListener("load", () => {
     } catch (err) {
       console.error("Error playing sound:", err)
     }
+  }
+
+  // ─── Power-up Indicators ───────────────────────────────────────────────────
+  function updatePowerUpIndicators() {
+    if (!powerUpIndicators) return
+
+    // Clear existing indicators
+    powerUpIndicators.innerHTML = ""
+
+    // Create indicators for active power-ups
+    activePowerUps.forEach((pu) => {
+      const indicator = document.createElement("div")
+      indicator.className = `power-up-indicator power-${pu.type.toLowerCase()}`
+
+      const icon = document.createElement("div")
+      icon.className = "power-up-icon"
+      icon.textContent = pu.type[0]
+
+      const name = document.createElement("span")
+      name.textContent = pu.type
+
+      const progress = document.createElement("div")
+      progress.className = "power-up-progress"
+
+      const bar = document.createElement("div")
+      bar.className = "power-up-bar"
+
+      // Calculate remaining time percentage
+      const elapsed = Date.now() - pu.start
+      const remaining = Math.max(0, pu.duration - elapsed)
+      const percent = (remaining / pu.duration) * 100
+
+      // Set the animation
+      bar.style.width = `${percent}%`
+
+      progress.appendChild(bar)
+      indicator.appendChild(icon)
+      indicator.appendChild(name)
+      indicator.appendChild(progress)
+      powerUpIndicators.appendChild(indicator)
+    })
   }
 
   // Listen for messages from the parent window
@@ -397,6 +442,23 @@ window.addEventListener("load", () => {
       best = score
       if (bestEl) bestEl.textContent = `Best: ${best}`
     }
+
+    // Add to active power-ups
+    const activePU = {
+      type: pu.type,
+      duration: d.duration,
+      start: Date.now(),
+      color: d.color,
+    }
+
+    // Check if this power-up type already exists and replace it
+    const existingIndex = activePowerUps.findIndex((p) => p.type === pu.type)
+    if (existingIndex >= 0) {
+      activePowerUps[existingIndex] = activePU
+    } else {
+      activePowerUps.push(activePU)
+    }
+
     switch (d.effect) {
       case "speed":
         speed = baseSpeed * 1.5
@@ -415,6 +477,9 @@ window.addEventListener("load", () => {
         createParticle(snake[0].x, snake[0].y, d.color)
         break
     }
+
+    // Update the indicators
+    updatePowerUpIndicators()
   }
 
   // ─── Update & draw ─────────────────────────────────────────────────────────
@@ -423,6 +488,15 @@ window.addEventListener("load", () => {
     frameAcc += dt
     if (frameAcc < 1000 / speed) return
     frameAcc = 0
+
+    // Update active power-ups
+    activePowerUps = activePowerUps.filter((pu) => Date.now() - pu.start < pu.duration)
+    updatePowerUpIndicators()
+
+    // Reset speed if speed power-up expired
+    if (!activePowerUps.some((pu) => pu.type === "SPEED")) {
+      speed = baseSpeed
+    }
 
     powerUps = powerUps.filter((pu) => Date.now() - pu.start < pu.duration)
     if (Math.random() < 0.01) createPU()
@@ -575,6 +649,7 @@ window.addEventListener("load", () => {
     started = false
     hueOffset = 0
     powerUps = []
+    activePowerUps = []
     particles = []
     trail = []
 
@@ -587,6 +662,9 @@ window.addEventListener("load", () => {
 
     if (startOvl) startOvl.classList.remove("hidden")
     if (gameOverOvl) gameOverOvl.classList.add("hidden")
+
+    // Clear power-up indicators
+    if (powerUpIndicators) powerUpIndicators.innerHTML = ""
 
     drawHS()
     placeApple()
@@ -642,7 +720,34 @@ window.addEventListener("load", () => {
       initTouchControls() // Initialize touch controls
       started = true
       if (startOvl) startOvl.classList.add("hidden")
-      if (music) music.play().catch(() => {})
+
+      // Fix for music not playing
+      if (music) {
+        // Make sure the music is loaded
+        if (music.readyState < 2) {
+          music.load()
+        }
+
+        // Try to play with a user gesture
+        const playPromise = music.play()
+
+        if (playPromise !== undefined) {
+          playPromise.catch((error) => {
+            console.log("Music autoplay prevented:", error)
+            // Show a message to the user that they need to interact with the page
+            if (statusEl) statusEl.textContent = "Click for music"
+
+            // Add a one-time click handler to start music
+            const startMusic = () => {
+              music.play().catch((e) => console.log("Still can't play music:", e))
+              document.removeEventListener("click", startMusic)
+              if (statusEl) statusEl.textContent = "Running"
+            }
+            document.addEventListener("click", startMusic)
+          })
+        }
+      }
+
       animationFrameId = requestAnimationFrame(loop)
     })
   }

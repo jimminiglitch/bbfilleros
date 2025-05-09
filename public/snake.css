@@ -76,6 +76,15 @@
   }
 }
 
+@keyframes progress-bar {
+  0% {
+    width: 100%;
+  }
+  100% {
+    width: 0%;
+  }
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -109,6 +118,83 @@ body {
   display: block;
   position: relative;
   z-index: 1;
+}
+
+/* Power-up indicators */
+#power-up-indicators {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  z-index: 20;
+}
+
+.power-up-indicator {
+  display: flex;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-family: "Press Start 2P", monospace;
+  font-size: 10px;
+  animation: rainbow-border 8s infinite alternate;
+}
+
+.power-up-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.power-up-progress {
+  height: 5px;
+  background: rgba(255, 255, 255, 0.2);
+  width: 50px;
+  margin-left: 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+.power-up-bar {
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
+.power-speed .power-up-icon {
+  background: var(--neon-cyan);
+  color: black;
+}
+
+.power-speed .power-up-bar {
+  background: var(--neon-cyan);
+}
+
+.power-grow .power-up-icon {
+  background: var(--neon-pink);
+  color: black;
+}
+
+.power-grow .power-up-bar {
+  background: var(--neon-pink);
+}
+
+.power-invincible .power-up-icon {
+  background: var(--neon-yellow);
+  color: black;
+}
+
+.power-invincible .power-up-bar {
+  background: var(--neon-yellow);
 }
 
 /* UI elements */
@@ -294,6 +380,10 @@ body {
 
   .overlay h1 {
     font-size: 18px;
+  }
+
+  #power-up-indicators {
+    top: 50px; /* Move down to avoid overlap with mute button on mobile */
   }
 }
 
