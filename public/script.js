@@ -327,6 +327,76 @@ function closeWindow(id) {
 }
 
 
+const tracks = [
+  {
+    title: "Paper Doll (LIVE)",
+    src: "https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/Paper%20Doll%20(LIVE).mp3?v=1746750692768"
+  },
+  {
+    title: "Manameisdrnk",
+    src: "https://cdn.glitch.me/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/mynameisdrunk.wav?v=1746751634863"
+  }
+];
+
+const player = document.getElementById("music-player");
+const nowPlaying = document.getElementById("now-playing");
+const playlistEl = document.getElementById("playlist");
+
+let currentTrackIndex = 0;
+
+function loadTrack(index) {
+  const track = tracks[index];
+  if (!track) return;
+
+  player.src = track.src;
+  nowPlaying.textContent = `▶ Now Playing: ${track.title}`;
+  player.play();
+  highlightCurrentTrack();
+}
+
+function highlightCurrentTrack() {
+  const items = playlistEl.querySelectorAll("li");
+  items.forEach((li, i) => {
+    li.classList.toggle("playing", i === currentTrackIndex);
+  });
+}
+
+// Event handlers
+document.getElementById("togglePlay").addEventListener("click", () => {
+  if (player.paused) {
+    player.play();
+  } else {
+    player.pause();
+  }
+});
+
+document.getElementById("nextTrack").addEventListener("click", () => {
+  currentTrackIndex = (currentTrackIndex + 1) % tracks.length;
+  loadTrack(currentTrackIndex);
+});
+
+document.getElementById("prevTrack").addEventListener("click", () => {
+  currentTrackIndex = (currentTrackIndex - 1 + tracks.length) % tracks.length;
+  loadTrack(currentTrackIndex);
+});
+
+// Populate playlist
+tracks.forEach((track, index) => {
+  const li = document.createElement("li");
+  li.textContent = track.title;
+  li.addEventListener("click", () => {
+    currentTrackIndex = index;
+    loadTrack(currentTrackIndex);
+  });
+  playlistEl.appendChild(li);
+});
+
+// Auto-load first track on window open
+document.getElementById("music").addEventListener("click", () => {
+  if (!player.src) loadTrack(currentTrackIndex);
+});
+
+
 function toggleMaximizeWindow(id) {
   const win = document.getElementById(id)
   if (!win) return
