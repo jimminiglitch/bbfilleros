@@ -207,6 +207,19 @@ function openWindow(id) {
     toadHoverAudio.play().catch(() => {});
   }
 
+  // ─── Special handling for snake game ───
+  if (id === "snake") {
+    const snakeIframe = document.getElementById("snake-iframe");
+    if (snakeIframe) {
+      // Force reload the iframe to restart the game properly
+      const currentSrc = snakeIframe.src;
+      snakeIframe.src = '';
+      setTimeout(() => {
+        snakeIframe.src = currentSrc;
+      }, 100);
+    }
+  }
+
   // 5) Restore previous bounds or clamp to viewport
   const isMobileView = isMobile();
   if (isMobileView) {
@@ -256,7 +269,7 @@ function createTaskbarIcon(id) {
 
   const win = document.getElementById(id)
   if (!win) return; // FIX: Skip if window doesn't exist
-  
+
   const titleEl = win.querySelector(".window-header span");
   const title = titleEl ? titleEl.textContent.replace(".EXE", "") : id.toUpperCase();
 
@@ -292,6 +305,19 @@ function minimizeWindow(id) {
     // Create taskbar icon
     createTaskbarIcon(id);
 
+    // Special handling for snake game - pause but don't unload
+    if (id === "snake") {
+      const snakeIframe = document.getElementById("snake-iframe");
+      if (snakeIframe) {
+        try {
+          // Try to send a pause message to the iframe
+          snakeIframe.contentWindow.postMessage('pause', '*');
+        } catch (e) {
+          console.error("Could not pause snake game:", e);
+        }
+      }
+    }
+
     // Stop toad hover SFX if it's the toader window
     if (id === "toader") {
       toadHoverAudio.pause();
@@ -312,6 +338,15 @@ function closeWindow(id) {
       if (vid) {
         vid.pause();
         vid.currentTime = 0;
+      }
+
+      // Special handling for snake game
+      if (id === "snake") {
+        const snakeIframe = document.getElementById("snake-iframe");
+        if (snakeIframe) {
+          // Clear the iframe src to stop the game and free resources
+          snakeIframe.src = '';
+        }
       }
 
       // Hide window
@@ -336,7 +371,7 @@ function closeWindow(id) {
 const tracks = [
   {
     title: "Paper Doll (LIVE)",
-    src: "https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/Paper%20Doll%20(LIVE).mp3?v=1746751595622"
+    src: "https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/Paper%20Doll%20(LIVE).mp3?v=1746750692768"
   },
   {
     title: "Manameisdrnk",
@@ -349,7 +384,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const player = document.getElementById("music-player");
   const nowPlaying = document.getElementById("now-playing");
   const playlistEl = document.getElementById("playlist");
-  
+
   if (!player || !nowPlaying || !playlistEl) return; // Skip if elements don't exist
 
   let currentTrackIndex = 0;
@@ -746,7 +781,7 @@ function onSelectEnd() {
 function initStarfield() {
   const canvas = document.getElementById("background-canvas")
   if (!canvas) return;
-  
+
   const ctx = canvas.getContext("2d")
   if (!ctx) return;
 
@@ -865,3 +900,4 @@ console.log("4. Fixed window width calculation (using window.innerWidth instead 
 console.log("5. Improved audio handling to comply with browser autoplay policies");
 console.log("6. Added proper event listener cleanup");
 console.log("7. Reduced toad hover audio volume for better user experience");
+console.log("8. Added special handling for snake game integration");
