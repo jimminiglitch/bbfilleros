@@ -1,60 +1,127 @@
-/* snake.css - styling for SPACEWORM.EXE */
+/* snake.css - styling for SPACEWORM.EXE with trippy effects */
 
 :root {
   --neon-green: #00ff66;
   --neon-cyan: #00ffff;
   --neon-purple: #a9a1ff;
   --neon-yellow: #ffff00;
+  --neon-pink: #ff00ff;
+  --neon-orange: #ff9900;
   --bg-color: #000000;
 }
 
-body {
+@keyframes rainbow-text {
+  0% {
+    color: var(--neon-green);
+    text-shadow: 0 0 10px var(--neon-green);
+  }
+  20% {
+    color: var(--neon-cyan);
+    text-shadow: 0 0 10px var(--neon-cyan);
+  }
+  40% {
+    color: var(--neon-purple);
+    text-shadow: 0 0 10px var(--neon-purple);
+  }
+  60% {
+    color: var(--neon-yellow);
+    text-shadow: 0 0 10px var(--neon-yellow);
+  }
+  80% {
+    color: var(--neon-pink);
+    text-shadow: 0 0 10px var(--neon-pink);
+  }
+  100% {
+    color: var(--neon-orange);
+    text-shadow: 0 0 10px var(--neon-orange);
+  }
+}
+
+@keyframes rainbow-border {
+  0% {
+    border-color: var(--neon-green);
+    box-shadow: 0 0 20px var(--neon-green);
+  }
+  20% {
+    border-color: var(--neon-cyan);
+    box-shadow: 0 0 20px var(--neon-cyan);
+  }
+  40% {
+    border-color: var(--neon-purple);
+    box-shadow: 0 0 20px var(--neon-purple);
+  }
+  60% {
+    border-color: var(--neon-yellow);
+    box-shadow: 0 0 20px var(--neon-yellow);
+  }
+  80% {
+    border-color: var(--neon-pink);
+    box-shadow: 0 0 20px var(--neon-pink);
+  }
+  100% {
+    border-color: var(--neon-orange);
+    box-shadow: 0 0 20px var(--neon-orange);
+  }
+}
+
+@keyframes glow-pulse {
+  0% {
+    opacity: 0.1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 0.1;
+  }
+}
+
+/* snake.css - styling for SPACEWORM.EXE */
+
+:root {
+  --neon-purple: #a9a1ff;
+  --neon-pink: #f3a1ff;
+  --neon-cyan: #00f0ff;
+  --neon-yellow: #fffc00;
+  --neon-green: #00ff66;
+  --neon-red: #ff3366;
+  --neon-orange: #ff9933;
+  --neon-blue: #3366ff;
+}
+
+* {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+body {
+  background: #000;
+  color: #fff;
+  font-family: 'Press Start 2P', monospace;
   overflow: hidden;
-  background: var(--bg-color);
-  font-family: "VT323", monospace;
-  color: var(--neon-green);
   height: 100vh;
   width: 100vw;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Game field */
 #game-field {
-  position: absolute;
-  top: 0;
-  left: 0;
   width: 100%;
-  height: calc(100% - 30px);
+  height: 100%;
+  position: relative;
   overflow: hidden;
 }
 
 #snake-canvas {
+  display: block;
   width: 100%;
   height: 100%;
-  display: block;
-}
-
-/* UI elements */
-#snake-ui {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 30px;
-  background: rgba(0, 0, 0, 0.8);
-  color: var(--neon-green);
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  font-family: "Press Start 2P", monospace;
-  font-size: 12px;
-  text-shadow: 0 0 5px var(--neon-green);
-  z-index: 10;
-}
-
-#snake-ui span {
-  margin: 0 10px;
+  background: #000;
 }
 
 /* Overlays */
@@ -64,75 +131,74 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.9);
+  background: rgba(0, 0, 0, 0.85);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 100;
 }
 
+.overlay.hidden {
+  display: none;
+}
+
 .overlay-content {
-  background: rgba(0, 20, 0, 0.8);
-  border: 2px solid var(--neon-green);
-  box-shadow: 0 0 20px var(--neon-green);
-  padding: 20px;
+  background: rgba(0, 0, 0, 0.8);
+  border: 2px solid var(--neon-cyan);
+  border-radius: 8px;
+  padding: 2rem;
   text-align: center;
-  max-width: 80%;
+  max-width: 90%;
+  box-shadow: 0 0 20px var(--neon-cyan);
+  animation: glow 2s infinite alternate;
+}
+
+@keyframes glow {
+  0% {
+    box-shadow: 0 0 10px var(--neon-cyan);
+  }
+  100% {
+    box-shadow: 0 0 20px var(--neon-pink), 0 0 30px var(--neon-purple);
+  }
 }
 
 .overlay h1 {
-  font-family: "Press Start 2P", monospace;
-  color: var(--neon-green);
-  text-shadow: 0 0 10px var(--neon-green);
-  margin-bottom: 20px;
+  color: var(--neon-yellow);
+  margin-bottom: 1.5rem;
+  text-shadow: 0 0 10px var(--neon-yellow);
+  font-size: 1.5rem;
 }
 
 .overlay button {
-  background: black;
-  color: var(--neon-green);
+  background: transparent;
   border: 2px solid var(--neon-green);
-  padding: 10px 20px;
-  margin: 10px;
-  font-family: "Press Start 2P", monospace;
+  color: var(--neon-green);
+  padding: 0.75rem 1.5rem;
+  margin-top: 1rem;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.8rem;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s;
+  text-shadow: 0 0 5px var(--neon-green);
+  box-shadow: 0 0 10px rgba(0, 255, 102, 0.3);
 }
 
 .overlay button:hover {
-  background: #003300;
-  box-shadow: 0 0 10px var(--neon-green);
+  background: rgba(0, 255, 102, 0.2);
+  box-shadow: 0 0 15px rgba(0, 255, 102, 0.5);
 }
 
-.hidden {
-  display: none !important;
-}
-
-/* High scores */
-#high-scores-list {
-  list-style-type: none;
-  padding: 0;
-  margin: 20px 0;
-  text-align: left;
-  max-height: 150px;
-  overflow-y: auto;
-}
-
-#high-scores-list li {
-  padding: 5px;
-  border-bottom: 1px solid var(--neon-green);
-}
-
-#score-entry {
-  margin: 20px 0;
-}
-
-#name-input {
-  background: black;
-  color: var(--neon-green);
-  border: 2px solid var(--neon-green);
-  padding: 10px;
-  font-family: "VT323", monospace;
-  margin-right: 10px;
+/* Game UI */
+#snake-ui {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-family: 'VT323', monospace;
+  font-size: 1.2rem;
+  color: var(--neon-cyan);
+  text-shadow: 0 0 5px var(--neon-cyan);
+  z-index: 10;
+  pointer-events: none;
 }
 
 /* Mute button */
@@ -140,26 +206,104 @@ body {
   position: absolute;
   top: 10px;
   right: 10px;
-  background: rgba(0, 0, 0, 0.5);
-  color: white;
-  border: 1px solid var(--neon-green);
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background: transparent;
+  border: none;
+  color: var(--neon-yellow);
+  font-size: 1.5rem;
   cursor: pointer;
-  z-index: 50;
-  font-size: 16px;
+  z-index: 10;
+  text-shadow: 0 0 5px var(--neon-yellow);
 }
 
-/* Ensure the game fits properly in the iframe */
-html,
-body {
+/* High scores */
+#score-entry {
+  margin: 1rem 0;
+}
+
+#name-input {
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid var(--neon-cyan);
+  color: var(--neon-cyan);
+  padding: 0.5rem;
+  font-family: 'VT323', monospace;
+  font-size: 1rem;
+  margin-right: 0.5rem;
+}
+
+#high-scores-list {
+  list-style-position: inside;
+  text-align: left;
+  margin: 1rem 0;
+  font-family: 'VT323', monospace;
+  color: var(--neon-pink);
+}
+
+#final-score {
+  color: var(--neon-green);
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
+
+/* Joystick for mobile */
+#joystick {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  z-index: 10;
+  display: none; /* Hidden by default, shown on mobile */
+}
+
+#joystick-base {
+  width: 100px;
+  height: 100px;
+  background: rgba(0, 0, 0, 0.5);
+  border: 2px solid var(--neon-purple);
+  border-radius: 50%;
+  position: relative;
+}
+
+#joystick-stick {
+  width: 40px;
+  height: 40px;
+  background: var(--neon-cyan);
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 10px var(--neon-cyan);
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  #joystick {
+    display: block;
+  }
+  
+  .overlay-content {
+    padding: 1rem;
+  }
+  
+  .overlay h1 {
+    font-size: 1.2rem;
+  }
+  
+  #snake-ui {
+    font-size: 0.9rem;
+  }
+}
+
+/* Accessibility improvements */
+button:focus, input:focus {
+  outline: 2px solid var(--neon-yellow);
+  box-shadow: 0 0 10px var(--neon-yellow);
+}
+
+/* Prevent scrolling on mobile */
+html, body {
+  position: fixed;
+  overflow: hidden;
   width: 100%;
   height: 100%;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
+  touch-action: none;
 }
