@@ -29,8 +29,10 @@
       rel="stylesheet"
     />
 
-    <!-- Main Stylesheet -->
-    <link rel="stylesheet" href="/style.css" />
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/css/main.css" />
+    <link rel="stylesheet" href="/css/boot-screen.css" />
+    <link rel="stylesheet" href="/css/theme.css" />
     
     <!-- Meta tags for SEO -->
     <meta name="description" content="Benjamin Filler - Media creator, director, and narrative systems designer. Explore my portfolio featuring films, games, and interactive experiences.">
@@ -216,7 +218,7 @@
           <button class="close">X</button>
         </div>
         <div class="window-content">
-          <iframe src="/resume.html" allowfullscreen style="width: 100%; height: 100%; border: none;" loading="lazy"></iframe>
+          <iframe src="/pages/resume.html" allowfullscreen style="width: 100%; height: 100%; border: none;" loading="lazy"></iframe>
         </div>
       </div>
 
@@ -229,7 +231,7 @@
           <button class="close">X</button>
         </div>
         <div class="window-content">
-          <iframe src="/contact.html" allowfullscreen loading="lazy" style="width: 100%; height: 100%; border: none;"></iframe>
+          <iframe src="/pages/contact.html" allowfullscreen loading="lazy" style="width: 100%; height: 100%; border: none;"></iframe>
         </div>
       </div>
 
@@ -242,7 +244,7 @@
           <button class="close">X</button>
         </div>
         <div class="window-content">
-          <iframe src="/nature.html" style="width: 100%; height: 100%; border: none;" allowfullscreen loading="lazy"></iframe>
+          <iframe src="/pages/nature.html" style="width: 100%; height: 100%; border: none;" allowfullscreen loading="lazy"></iframe>
         </div>
       </div>
 
@@ -307,26 +309,26 @@
       </div>
 
      <!-- MUSIC.EXE -->
-<div id="music" class="popup-window hidden">
-  <div class="window-header">
-    <span>MUSIC.EXE</span>
-    <button class="minimize">_</button>
-    <button class="maximize">▭</button>
-    <button class="close">X</button>
-  </div>
-  <div class="window-content music-content">
-    <canvas id="visualizer"></canvas>
-    <div id="now-playing">▶ Select a track to play</div>
-    <div class="music-controls">
-      <button id="prevTrack">◀ Prev</button>
-      <button id="togglePlay">▶ Play</button>
-      <button id="nextTrack">Next ▶</button>
+    <div id="music" class="popup-window hidden">
+      <div class="window-header">
+        <span>MUSIC.EXE</span>
+        <button class="minimize">_</button>
+        <button class="maximize">▭</button>
+        <button class="close">X</button>
+      </div>
+      <div class="window-content music-content">
+        <canvas id="visualizer"></canvas>
+        <div id="now-playing">▶ Select a track to play</div>
+        <div class="music-controls">
+          <button id="prevTrack">◀ Prev</button>
+          <button id="togglePlay">▶ Play</button>
+          <button id="nextTrack">Next ▶</button>
+        </div>
+        <ul id="playlist"></ul>
+        <!-- Simple audio element without any special attributes -->
+        <audio id="music-player" preload="none"></audio>
+      </div>
     </div>
-    <ul id="playlist"></ul>
-    <!-- Simple audio element without any special attributes -->
-    <audio id="music-player" preload="none"></audio>
-  </div>
-</div>
 
 
       <!-- ===== SPACEWORM.EXE popup (in index.html) ===== -->
@@ -340,7 +342,7 @@
         <div class="window-content">
           <!-- Changed from lazy-loaded iframe to a direct iframe with proper attributes -->
           <iframe
-            src="/snake.html"
+            src="/pages/snake.html"
             style="width:100%; height:100%; border:none; display:block;"
             allowfullscreen
             allow="autoplay"
@@ -538,8 +540,10 @@
       <a href="javascript:void(0)" onclick="openWindow('snake')">SPACEWORM</a>
     </div>
     
-    <!-- Main Script -->
-    <script src="/script.js"></script>
-    <script src="music-player.js"></script>
+    <!-- Scripts -->
+    <script src="/js/boot-sequence.js"></script>
+    <script src="/js/theme-switcher.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/music-player.js"></script>
   </body>
 </html>

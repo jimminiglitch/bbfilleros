@@ -1,0 +1,25 @@
+/* Theme variables */
+:root {
+  --primary-color: #00ffff;
+  --background-color: #000000;
+  --text-color: #ffffff;
+  --accent-color: #ff00ff;
+  --window-bg: #1a1a2e;
+  --window-header: #0f3460;
+}
+
+/* Apply variables to elements */
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+.popup-window {
+  background-color: var(--window-bg);
+}
+
+.window-header {
+  background-color: var(--window-header);
+}
+
+/* Add more theme-aware styles as needed */
