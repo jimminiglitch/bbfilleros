@@ -30,6 +30,10 @@ window.addEventListener("load", () => {
   let joystickAngle = 0
 
   // ─── Game state variables ───────────────────────────────────────────────────
+  let keyHoldTime = 0
+  let lastKeyDirection = null
+  let maxTrailLength = 50
+  let trailIntensity = 0.2
   let hasSpeedBoost = false
   let lives = 0
   const MAX_LIVES = 5
@@ -37,11 +41,16 @@ window.addEventListener("load", () => {
   // ─── WebAudio for SFX ───────────────────────────────────────────────────────
   let audioCtx
   let eatBuf, powerBuf, shieldBuf, deathBuf
+
+  // Sound URLs provided by the user
   const eatURL =
     "https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/power-up-type-1-230548.mp3?v=1746542171704"
   const powerURL = "https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/coin-upaif-14631.mp3?v=1746542174524"
-  const shieldURL = "https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/coin-upaif-14631.mp3?v=1746542174524"
-  const deathURL = "https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/cartoon-slide-whistle-down-2-176648.mp3?v=1746647880281"
+  const deathURL =
+    "https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/cartoon-slide-whistle-down-2-176648.mp3?v=1746647880281"
+  // Using the power-up sound for shield as well
+  const shieldURL =
+    "https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/coin-upaif-14631.mp3?v=1746542174524"
 
   // Initialize audio context on user interaction to avoid autoplay restrictions
   function initAudio() {
@@ -67,6 +76,7 @@ window.addEventListener("load", () => {
           powerBuf = p
           shieldBuf = s
           deathBuf = d
+          console.log("All sounds loaded successfully")
         })
         .catch((err) => console.error("Error loading sounds:", err))
     } catch (err) {
@@ -158,7 +168,9 @@ window.addEventListener("load", () => {
   function initTouchControls() {
     // Show joystick on mobile devices
     if (isMobileDevice()) {
-      if (joystickBase) joystickBase.parentElement.style.display = "block"
+      if (joystickBase && joystickBase.parentElement) {
+        joystickBase.parentElement.style.display = "block"
+      }
     }
 
     // Swipe detection
@@ -366,7 +378,7 @@ window.addEventListener("load", () => {
     SPEED: { color: "var(--neon-cyan)", effect: "speed", value: 1.5, pts: 60 },
     SHIELD: { color: "var(--neon-yellow)", effect: "shield", value: 1, pts: 25 },
   }
-  const MAX_TRAIL = 50 // Increased from 0.5 to 50 to fix trail length
+  const MAX_TRAIL = 100 // Increased for longer trails
 
   // ─── High-score helpers ────────────────────────────────────────────────────
   function loadHS() {
@@ -531,6 +543,23 @@ window.addEventListener("load", () => {
     if (frameAcc < 1000 / speed) return
     frameAcc = 0
 
+    // Handle key holding speed boost
+    if (
+      lastKeyDirection &&
+      ((lastKeyDirection === "ArrowUp" && dy === -1) ||
+        (lastKeyDirection === "ArrowDown" && dy === 1) ||
+        (lastKeyDirection === "ArrowLeft" && dx === -1) ||
+        (lastKeyDirection === "ArrowRight" && dx === 1))
+    ) {
+      keyHoldTime += dt
+      // Gradually increase speed up to 1.5x after holding for 1 second
+      const holdBoost = Math.min(1.5, 1 + (keyHoldTime / 1000) * 0.5)
+      speed = baseSpeed * holdBoost
+    } else {
+      keyHoldTime = 0
+      speed = baseSpeed
+    }
+
     // Update power-up indicators
     updatePowerUpIndicators()
 
@@ -541,7 +570,9 @@ window.addEventListener("load", () => {
     snake.unshift(head)
 
     trail.unshift({ x: head.x, y: head.y, t: Date.now() })
-    if (trail.length > MAX_TRAIL) trail.pop()
+    // Keep more trail points when moving faster
+    const currentTrailLength = Math.min(MAX_TRAIL, 50 + (speed - baseSpeed) * 20)
+    while (trail.length > currentTrailLength) trail.pop()
 
     // Check for power-up collisions
     for (let i = powerUps.length - 1; i >= 0; i--) {
@@ -587,9 +618,6 @@ window.addEventListener("load", () => {
           createParticle(head.x, head.y, "var(--neon-yellow)")
         }
 
-        // Move snake head back to a safe position
-        snake.shift() // Remove the collided head
-
         // Temporarily pause to show the shield effect
         paused = true
         setTimeout(() => {
@@ -615,83 +643,105 @@ window.addEventListener("load", () => {
     if (!started || !ctx) return
     drawStars()
 
-    // trails (more subtle)
+    // trails (more vibrant)
     const S = GRID - 2,
       O = 1
     trail.forEach((pt, idx) => {
       const age = Date.now() - pt.t
-      const a = Math.max(0, 1 - age / 1000) * 0.2 // half the intensity
+      const a = Math.max(0, 1 - age / 1000) * trailIntensity * 2 // Double the intensity
       ctx.fillStyle = `hsla(${(hueOffset + idx * 20) % 360},100%,50%,${a})`
       ctx.fillRect(pt.x * GRID + O, pt.y * GRID + O, S, S)
     })
 
     // power-ups (as spheres)
     powerUps.forEach((pu) => {
-      // Update rotation angle
-      pu.angle = (pu.angle + 0.05) % (Math.PI * 2)
+      try {
+        // Update rotation angle
+        pu.angle = (pu.angle + 0.05) % (Math.PI * 2)
 
-      // Draw power-up as a sphere
-      const x = pu.x * GRID + GRID / 2
-      const y = pu.y * GRID + GRID / 2
-      const radius = GRID / 2 - 2
+        // Draw power-up as a sphere
+        const x = pu.x * GRID + GRID / 2
+        const y = pu.y * GRID + GRID / 2
+        const radius = GRID / 2 - 2
 
-      // Create gradient for 3D effect
-      const gradient = ctx.createRadialGradient(x - radius / 3, y - radius / 3, radius / 10, x, y, radius)
+        // Create gradient for 3D effect
+        const gradient = ctx.createRadialGradient(x - radius / 3, y - radius / 3, radius / 10, x, y, radius)
 
-      // Get base color
-      const baseColor = pu.color
+        // Get base color
+        const baseColor = pu.color
 
-      // Add gradient stops for 3D effect
-      gradient.addColorStop(0, "white")
-      gradient.addColorStop(0.3, baseColor)
-      gradient.addColorStop(1, "rgba(0,0,0,0.5)")
+        // Add gradient stops for 3D effect
+        gradient.addColorStop(0, "white")
+        gradient.addColorStop(0.3, baseColor)
+        gradient.addColorStop(1, "rgba(0,0,0,0.5)")
 
-      // Draw the sphere
-      ctx.fillStyle = gradient
-      ctx.beginPath()
-      ctx.arc(x, y, radius, 0, Math.PI * 2)
-      ctx.fill()
+        // Draw the sphere
+        ctx.fillStyle = gradient
+        ctx.beginPath()
+        ctx.arc(x, y, radius, 0, Math.PI * 2)
+        ctx.fill()
 
-      // Add highlight
-      ctx.fillStyle = "rgba(255,255,255,0.7)"
-      ctx.beginPath()
-      ctx.arc(x - radius / 3, y - radius / 3, radius / 4, 0, Math.PI * 2)
-      ctx.fill()
+        // Add highlight
+        ctx.fillStyle = "rgba(255,255,255,0.7)"
+        ctx.beginPath()
+        ctx.arc(x - radius / 3, y - radius / 3, radius / 4, 0, Math.PI * 2)
+        ctx.fill()
 
-      // Add letter indicator
-      ctx.fillStyle = "black"
-      ctx.font = "bold 10px Press Start 2P"
-      ctx.textAlign = "center"
-      ctx.textBaseline = "middle"
-      ctx.fillText(pu.type[0], x, y)
+        // Add letter indicator
+        ctx.fillStyle = "black"
+        ctx.font = "bold 10px Arial"
+        ctx.textAlign = "center"
+        ctx.textBaseline = "middle"
+
+        let icon = "?"
+        switch (pu.type) {
+          case "SPEED":
+            icon = "S"
+            break
+          case "GROW":
+            icon = "G"
+            break
+          case "SHIELD":
+            icon = "S"
+            break
+        }
+
+        ctx.fillText(icon, x, y)
+      } catch (err) {
+        console.error("Error drawing power-up:", err)
+      }
     })
 
     // apple (as a sphere)
     if (apple) {
-      const pulse = Math.sin(Date.now() / 300) * 6
-      const x = apple.x * GRID + GRID / 2
-      const y = apple.y * GRID + GRID / 2
-      const radius = GRID / 2 - 2
+      try {
+        const pulse = Math.sin(Date.now() / 300) * 6
+        const x = apple.x * GRID + GRID / 2
+        const y = apple.y * GRID + GRID / 2
+        const radius = GRID / 2 - 2
 
-      // Create gradient for 3D effect
-      const gradient = ctx.createRadialGradient(x - radius / 3, y - radius / 3, radius / 10, x, y, radius)
+        // Create gradient for 3D effect
+        const gradient = ctx.createRadialGradient(x - radius / 3, y - radius / 3, radius / 10, x, y, radius)
 
-      // Add gradient stops for 3D effect with pulsing
-      gradient.addColorStop(0, "white")
-      gradient.addColorStop(0.3, `hsl(300,100%,${50 + pulse}%)`)
-      gradient.addColorStop(1, "rgba(0,0,0,0.5)")
+        // Add gradient stops for 3D effect with pulsing
+        gradient.addColorStop(0, "white")
+        gradient.addColorStop(0.3, `hsl(300,100%,${50 + pulse}%)`)
+        gradient.addColorStop(1, "rgba(0,0,0,0.5)")
 
-      // Draw the sphere
-      ctx.fillStyle = gradient
-      ctx.beginPath()
-      ctx.arc(x, y, radius, 0, Math.PI * 2)
-      ctx.fill()
+        // Draw the sphere
+        ctx.fillStyle = gradient
+        ctx.beginPath()
+        ctx.arc(x, y, radius, 0, Math.PI * 2)
+        ctx.fill()
 
-      // Add highlight
-      ctx.fillStyle = "rgba(255,255,255,0.7)"
-      ctx.beginPath()
-      ctx.arc(x - radius / 3, y - radius / 3, radius / 4, 0, Math.PI * 2)
-      ctx.fill()
+        // Add highlight
+        ctx.fillStyle = "rgba(255,255,255,0.7)"
+        ctx.beginPath()
+        ctx.arc(x - radius / 3, y - radius / 3, radius / 4, 0, Math.PI * 2)
+        ctx.fill()
+      } catch (err) {
+        console.error("Error drawing apple:", err)
+      }
     }
 
     // snake (smaller)
@@ -760,6 +810,10 @@ window.addEventListener("load", () => {
     powerUps = []
     particles = []
     trail = []
+    keyHoldTime = 0
+    lastKeyDirection = null
+    maxTrailLength = 50
+    trailIntensity = 0.2
     hasSpeedBoost = false
     lives = 0
 
@@ -930,11 +984,11 @@ window.addEventListener("load", () => {
         }
         break
     }
-    if (e.key.startsWith("Arrow")) speed = baseSpeed * 2
-  })
 
-  window.addEventListener("keyup", (e) => {
-    if (e.key.startsWith("Arrow")) speed = baseSpeed
+    // Track the last key direction for speed boost
+    if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
+      lastKeyDirection = e.key
+    }
   })
 
   // Tap to pause
