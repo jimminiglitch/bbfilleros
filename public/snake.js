@@ -40,7 +40,7 @@ window.addEventListener("load", () => {
   const eatURL =
     "https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/power-up-type-1-230548.mp3?v=1746542171704"
   const powerURL = "https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/coin-upaif-14631.mp3?v=1746542174524"
-  const shieldURL = "https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/shield-sound.mp3?v=1746542174524"
+  const shieldURL = "https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/coin-upaif-14631.mp3?v=1746542174524"
   const deathURL = "https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/cartoon-slide-whistle-down-2-176648.mp3?v=1746647880281"
 
   // Initialize audio context on user interaction to avoid autoplay restrictions
