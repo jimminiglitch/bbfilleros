@@ -25,6 +25,12 @@
 <!-- Power-up indicators -->
 <div id="power-up-indicators"></div>
 
+<!-- Lives indicator -->
+<div id="lives-indicator">
+  <span id="lives-label">SHIELDS:</span>
+  <div id="lives-icons"></div>
+</div>
+
 <div id="snake-ui">
   <span id="snake-score">Score: 0</span>
   <span id="snake-level">Level: 1</span>
@@ -37,6 +43,9 @@
   <div class="overlay-content">
     <h1>SPACEWORM.EXE</h1>
     <p>Use arrow keys to navigate. Collect food to grow.</p>
+    <p>🟢 GROW: +3 segments, 33pts</p>
+    <p>🔵 SPEED: permanent boost, 60pts</p>
+    <p>🟡 SHIELD: protection, 25pts</p>
     <button id="snake-play-button">START GAME</button>
   </div>
 </div>
@@ -59,8 +68,8 @@
 </div>
 
 <!-- Audio elements -->
-<audio id="snake-music" loop>
-  <source src="https://assets.codepen.io/21542/synthwave-vibe-127983.mp3" type="audio/mpeg">
+<audio id="snake-music" loop preload="auto">
+  <source src="https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/soundhelix-song.mp3?v=1746542177704" type="audio/mpeg">
 </audio>
 
 <script src="snake.js"></script>

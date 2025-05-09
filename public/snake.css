@@ -76,12 +76,24 @@
   }
 }
 
-@keyframes progress-bar {
+@keyframes pulse-glow {
   0% {
-    width: 100%;
+    box-shadow: 0 0 5px currentColor;
+  }
+  50% {
+    box-shadow: 0 0 15px currentColor;
   }
   100% {
-    width: 0%;
+    box-shadow: 0 0 5px currentColor;
+  }
+}
+
+@keyframes rotate-3d {
+  0% {
+    transform: rotate3d(1, 1, 1, 0deg);
+  }
+  100% {
+    transform: rotate3d(1, 1, 1, 360deg);
   }
 }
 
@@ -153,48 +165,38 @@ body {
   font-weight: bold;
 }
 
-.power-up-progress {
-  height: 5px;
-  background: rgba(255, 255, 255, 0.2);
-  width: 50px;
-  margin-left: 10px;
-  position: relative;
-  overflow: hidden;
-}
-
-.power-up-bar {
-  height: 100%;
+/* Lives indicator */
+#lives-indicator {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
+  top: 10px;
+  right: 50px;
+  display: flex;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 5px 10px;
+  border-radius: 4px;
+  z-index: 20;
+  animation: rainbow-border 8s infinite alternate;
 }
 
-.power-speed .power-up-icon {
-  background: var(--neon-cyan);
-  color: black;
+#lives-label {
+  font-family: "Press Start 2P", monospace;
+  font-size: 10px;
+  margin-right: 10px;
+  animation: rainbow-text 8s infinite alternate;
 }
 
-.power-speed .power-up-bar {
-  background: var(--neon-cyan);
+#lives-icons {
+  display: flex;
+  gap: 5px;
 }
 
-.power-grow .power-up-icon {
-  background: var(--neon-pink);
-  color: black;
-}
-
-.power-grow .power-up-bar {
-  background: var(--neon-pink);
-}
-
-.power-invincible .power-up-icon {
+.life-icon {
+  width: 15px;
+  height: 15px;
   background: var(--neon-yellow);
-  color: black;
-}
-
-.power-invincible .power-up-bar {
-  background: var(--neon-yellow);
+  border-radius: 50%;
+  animation: pulse-glow 2s infinite alternate;
 }
 
 /* UI elements */
@@ -250,6 +252,11 @@ body {
   text-shadow: 0 0 10px var(--neon-green);
   margin-bottom: 20px;
   animation: rainbow-text 5s infinite alternate;
+}
+
+.overlay p {
+  margin-bottom: 10px;
+  animation: rainbow-text 8s infinite alternate;
 }
 
 .overlay button {
@@ -384,6 +391,11 @@ body {
 
   #power-up-indicators {
     top: 50px; /* Move down to avoid overlap with mute button on mobile */
+  }
+
+  #lives-indicator {
+    top: 50px;
+    right: 10px;
   }
 }
 

@@ -18,6 +18,8 @@ window.addEventListener("load", () => {
   const joystickBase = document.getElementById("joystick-base")
   const joystickStick = document.getElementById("joystick-stick")
   const powerUpIndicators = document.getElementById("power-up-indicators")
+  const livesIndicator = document.getElementById("lives-indicator")
+  const livesIcons = document.getElementById("lives-icons")
 
   // ─── Touch controls variables ───────────────────────────────────────────────
   let touchStartX = 0
@@ -27,15 +29,19 @@ window.addEventListener("load", () => {
   let joystickActive = false
   let joystickAngle = 0
 
-  // ─── Active power-ups tracking ───────────────────────────────────────────────
-  let activePowerUps = []
+  // ─── Game state variables ───────────────────────────────────────────────────
+  let hasSpeedBoost = false
+  let lives = 0
+  const MAX_LIVES = 5
 
   // ─── WebAudio for SFX ───────────────────────────────────────────────────────
   let audioCtx
-  let eatBuf, powerBuf
+  let eatBuf, powerBuf, shieldBuf, deathBuf
   const eatURL =
     "https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/power-up-type-1-230548.mp3?v=1746542171704"
   const powerURL = "https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/coin-upaif-14631.mp3?v=1746542174524"
+  const shieldURL = "https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/shield-sound.mp3?v=1746542174524"
+  const deathURL = "https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/cartoon-slide-whistle-down-2-176648.mp3?v=1746647880281"
 
   // Initialize audio context on user interaction to avoid autoplay restrictions
   function initAudio() {
@@ -55,10 +61,12 @@ window.addEventListener("load", () => {
         }
       }
 
-      Promise.all([loadSound(eatURL), loadSound(powerURL)])
-        .then(([e, p]) => {
+      Promise.all([loadSound(eatURL), loadSound(powerURL), loadSound(shieldURL), loadSound(deathURL)])
+        .then(([e, p, s, d]) => {
           eatBuf = e
           powerBuf = p
+          shieldBuf = s
+          deathBuf = d
         })
         .catch((err) => console.error("Error loading sounds:", err))
     } catch (err) {
@@ -78,6 +86,26 @@ window.addEventListener("load", () => {
     }
   }
 
+  // ─── Lives Indicator ───────────────────────────────────────────────────────
+  function updateLivesIndicator() {
+    if (!livesIcons) return
+
+    // Clear existing icons
+    livesIcons.innerHTML = ""
+
+    // Create icons for lives
+    for (let i = 0; i < lives; i++) {
+      const icon = document.createElement("div")
+      icon.className = "life-icon"
+      livesIcons.appendChild(icon)
+    }
+
+    // Show/hide the indicator based on lives
+    if (livesIndicator) {
+      livesIndicator.style.display = lives > 0 ? "flex" : "none"
+    }
+  }
+
   // ─── Power-up Indicators ───────────────────────────────────────────────────
   function updatePowerUpIndicators() {
     if (!powerUpIndicators) return
@@ -85,38 +113,24 @@ window.addEventListener("load", () => {
     // Clear existing indicators
     powerUpIndicators.innerHTML = ""
 
-    // Create indicators for active power-ups
-    activePowerUps.forEach((pu) => {
+    // Create indicator for speed boost if active
+    if (hasSpeedBoost) {
       const indicator = document.createElement("div")
-      indicator.className = `power-up-indicator power-${pu.type.toLowerCase()}`
+      indicator.className = "power-up-indicator power-speed"
 
       const icon = document.createElement("div")
       icon.className = "power-up-icon"
-      icon.textContent = pu.type[0]
+      icon.textContent = "S"
+      icon.style.background = "var(--neon-cyan)"
+      icon.style.color = "black"
 
       const name = document.createElement("span")
-      name.textContent = pu.type
+      name.textContent = "SPEED BOOST"
 
-      const progress = document.createElement("div")
-      progress.className = "power-up-progress"
-
-      const bar = document.createElement("div")
-      bar.className = "power-up-bar"
-
-      // Calculate remaining time percentage
-      const elapsed = Date.now() - pu.start
-      const remaining = Math.max(0, pu.duration - elapsed)
-      const percent = (remaining / pu.duration) * 100
-
-      // Set the animation
-      bar.style.width = `${percent}%`
-
-      progress.appendChild(bar)
       indicator.appendChild(icon)
       indicator.appendChild(name)
-      indicator.appendChild(progress)
       powerUpIndicators.appendChild(indicator)
-    })
+    }
   }
 
   // Listen for messages from the parent window
@@ -348,9 +362,9 @@ window.addEventListener("load", () => {
   const HS_KEY = "snakeHighScores"
   const MAX_HS = 7
   const POWER_DEF = {
-    SPEED: { color: "cyan", effect: "speed", duration: 5000, value: 2, pts: 5 },
-    GROW: { color: "magenta", effect: "grow", duration: 3000, value: 3, pts: 8 },
-    INVINCIBLE: { color: "yellow", effect: "invincible", duration: 5000, value: 0, pts: 10 },
+    GROW: { color: "var(--neon-green)", effect: "grow", value: 3, pts: 33 },
+    SPEED: { color: "var(--neon-cyan)", effect: "speed", value: 1.5, pts: 60 },
+    SHIELD: { color: "var(--neon-yellow)", effect: "shield", value: 1, pts: 25 },
   }
   const MAX_TRAIL = 50 // Increased from 0.5 to 50 to fix trail length
 
@@ -401,17 +415,54 @@ window.addEventListener("load", () => {
   function createPU() {
     if (!cols || !rows) return
 
-    const types = Object.keys(POWER_DEF)
-    const t = types[Math.floor(Math.random() * types.length)]
+    // Determine which power-ups are available
+    const availableTypes = []
+
+    // Always allow GROW
+    availableTypes.push("GROW")
+
+    // Only allow SPEED if not already boosted
+    if (!hasSpeedBoost) {
+      availableTypes.push("SPEED")
+    }
+
+    // Only allow SHIELD if not at max lives
+    if (lives < MAX_LIVES) {
+      availableTypes.push("SHIELD")
+    }
+
+    // If no power-ups are available, don't create one
+    if (availableTypes.length === 0) return
+
+    const t = availableTypes[Math.floor(Math.random() * availableTypes.length)]
     const d = POWER_DEF[t]
-    powerUps.push({
-      x: Math.floor(Math.random() * cols),
-      y: Math.floor(Math.random() * rows),
-      type: t,
-      color: d.color,
-      duration: d.duration,
-      start: Date.now(),
-    })
+
+    // Find a valid position
+    let x, y
+    let validPosition = false
+    let attempts = 0
+
+    while (!validPosition && attempts < 50) {
+      x = Math.floor(Math.random() * cols)
+      y = Math.floor(Math.random() * rows)
+
+      validPosition =
+        !snake.some((s) => s.x === x && s.y === y) &&
+        !powerUps.some((p) => p.x === x && p.y === y) &&
+        !(apple && apple.x === x && apple.y === y)
+
+      attempts++
+    }
+
+    if (validPosition) {
+      powerUps.push({
+        x,
+        y,
+        type: t,
+        color: d.color,
+        angle: Math.random() * Math.PI * 2, // Random starting angle for rotation
+      })
+    }
   }
   function createParticle(x, y, color) {
     particles.push({
@@ -443,26 +494,13 @@ window.addEventListener("load", () => {
       if (bestEl) bestEl.textContent = `Best: ${best}`
     }
 
-    // Add to active power-ups
-    const activePU = {
-      type: pu.type,
-      duration: d.duration,
-      start: Date.now(),
-      color: d.color,
-    }
-
-    // Check if this power-up type already exists and replace it
-    const existingIndex = activePowerUps.findIndex((p) => p.type === pu.type)
-    if (existingIndex >= 0) {
-      activePowerUps[existingIndex] = activePU
-    } else {
-      activePowerUps.push(activePU)
-    }
-
     switch (d.effect) {
       case "speed":
-        speed = baseSpeed * 1.5
+        hasSpeedBoost = true
+        baseSpeed *= d.value // Permanently increase base speed
+        speed = baseSpeed
         createParticle(snake[0].x, snake[0].y, d.color)
+        playSFX(powerBuf)
         break
       case "grow":
         for (let i = 0; i < d.value; i++) {
@@ -470,11 +508,15 @@ window.addEventListener("load", () => {
           snake.push({ x: tail.x, y: tail.y })
         }
         createParticle(snake[0].x, snake[0].y, d.color)
+        playSFX(eatBuf)
         break
-      case "invincible":
-        snake.invincible = true
-        setTimeout(() => (snake.invincible = false), d.duration)
-        createParticle(snake[0].x, snake[0].y, d.color)
+      case "shield":
+        if (lives < MAX_LIVES) {
+          lives++
+          updateLivesIndicator()
+          createParticle(snake[0].x, snake[0].y, d.color)
+          playSFX(shieldBuf)
+        }
         break
     }
 
@@ -489,17 +531,11 @@ window.addEventListener("load", () => {
     if (frameAcc < 1000 / speed) return
     frameAcc = 0
 
-    // Update active power-ups
-    activePowerUps = activePowerUps.filter((pu) => Date.now() - pu.start < pu.duration)
+    // Update power-up indicators
     updatePowerUpIndicators()
 
-    // Reset speed if speed power-up expired
-    if (!activePowerUps.some((pu) => pu.type === "SPEED")) {
-      speed = baseSpeed
-    }
-
-    powerUps = powerUps.filter((pu) => Date.now() - pu.start < pu.duration)
-    if (Math.random() < 0.01) createPU()
+    // Random chance to spawn a power-up
+    if (Math.random() < 0.005) createPU()
 
     const head = { x: snake[0].x + dx, y: snake[0].y + dy }
     snake.unshift(head)
@@ -507,14 +543,15 @@ window.addEventListener("load", () => {
     trail.unshift({ x: head.x, y: head.y, t: Date.now() })
     if (trail.length > MAX_TRAIL) trail.pop()
 
-    powerUps.forEach((pu, i) => {
-      if (head.x === pu.x && head.y === pu.y) {
-        playSFX(powerBuf)
-        applyPU(pu)
+    // Check for power-up collisions
+    for (let i = powerUps.length - 1; i >= 0; i--) {
+      if (head.x === powerUps[i].x && head.y === powerUps[i].y) {
+        applyPU(powerUps[i])
         powerUps.splice(i, 1)
       }
-    })
+    }
 
+    // Check for apple collision
     if (head.x === apple.x && head.y === apple.y) {
       playSFX(eatBuf)
       score += 10
@@ -534,14 +571,32 @@ window.addEventListener("load", () => {
       snake.pop()
     }
 
-    if (!snake.invincible) {
-      if (
-        head.x < 0 ||
-        head.y < 0 ||
-        head.x >= cols ||
-        head.y >= rows ||
-        snake.slice(1).some((s) => s.x === head.x && s.y === head.y)
-      ) {
+    // Check for collisions
+    const hitWall = head.x < 0 || head.y < 0 || head.x >= cols || head.y >= rows
+    const hitSelf = snake.slice(1).some((s) => s.x === head.x && s.y === head.y)
+
+    if (hitWall || hitSelf) {
+      if (lives > 0) {
+        // Use a shield/life
+        lives--
+        updateLivesIndicator()
+        playSFX(shieldBuf)
+
+        // Create shield particles
+        for (let i = 0; i < 10; i++) {
+          createParticle(head.x, head.y, "var(--neon-yellow)")
+        }
+
+        // Move snake head back to a safe position
+        snake.shift() // Remove the collided head
+
+        // Temporarily pause to show the shield effect
+        paused = true
+        setTimeout(() => {
+          paused = false
+        }, 500)
+      } else {
+        // Game over
         gameOver = true
         if (statusEl) statusEl.textContent = "Game Over"
         if (elFinalScore) elFinalScore.textContent = `Your score: ${score}`
@@ -550,6 +605,7 @@ window.addEventListener("load", () => {
           music.pause()
           music.currentTime = 0
         }
+        playSFX(deathBuf)
         for (let i = 0; i < 20; i++) createParticle(head.x, head.y, "red")
       }
     }
@@ -569,20 +625,73 @@ window.addEventListener("load", () => {
       ctx.fillRect(pt.x * GRID + O, pt.y * GRID + O, S, S)
     })
 
-    // power-ups
+    // power-ups (as spheres)
     powerUps.forEach((pu) => {
-      ctx.fillStyle = pu.color
-      ctx.fillRect(pu.x * GRID + 1, pu.y * GRID + 1, GRID - 2, GRID - 2)
+      // Update rotation angle
+      pu.angle = (pu.angle + 0.05) % (Math.PI * 2)
+
+      // Draw power-up as a sphere
+      const x = pu.x * GRID + GRID / 2
+      const y = pu.y * GRID + GRID / 2
+      const radius = GRID / 2 - 2
+
+      // Create gradient for 3D effect
+      const gradient = ctx.createRadialGradient(x - radius / 3, y - radius / 3, radius / 10, x, y, radius)
+
+      // Get base color
+      const baseColor = pu.color
+
+      // Add gradient stops for 3D effect
+      gradient.addColorStop(0, "white")
+      gradient.addColorStop(0.3, baseColor)
+      gradient.addColorStop(1, "rgba(0,0,0,0.5)")
+
+      // Draw the sphere
+      ctx.fillStyle = gradient
+      ctx.beginPath()
+      ctx.arc(x, y, radius, 0, Math.PI * 2)
+      ctx.fill()
+
+      // Add highlight
+      ctx.fillStyle = "rgba(255,255,255,0.7)"
+      ctx.beginPath()
+      ctx.arc(x - radius / 3, y - radius / 3, radius / 4, 0, Math.PI * 2)
+      ctx.fill()
+
+      // Add letter indicator
       ctx.fillStyle = "black"
-      ctx.font = "10px Press Start 2P"
-      ctx.fillText(pu.type[0], pu.x * GRID + 3, pu.y * GRID + 14)
+      ctx.font = "bold 10px Press Start 2P"
+      ctx.textAlign = "center"
+      ctx.textBaseline = "middle"
+      ctx.fillText(pu.type[0], x, y)
     })
 
-    // apple (smaller)
+    // apple (as a sphere)
     if (apple) {
       const pulse = Math.sin(Date.now() / 300) * 6
-      ctx.fillStyle = `hsl(300,100%,${50 + pulse}%)`
-      ctx.fillRect(apple.x * GRID + 3, apple.y * GRID + 3, GRID - 6, GRID - 6)
+      const x = apple.x * GRID + GRID / 2
+      const y = apple.y * GRID + GRID / 2
+      const radius = GRID / 2 - 2
+
+      // Create gradient for 3D effect
+      const gradient = ctx.createRadialGradient(x - radius / 3, y - radius / 3, radius / 10, x, y, radius)
+
+      // Add gradient stops for 3D effect with pulsing
+      gradient.addColorStop(0, "white")
+      gradient.addColorStop(0.3, `hsl(300,100%,${50 + pulse}%)`)
+      gradient.addColorStop(1, "rgba(0,0,0,0.5)")
+
+      // Draw the sphere
+      ctx.fillStyle = gradient
+      ctx.beginPath()
+      ctx.arc(x, y, radius, 0, Math.PI * 2)
+      ctx.fill()
+
+      // Add highlight
+      ctx.fillStyle = "rgba(255,255,255,0.7)"
+      ctx.beginPath()
+      ctx.arc(x - radius / 3, y - radius / 3, radius / 4, 0, Math.PI * 2)
+      ctx.fill()
     }
 
     // snake (smaller)
@@ -649,9 +758,10 @@ window.addEventListener("load", () => {
     started = false
     hueOffset = 0
     powerUps = []
-    activePowerUps = []
     particles = []
     trail = []
+    hasSpeedBoost = false
+    lives = 0
 
     if (scoreEl) scoreEl.textContent = "Score: 0"
     if (levelEl) levelEl.textContent = "Level: 1"
@@ -665,6 +775,9 @@ window.addEventListener("load", () => {
 
     // Clear power-up indicators
     if (powerUpIndicators) powerUpIndicators.innerHTML = ""
+
+    // Update lives indicator
+    updateLivesIndicator()
 
     drawHS()
     placeApple()
