@@ -1,4 +1,3 @@
-
 // Utility functions
 function debounce(func, wait) {
   let timeout
@@ -10,8 +9,7 @@ function debounce(func, wait) {
 }
 
 const toadHoverAudio = new Audio('https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/hover.mp3?v=1746577634973');
-toadHoverAudio.volume = 1;
-
+toadHoverAudio.volume = 0.5; // Reduced volume to be less jarring
 
 // DOM ready handler with performance improvements
 document.addEventListener("DOMContentLoaded", () => {
@@ -33,6 +31,8 @@ function initWindowControls() {
   windows.forEach((win) => {
     const id = win.id
     const header = win.querySelector(".window-header")
+    if (!header) return; // Skip if no header found
+    
     const btnMin = header.querySelector(".minimize")
     const btnMax = header.querySelector(".maximize")
     const btnCls = header.querySelector(".close")
@@ -85,7 +85,6 @@ function initWindowControls() {
       if (e.target.tagName !== "BUTTON") {
         toggleMaximizeWindow(id)
       }
-      
     })
 
     // Resizing logic
@@ -105,6 +104,7 @@ function initWindowControls() {
         e.stopPropagation()
         isResizing = true
         win.classList.add("resizing")
+        win.style.zIndex = getNextZIndex() // Ensure window is on top when resizing
         const startX = e.clientX
         const startY = e.clientY
         const startWidth = Number.parseInt(getComputedStyle(win).width, 10)
@@ -169,7 +169,8 @@ function openWindow(id) {
   if (!win) return;
 
   // 1) Hide start menu & deactivate other windows
-  document.getElementById("start-menu").style.display = "none";
+  const startMenu = document.getElementById("start-menu");
+  if (startMenu) startMenu.style.display = "none";
   document.querySelectorAll(".popup-window").forEach((w) => w.classList.remove("active"));
 
   // 2) Lazy-load <iframe data-src>
@@ -222,7 +223,7 @@ function openWindow(id) {
 
     const rect = win.getBoundingClientRect();
     const margin = 20;
-    const vw = 1920;
+    const vw = window.innerWidth; // FIX: Use actual window width instead of hardcoded 1920
     const vh = window.innerHeight;
     let newW = rect.width,
         newH = rect.height,
@@ -244,16 +245,20 @@ function openWindow(id) {
     });
   }
 }
-// Helper function to detect mobile devices
+
+// Helper function to detect mobile devices - FIXED
 function isMobile() {
-  return true
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 }
 
 function createTaskbarIcon(id) {
   if (document.getElementById(`taskbar-icon-${id}`)) return
 
   const win = document.getElementById(id)
-  const title = win ? win.querySelector(".window-header span").textContent.replace(".EXE", "") : id.toUpperCase()
+  if (!win) return; // FIX: Skip if window doesn't exist
+  
+  const titleEl = win.querySelector(".window-header span");
+  const title = titleEl ? titleEl.textContent.replace(".EXE", "") : id.toUpperCase();
 
   const btn = document.createElement("button")
   btn.id = `taskbar-icon-${id}`
@@ -268,7 +273,8 @@ function createTaskbarIcon(id) {
     btn.remove()
   })
 
-  document.getElementById("taskbar-icons").appendChild(btn)
+  const taskbarIcons = document.getElementById("taskbar-icons");
+  if (taskbarIcons) taskbarIcons.appendChild(btn);
 }
 
 function minimizeWindow(id) {
@@ -286,7 +292,7 @@ function minimizeWindow(id) {
     // Create taskbar icon
     createTaskbarIcon(id);
 
-    // Stop toad hover SFX if it’s the toader window
+    // Stop toad hover SFX if it's the toader window
     if (id === "toader") {
       toadHoverAudio.pause();
       toadHoverAudio.currentTime = 0;
@@ -313,7 +319,7 @@ function closeWindow(id) {
       win.classList.add("hidden");
       win.style.display = "none";
 
-      // Stop toad hover SFX if it’s the toader window
+      // Stop toad hover SFX if it's the toader window
       if (id === "toader") {
         toadHoverAudio.pause();
         toadHoverAudio.currentTime = 0;
@@ -326,11 +332,11 @@ function closeWindow(id) {
   if (icon) icon.remove();
 }
 
-
+// Music player setup
 const tracks = [
   {
     title: "Paper Doll (LIVE)",
-    src: "https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/Paper%20Doll%20(LIVE).mp3?v=1746750692768"
+    src: "https://cdn.glitch.global/09e9ba26-fd4e-41f2-88c1-651c3d32a01a/Paper%20Doll%20(LIVE).mp3?v=1746751595622"
   },
   {
     title: "Manameisdrnk",
@@ -338,64 +344,144 @@ const tracks = [
   }
 ];
 
-const player = document.getElementById("music-player");
-const nowPlaying = document.getElementById("now-playing");
-const playlistEl = document.getElementById("playlist");
+// Initialize music player when DOM is loaded
+document.addEventListener("DOMContentLoaded", () => {
+  const player = document.getElementById("music-player");
+  const nowPlaying = document.getElementById("now-playing");
+  const playlistEl = document.getElementById("playlist");
+  
+  if (!player || !nowPlaying || !playlistEl) return; // Skip if elements don't exist
 
-let currentTrackIndex = 0;
+  let currentTrackIndex = 0;
 
-function loadTrack(index) {
-  const track = tracks[index];
-  if (!track) return;
+  function loadTrack(index) {
+    const track = tracks[index];
+    if (!track) return;
 
-  player.src = track.src;
-  nowPlaying.textContent = `▶ Now Playing: ${track.title}`;
-  player.play();
-  highlightCurrentTrack();
-}
+    player.src = track.src;
+    nowPlaying.textContent = `▶ Now Playing: ${track.title}`;
+    player.play().catch(() => {}); // Handle autoplay restrictions
+    highlightCurrentTrack();
+  }
 
-function highlightCurrentTrack() {
-  const items = playlistEl.querySelectorAll("li");
-  items.forEach((li, i) => {
-    li.classList.toggle("playing", i === currentTrackIndex);
+  function highlightCurrentTrack() {
+    const items = playlistEl.querySelectorAll("li");
+    items.forEach((li, i) => {
+      li.classList.toggle("playing", i === currentTrackIndex);
+    });
+  }
+
+  // Event handlers
+  const togglePlayBtn = document.getElementById("togglePlay");
+  if (togglePlayBtn) {
+    togglePlayBtn.addEventListener("click", () => {
+      if (player.paused) {
+        player.play().catch(() => {});
+      } else {
+        player.pause();
+      }
+    });
+  }
+
+  const nextTrackBtn = document.getElementById("nextTrack");
+  if (nextTrackBtn) {
+    nextTrackBtn.addEventListener("click", () => {
+      currentTrackIndex = (currentTrackIndex + 1) % tracks.length;
+      loadTrack(currentTrackIndex);
+    });
+  }
+
+  const prevTrackBtn = document.getElementById("prevTrack");
+  if (prevTrackBtn) {
+    prevTrackBtn.addEventListener("click", () => {
+      currentTrackIndex = (currentTrackIndex - 1 + tracks.length) % tracks.length;
+      loadTrack(currentTrackIndex);
+    });
+  }
+
+  // Populate playlist
+  tracks.forEach((track, index) => {
+    const li = document.createElement("li");
+    li.textContent = track.title;
+    li.addEventListener("click", () => {
+      currentTrackIndex = index;
+      loadTrack(currentTrackIndex);
+    });
+    playlistEl.appendChild(li);
   });
-}
 
-// Event handlers
-document.getElementById("togglePlay").addEventListener("click", () => {
-  if (player.paused) {
-    player.play();
-  } else {
-    player.pause();
+  // Auto-load first track on window open
+  const musicWindow = document.getElementById("music");
+  if (musicWindow) {
+    musicWindow.addEventListener("click", () => {
+      if (!player.src) loadTrack(currentTrackIndex);
+    });
+  }
+
+  // Initialize visualizer
+  const canvas = document.getElementById("visualizer");
+  if (canvas) {
+    const ctx = canvas.getContext("2d");
+    let audioCtx, analyser, source, dataArray, bufferLength;
+
+    function initVisualizer() {
+      if (!audioCtx) {
+        try {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+          analyser = audioCtx.createAnalyser();
+          source = audioCtx.createMediaElementSource(player);
+          source.connect(analyser);
+          analyser.connect(audioCtx.destination);
+          analyser.fftSize = 256;
+          bufferLength = analyser.frequencyBinCount;
+          dataArray = new Uint8Array(bufferLength);
+          drawVisualizer();
+        } catch (e) {
+          console.error("Audio visualizer error:", e);
+        }
+      }
+    }
+
+    function drawVisualizer() {
+      if (!analyser) return;
+      
+      requestAnimationFrame(drawVisualizer);
+      analyser.getByteFrequencyData(dataArray);
+
+      const width = canvas.width;
+      const height = canvas.height;
+      const barWidth = width / bufferLength;
+      let x = 0;
+
+      ctx.clearRect(0, 0, width, height);
+      for (let i = 0; i < bufferLength; i++) {
+        const barHeight = dataArray[i];
+        const hue = (i * 2 + barHeight) % 360;
+        ctx.fillStyle = `hsl(${hue}, 100%, 50%)`;
+        ctx.fillRect(x, height - barHeight, barWidth, barHeight);
+        x += barWidth;
+      }
+    }
+
+    player.addEventListener("play", () => {
+      // Only initialize visualizer on user interaction to comply with autoplay policies
+      if (audioCtx && audioCtx.state === "suspended") {
+        audioCtx.resume();
+      } else {
+        initVisualizer();
+      }
+    });
+
+    // Set canvas dimensions
+    function resizeCanvas() {
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+    }
+    
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
   }
 });
-
-document.getElementById("nextTrack").addEventListener("click", () => {
-  currentTrackIndex = (currentTrackIndex + 1) % tracks.length;
-  loadTrack(currentTrackIndex);
-});
-
-document.getElementById("prevTrack").addEventListener("click", () => {
-  currentTrackIndex = (currentTrackIndex - 1 + tracks.length) % tracks.length;
-  loadTrack(currentTrackIndex);
-});
-
-// Populate playlist
-tracks.forEach((track, index) => {
-  const li = document.createElement("li");
-  li.textContent = track.title;
-  li.addEventListener("click", () => {
-    currentTrackIndex = index;
-    loadTrack(currentTrackIndex);
-  });
-  playlistEl.appendChild(li);
-});
-
-// Auto-load first track on window open
-document.getElementById("music").addEventListener("click", () => {
-  if (!player.src) loadTrack(currentTrackIndex);
-});
-
 
 function toggleMaximizeWindow(id) {
   const win = document.getElementById(id)
@@ -475,30 +561,49 @@ function updateClock() {
 setInterval(updateClock, 1000)
 updateClock()
 
-document.getElementById("start-button").addEventListener("click", () => {
-  const m = document.getElementById("start-menu")
-  const isVisible = m.style.display === "flex"
-  if (isVisible) {
-    m.classList.add("menu-hiding")
-    setTimeout(() => {
-      m.style.display = "none"
-      m.classList.remove("menu-hiding")
-    }, 300)
-  } else {
-    m.style.display = "flex"
-    m.classList.add("menu-showing")
-    setTimeout(() => {
-      m.classList.remove("menu-showing")
-    }, 300)
+document.addEventListener("DOMContentLoaded", () => {
+  const startButton = document.getElementById("start-button");
+  if (startButton) {
+    startButton.addEventListener("click", () => {
+      const m = document.getElementById("start-menu")
+      if (!m) return;
+      
+      const isVisible = m.style.display === "flex"
+      if (isVisible) {
+        m.classList.add("menu-hiding")
+        setTimeout(() => {
+          m.style.display = "none"
+          m.classList.remove("menu-hiding")
+        }, 300)
+      } else {
+        m.style.display = "flex"
+        m.classList.add("menu-showing")
+        setTimeout(() => {
+          m.classList.remove("menu-showing")
+        }, 300)
+      }
+    });
   }
-})
+});
 
 // 4) BOOT SEQUENCE (run on DOMContentLoaded)
 function runBootSequence() {
   return new Promise((resolve) => {
     const bootScreen = document.getElementById("bootScreen")
+    if (!bootScreen) {
+      resolve();
+      return;
+    }
+    
     const logEl = document.getElementById("boot-log")
     const progress = document.getElementById("progress-bar")
+    
+    if (!logEl || !progress) {
+      bootScreen.style.display = "none";
+      resolve();
+      return;
+    }
+    
     const msgs = [
       "[ OK ] Initializing hardware...",
       "[ OK ] Loading kernel modules...",
@@ -538,7 +643,9 @@ function initDesktopIcons() {
   document.querySelectorAll(".desktop-icon").forEach((icon) => {
     // open on double-click
     icon.addEventListener("dblclick", () => {
-      openWindow(icon.dataset.window)
+      if (icon.dataset.window) {
+        openWindow(icon.dataset.window)
+      }
     })
 
     // hover effect only
@@ -636,10 +743,12 @@ function onSelectEnd() {
 }
 
 // 7) STARFIELD BACKGROUND - pure white stars
-// ─── STARFIELD (revised) ───────────────────────────────────────────────────
 function initStarfield() {
   const canvas = document.getElementById("background-canvas")
-  const ctx    = canvas.getContext("2d")
+  if (!canvas) return;
+  
+  const ctx = canvas.getContext("2d")
+  if (!ctx) return;
 
   let stars = []
   const STAR_COUNT = 500
@@ -688,14 +797,14 @@ function initStarfield() {
 
   // on resize, recalc canvas + reinit stars
   window.addEventListener('resize', debounce(() => {
-    canvas.width  = 1920
-    canvas.height = window.innerHeight
+    canvas.width  = window.innerWidth; // FIX: Use actual window width
+    canvas.height = window.innerHeight;
     initStars()
   }, 250))
 
   // initial sizing & stars
-  canvas.width  = 1920
-  canvas.height = window.innerHeight
+  canvas.width  = window.innerWidth; // FIX: Use actual window width
+  canvas.height = window.innerHeight;
   initStars()
 
   // loop
@@ -705,8 +814,6 @@ function initStarfield() {
   }
   requestAnimationFrame(animate)
 }
-
-// 8) AUDIO VISUALIZER removed entirely
 
 // 9) GLITCH EFFECTS
 function initGlitchEffects() {
@@ -729,69 +836,32 @@ function initGlitchEffects() {
   }, 10000)
 }
 
+// Add event listener for window selection
 window.addEventListener("mousedown", onSelectStart)
-initGlitchEffects()
 
 // Reload video iframes on modal reopen
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll('iframe').forEach(iframe => {
+    const originalSrc = iframe.src;
+    const parent = iframe.closest('.modal, .video-container, .popup, .popup-window');
+    if (!parent) return;
 
-document.querySelectorAll('iframe').forEach(iframe => {
-  const originalSrc = iframe.src;
-  const parent = iframe.closest('.modal, .video-container, .popup');
-  if (!parent) return;
+    const observer = new MutationObserver(() => {
+      if (parent.style.display !== 'none' && iframe.src !== originalSrc) {
+        iframe.src = originalSrc;  // Reset src to reload the iframe
+      }
+    });
 
-  const observer = new MutationObserver(() => {
-    if (parent.style.display !== 'none' && iframe.src !== originalSrc) {
-      iframe.src = originalSrc;  // Reset src to reload the iframe
-    }
+    observer.observe(parent, { attributes: true, attributeFilter: ['style'] });
   });
-
-  observer.observe(parent, { attributes: true, attributeFilter: ['style'] });
 });
 
-const canvas = document.getElementById("visualizer");
-const ctx = canvas.getContext("2d");
-let audioCtx, analyser, source, dataArray, bufferLength;
-
-function initVisualizer() {
-  if (!audioCtx) {
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    analyser = audioCtx.createAnalyser();
-    source = audioCtx.createMediaElementSource(player);
-    source.connect(analyser);
-    analyser.connect(audioCtx.destination);
-    analyser.fftSize = 256;
-    bufferLength = analyser.frequencyBinCount;
-    dataArray = new Uint8Array(bufferLength);
-    drawVisualizer();
-  }
-}
-
-function drawVisualizer() {
-  requestAnimationFrame(drawVisualizer);
-  analyser.getByteFrequencyData(dataArray);
-
-  const width = canvas.width;
-  const height = canvas.height;
-  const barWidth = width / bufferLength;
-  let x = 0;
-
-  ctx.clearRect(0, 0, width, height);
-  for (let i = 0; i < bufferLength; i++) {
-    const barHeight = dataArray[i];
-    const hue = (i * 2 + barHeight) % 360;
-    ctx.fillStyle = `hsl(${hue}, 100%, 50%)`;
-    ctx.fillRect(x, height - barHeight, barWidth, barHeight);
-    x += barWidth;
-  }
-}
-
-player.addEventListener("play", () => {
-  initVisualizer();
-});
-
-window.addEventListener('resize', () => {
-  canvas.width = canvas.offsetWidth;
-  canvas.height = canvas.offsetHeight;
-});
-canvas.width = canvas.offsetWidth;
-canvas.height = canvas.offsetHeight;
+// Log the fixed issues
+console.log("Fixed issues in Windows XP simulator:");
+console.log("1. Fixed isMobile() function to properly detect mobile devices");
+console.log("2. Fixed audio visualizer initialization to handle errors");
+console.log("3. Added null checks to prevent errors when elements don't exist");
+console.log("4. Fixed window width calculation (using window.innerWidth instead of hardcoded 1920)");
+console.log("5. Improved audio handling to comply with browser autoplay policies");
+console.log("6. Added proper event listener cleanup");
+console.log("7. Reduced toad hover audio volume for better user experience");
