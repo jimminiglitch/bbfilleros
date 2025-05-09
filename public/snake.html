@@ -1,80 +1,60 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+>
+<!-- Add touch instructions element after the joystick -->
+<div id="touch-instructions">Swipe to move • Tap to pause</div>
+
+<!-- Add this function to create visual feedback for touches -->
+<script>
+  // Add visual feedback for touches
+  document.addEventListener('touchstart', function(e) {
+    // Create ripple effect
+    const ripple = document.createElement('div');
+    ripple.className = 'touch-ripple';
+    ripple.style.left = e.touches[0].clientX + 'px';
+    ripple.style.top = e.touches[0].clientY + 'px';
+    document.body.appendChild(ripple);
     
-    <title>SPACEWORM.EXE</title>
+    // Remove after animation completes
+    setTimeout(() => {
+      ripple.remove();
+    }, 600);
+  }, { passive: true });
+</script>
+</CodeProject>
 
-    <!-- Google Fonts -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap"
-      rel="stylesheet"
-    />
+## How the Touch Controls Work
 
-    <!-- Main Stylesheet -->
-    <link rel="stylesheet" href="snake.css" />
-  </head>
-  <body>
-    <!-- START OVERLAY -->
-    <div id="start-overlay" class="overlay">
-      <div class="overlay-content">
-        <h1>SPACEWORM.EXE</h1>
-        <button id="snake-play-button">CLICK TO START</button>
-      </div>
-    </div>
+I've implemented two different touch control methods to give players options:
 
-    <!-- GAME OVER OVERLAY -->
-    <div id="game-over-overlay" class="overlay hidden">
-      <div class="overlay-content">
-        <h1>Game Over</h1>
-        <p id="final-score">Your score: 0</p>
-        <div id="score-entry">
-          <input
-            id="name-input"
-            type="text"
-            placeholder="Your Name (7 chars)"
-            maxlength="7"
-          />
-          <button id="submit-score">Submit Score</button>
-        </div>
-        <ol id="high-scores-list"></ol>
-        <button id="play-again-button">Play Again</button>
-      </div>
-    </div>
+### 1. Swipe Controls
+- **Swipe in any direction** to change the snake's direction
+- The snake will move in the direction of your swipe
+- Swipes need to be at least 30 pixels long to register
+- Temporary speed boost when swiping (similar to keyboard controls)
 
-    <!-- GAME FIELD -->
-    <div id="game-field">
-      <canvas id="snake-canvas"></canvas>
-    </div>
+### 2. Joystick Controls
+- **Use the joystick** in the bottom left corner for more precise control
+- The joystick will appear automatically on mobile devices
+- Move the joystick in any direction to control the snake
+- The snake moves faster while the joystick is active
 
-    <!-- HUD -->
-    <div id="snake-ui">
-      <span id="snake-score">Score: 0</span> |
-      <span id="snake-level">Level: 1</span> |
-      <span id="snake-best">Best: 0</span> |
-      <span id="snake-status">Running</span>
-    </div>
+### Additional Touch Features
+- **Tap anywhere** on the game canvas to pause/resume the game
+- Visual feedback when touching the screen (ripple effect)
+- Instructions displayed at the bottom of the screen
+- Larger touch targets for the mute button on mobile devices
 
-    <!-- MUTE BUTTON -->
-    <button id="mute-button">🔊</button>
+### Mobile Optimizations
+- The joystick is automatically shown on mobile devices
+- Touch controls are disabled when the game is paused or over
+- Proper event cleanup to prevent memory leaks
+- Improved visual feedback for better user experience
 
-    <!-- JOYSTICK -->
-    <div id="joystick">
-      <div id="joystick-base">
-        <div id="joystick-stick"></div>
-      </div>
-    </div>
+These touch controls make the snake game much more playable on mobile devices while maintaining the original gameplay experience.
 
-    <!-- MUSIC -->
-    <audio
-      id="snake-music"
-      src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3"
-      loop
-      preload="auto"
-    ></audio>
-
-    <!-- Main Script -->
-    <script src="snake.js"></script>
-  </body>
-</html>
+<Actions>
+  <Action name="Add difficulty levels" description="Implement easy, medium, and hard difficulty settings for the snake game" />
+  <Action name="Add power-up indicators" description="Add visual indicators for active power-ups and their remaining duration" />
+  <Action name="Add game sounds" description="Add more sound effects for different game events" />
+  <Action name="Add high score persistence" description="Enhance the high score system to persist scores across sessions" />
+  <Action name="Add pause button" description="Add a visible pause button for easier game control" />
+</Actions>

@@ -622,7 +622,7 @@ body {
 
 /*─────────────────────────────────────────────────────────────────────────────
   TASKBAR & START MENU
-────────────────────────────────────────────────────────────��────────────────*/
+─────────────────────────────────────────────────────────────────────────────*/
 #start-bar {
   position: fixed;
   bottom: 0;
@@ -1068,6 +1068,30 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  padding: 0; /* Remove padding for games */
+  overflow: hidden; /* Prevent scrollbars */
+}
+
+.game-window .window-content iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+  background: #000; /* Black background while loading */
+}
+
+/* Ensure the iframe doesn't show scrollbars */
+.game-window .window-content iframe {
+  overflow: hidden;
+}
+
+/* Fix for iframe focus issues */
+.popup-window.active iframe {
+  pointer-events: auto;
+}
+
+.popup-window:not(.active) iframe {
+  pointer-events: none;
 }
 
 .game-window canvas {
@@ -1168,15 +1192,6 @@ body {
 
 .track-item.active {
   background: rgba(0, 240, 255, 0.2);
-}
-
-.track-number {
-  width: 30px;
-  color: var(--neon-yellow);
-}
-
-.track-info {
-  flex: 1;
 }
 
 .track-number {
