@@ -34,7 +34,6 @@ window.addEventListener("load", () => {
   let lastKeyDirection = null
   let maxTrailLength = 50
   let trailIntensity = 0.2
-  let hasSpeedBoost = false
   let lives = 0
   const MAX_LIVES = 5
 
@@ -123,24 +122,22 @@ window.addEventListener("load", () => {
     // Clear existing indicators
     powerUpIndicators.innerHTML = ""
 
-    // Create indicator for speed boost if active
-    if (hasSpeedBoost) {
-      const indicator = document.createElement("div")
-      indicator.className = "power-up-indicator power-speed"
+    // Create indicator for level
+    const indicator = document.createElement("div")
+    indicator.className = "power-up-indicator power-level"
 
-      const icon = document.createElement("div")
-      icon.className = "power-up-icon"
-      icon.textContent = "S"
-      icon.style.background = "var(--neon-cyan)"
-      icon.style.color = "black"
+    const icon = document.createElement("div")
+    icon.className = "power-up-icon"
+    icon.textContent = "L"
+    icon.style.background = "var(--neon-cyan)"
+    icon.style.color = "black"
 
-      const name = document.createElement("span")
-      name.textContent = "SPEED BOOST"
+    const name = document.createElement("span")
+    name.textContent = `LEVEL ${level} (x${level} POINTS)`
 
-      indicator.appendChild(icon)
-      indicator.appendChild(name)
-      powerUpIndicators.appendChild(indicator)
-    }
+    indicator.appendChild(icon)
+    indicator.appendChild(name)
+    powerUpIndicators.appendChild(indicator)
   }
 
   // Listen for messages from the parent window
@@ -375,7 +372,7 @@ window.addEventListener("load", () => {
   const MAX_HS = 7
   const POWER_DEF = {
     GROW: { color: "var(--neon-green)", effect: "grow", value: 3, pts: 33 },
-    SPEED: { color: "var(--neon-cyan)", effect: "speed", value: 1.5, pts: 60 },
+    LEVEL: { color: "var(--neon-cyan)", effect: "level", value: 1.1, pts: 30 }, // Changed from SPEED to LEVEL
     SHIELD: { color: "var(--neon-yellow)", effect: "shield", value: 1, pts: 25 },
   }
   const MAX_TRAIL = 100 // Increased for longer trails
@@ -433,10 +430,8 @@ window.addEventListener("load", () => {
     // Always allow GROW
     availableTypes.push("GROW")
 
-    // Only allow SPEED if not already boosted
-    if (!hasSpeedBoost) {
-      availableTypes.push("SPEED")
-    }
+    // Always allow LEVEL (renamed from SPEED)
+    availableTypes.push("LEVEL")
 
     // Only allow SHIELD if not at max lives
     if (lives < MAX_LIVES) {
@@ -498,8 +493,11 @@ window.addEventListener("load", () => {
   }
   function applyPU(pu) {
     const d = POWER_DEF[pu.type]
-    // award points
-    score += d.pts
+
+    // Award points with level multiplier
+    const pointsAwarded = d.pts * level
+    score += pointsAwarded
+
     if (scoreEl) scoreEl.textContent = `Score: ${score}`
     if (score > best) {
       best = score
@@ -507,10 +505,12 @@ window.addEventListener("load", () => {
     }
 
     switch (d.effect) {
-      case "speed":
-        hasSpeedBoost = true
-        baseSpeed *= d.value // Permanently increase base speed
+      case "level":
+        // Level up - slightly increase speed
+        level++
+        baseSpeed *= d.value // Small speed increase (10%)
         speed = baseSpeed
+        if (levelEl) levelEl.textContent = `Level: ${level}`
         createParticle(snake[0].x, snake[0].y, d.color)
         playSFX(powerBuf)
         break
@@ -543,7 +543,7 @@ window.addEventListener("load", () => {
     if (frameAcc < 1000 / speed) return
     frameAcc = 0
 
-    // Handle key holding speed boost
+    // Handle key holding speed boost - reduced to a gentler boost
     if (
       lastKeyDirection &&
       ((lastKeyDirection === "ArrowUp" && dy === -1) ||
@@ -552,8 +552,8 @@ window.addEventListener("load", () => {
         (lastKeyDirection === "ArrowRight" && dx === 1))
     ) {
       keyHoldTime += dt
-      // Gradually increase speed up to 1.5x after holding for 1 second
-      const holdBoost = Math.min(1.5, 1 + (keyHoldTime / 1000) * 0.5)
+      // Gentler speed boost - max 20% increase after 1 second
+      const holdBoost = Math.min(1.2, 1 + (keyHoldTime / 1000) * 0.2)
       speed = baseSpeed * holdBoost
     } else {
       keyHoldTime = 0
@@ -585,7 +585,9 @@ window.addEventListener("load", () => {
     // Check for apple collision
     if (head.x === apple.x && head.y === apple.y) {
       playSFX(eatBuf)
-      score += 10
+      // Apply level multiplier to apple points
+      const applePoints = 10 * level
+      score += applePoints
       if (scoreEl) scoreEl.textContent = `Score: ${score}`
       if (score > best) {
         best = score
@@ -593,8 +595,11 @@ window.addEventListener("load", () => {
       }
       for (let i = 0; i < 8; i++) createParticle(apple.x, apple.y, "magenta")
       if (score % 50 === 0) {
+        // Level up on score milestones too
         level++
+        baseSpeed *= 1.05 // Small speed increase (5%)
         if (levelEl) levelEl.textContent = `Level: ${level}`
+        updatePowerUpIndicators()
         for (let i = 0; i < 8; i++) createParticle(head.x, head.y, "cyan")
       }
       placeApple()
@@ -695,8 +700,8 @@ window.addEventListener("load", () => {
 
         let icon = "?"
         switch (pu.type) {
-          case "SPEED":
-            icon = "S"
+          case "LEVEL":
+            icon = "L"
             break
           case "GROW":
             icon = "G"
@@ -814,7 +819,6 @@ window.addEventListener("load", () => {
     lastKeyDirection = null
     maxTrailLength = 50
     trailIntensity = 0.2
-    hasSpeedBoost = false
     lives = 0
 
     if (scoreEl) scoreEl.textContent = "Score: 0"
@@ -845,8 +849,11 @@ window.addEventListener("load", () => {
     // Store current game state
     const wasStarted = started
     const wasPaused = paused
+    const oldCols = cols
+    const oldRows = rows
 
     // Pause game during resize
+    const tempPaused = paused
     paused = true
 
     // Resize canvas
@@ -872,8 +879,8 @@ window.addEventListener("load", () => {
     }))
 
     // Resume game if it was running
-    if (wasStarted && !wasPaused) {
-      paused = false
+    if (wasStarted) {
+      paused = tempPaused
     }
   }
 
