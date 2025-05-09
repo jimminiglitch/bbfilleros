@@ -306,26 +306,28 @@
         </div>
       </div>
 
-      <!-- MUSIC.EXE -->
-      <div id="music" class="popup-window hidden">
-        <div class="window-header">
-          <span>MUSIC.EXE</span>
-          <button class="minimize">_</button>
-          <button class="maximize">▭</button>
-          <button class="close">X</button>
-        </div>
-        <div class="window-content music-content">
-          <canvas id="visualizer"></canvas>
-          <div id="now-playing">▶ Select a track to play</div>
-          <div class="music-controls">
-            <button id="prevTrack">◀ Prev</button>
-            <button id="togglePlay">▶ Play</button>
-            <button id="nextTrack">Next ▶</button>
-          </div>
-          <ul id="playlist"></ul>
-          <audio id="music-player" preload="none"></audio>
-        </div>
-      </div>
+     <!-- MUSIC.EXE -->
+<div id="music" class="popup-window hidden">
+  <div class="window-header">
+    <span>MUSIC.EXE</span>
+    <button class="minimize">_</button>
+    <button class="maximize">▭</button>
+    <button class="close">X</button>
+  </div>
+  <div class="window-content music-content">
+    <canvas id="visualizer"></canvas>
+    <div id="now-playing">▶ Select a track to play</div>
+    <div class="music-controls">
+      <button id="prevTrack">◀ Prev</button>
+      <button id="togglePlay">▶ Play</button>
+      <button id="nextTrack">Next ▶</button>
+    </div>
+    <ul id="playlist"></ul>
+    <!-- Simple audio element without any special attributes -->
+    <audio id="music-player" preload="none"></audio>
+  </div>
+</div>
+
 
       <!-- ===== SPACEWORM.EXE popup (in index.html) ===== -->
       <div id="snake" class="popup-window hidden game-window">

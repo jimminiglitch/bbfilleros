@@ -377,7 +377,7 @@ window.addEventListener("load", () => {
   }
   const MAX_TRAIL = 100 // Increased for longer trails
 
-  // ─── High-score helpers ────────────────────────────────────────────────────
+  // ─── High-score helpers ───────────────────────────────────────��────────────
   function loadHS() {
     try {
       const j = localStorage.getItem(HS_KEY)
