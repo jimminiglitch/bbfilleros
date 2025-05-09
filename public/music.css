@@ -18,13 +18,13 @@ h2 {
   text-shadow: 0 0 5px #00ff00;
 }
 
-.music-container {
-  max-width: 800px;
-  margin: 0 auto;
-  border: 2px solid #00ffff;
+.music-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   padding: 1rem;
-  background-color: rgba(0, 20, 20, 0.5);
-  box-shadow: 0 0 10px #00ffff;
+  background-color: rgba(0, 0, 0, 0.8);
+  overflow: hidden;
 }
 
 #visualizer {
@@ -33,6 +33,7 @@ h2 {
   background-color: rgba(0, 0, 0, 0.5);
   margin-bottom: 1rem;
   border: 1px solid #00ffff;
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
 }
 
 #now-playing {
@@ -44,6 +45,9 @@ h2 {
   background-color: rgba(0, 20, 0, 0.3);
   border: 1px solid #00ff00;
   text-shadow: 0 0 5px #00ff00;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .music-controls {
@@ -83,6 +87,8 @@ h2 {
   border: 1px solid #00ffff;
   padding: 0.5rem;
   background-color: rgba(0, 0, 0, 0.5);
+  margin: 0;
+  flex-grow: 1;
 }
 
 #playlist li {
@@ -127,10 +133,6 @@ audio {
 
 /* Responsive design */
 @media (max-width: 600px) {
-  body {
-    padding: 1rem;
-  }
-
   .music-controls {
     flex-direction: column;
     align-items: center;
@@ -138,5 +140,13 @@ audio {
 
   .music-controls button {
     width: 100%;
+  }
+
+  #visualizer {
+    height: 100px;
+  }
+
+  #playlist {
+    max-height: 150px;
   }
 }
